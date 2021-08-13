@@ -1,7 +1,6 @@
 #include "support/gcc8_c_support.h"
-#include <proto/exec.h>
 #include <exec/types.h>
-#include <exec/execbase.h>
+#include <proto/exec.h>
 #include <proto/dos.h>
 #include <proto/graphics.h>
 #include <graphics/gfxbase.h>
@@ -15,29 +14,28 @@
 #if !defined(GOL)
 #define GOL
 
+struct Screen *GolScreen;
+struct Window *GolMainWindow;
+struct ExecBase *SysBase;
+struct DosLibrary *DOSBase;
+struct IntuitionBase *IntuitionBase;
+struct GfxBase *GfxBase;
+struct Library *GadToolsBase = NULL;
+volatile struct Custom *custom;
+
+BOOL AppRunning = TRUE;
+BOOL GameRunning = FALSE;
 #define ScreenW 640
 #define ScreenH 256
 #define ScreenD 4
 
-struct IntuitionIFace *IIntuition;
-struct ExecBase *SysBase;
-volatile struct Custom *custom;
-struct DosLibrary *DOSBase;
-struct GfxBase *GfxBase;
-struct IntuitionBase *IntuitionBase;
-struct Screen *GolScreen;
-struct Window *GolMainWindow;
-struct Library *GadToolsBase = NULL;
-BOOL AppRunning = TRUE;
-BOOL GameRunning = FALSE;
-
-struct gameOfLifeCell
+struct _gameOfLifeCell
 {
     USHORT Status;
     BOOL StatusChanged;
     USHORT Neighbours;
 };
-typedef struct gameOfLifeCell GameOfLifeCell;
+typedef struct _gameOfLifeCell GameOfLifeCell;
 
 struct _golMatrix
 {

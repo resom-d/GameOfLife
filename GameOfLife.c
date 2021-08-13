@@ -1,12 +1,13 @@
 #include "GameOfLife.h"
 #include "GameOfLifeUI.h"
+#include <exec/execbase.h>
 //backup
 
 int main()
 {
-	GameMatrix.ColorAlive = 6;
-	GameMatrix.ColorDead = 8;
-	GameMatrix.Columns = 55;
+	GameMatrix.ColorAlive = 9;
+	GameMatrix.ColorDead = 12;
+	GameMatrix.Columns = 40;
 	GameMatrix.Rows = 20;
 	GameMatrix.CellSizeH = 11;
 	GameMatrix.CellSizeV = 11;
@@ -51,11 +52,11 @@ int StartApp()
 						if ((GolMainWindow = (struct Window *)OpenWindowTags(NULL,
 																			 WA_CustomScreen, (ULONG)GolScreen,
 																			 WA_Left, 0,
-																			 WA_Top, 30,
-																			 WA_Width, 100,
-																			 WA_Height, GameMatrix.CellSizeV * GameMatrix.Rows + GolMainWindow->BorderTop + GolMainWindow->BorderBottom,
-																			 WA_MaxHeight, 256,
-																			 WA_MaxWidth, 640,
+																			 WA_Top, GolScreen->BarHeight + 1,
+																			 WA_Width, GameMatrix.CellSizeH * GameMatrix.Columns + GolScreen->WBorLeft + GolScreen->WBorRight,
+																			 WA_Height, GameMatrix.CellSizeV * GameMatrix.Rows + GolScreen->WBorTop + GolScreen->WBorBottom,
+																			 WA_MaxWidth, GameMatrix.CellSizeH * GameMatrix.Columns + GolScreen->WBorLeft + GolScreen->WBorRight,
+																			 WA_MaxHeight, GameMatrix.CellSizeV * GameMatrix.Rows + GolScreen->WBorTop + GolScreen->WBorBottom,
 																			 WA_Title, (ULONG) "Stopped",
 																			 WA_DepthGadget, TRUE,
 																			 WA_CloseGadget, TRUE,
@@ -72,12 +73,6 @@ int StartApp()
 																			 TAG_END)))
 
 						{
-							WindowLimits(GolMainWindow,
-										 GameMatrix.CellSizeH * GameMatrix.Columns + GolMainWindow->BorderLeft + GolMainWindow->BorderRight,
-										 GameMatrix.CellSizeV * GameMatrix.Rows + GolMainWindow->BorderTop + GolMainWindow->BorderBottom,
-										 GameMatrix.CellSizeH * GameMatrix.Columns + GolMainWindow->BorderLeft + GolMainWindow->BorderRight,
-										 GameMatrix.CellSizeV * GameMatrix.Rows + GolMainWindow->BorderTop + GolMainWindow->BorderBottom);
-
 							my_VisualInfo = GetVisualInfo(GolMainWindow->WScreen, TAG_END);
 							MainMenuStrip = CreateMenus(GolMainMenu, TAG_END);
 							LayoutMenus(MainMenuStrip, my_VisualInfo, TAG_END);
@@ -236,9 +231,9 @@ void CleanUp()
 void DrawCells(struct Window *theWindow, BOOL forceFull)
 {
 	//SetFillPattern(theWindow->RPort);
-	for (int x = 0; x < GameMatrix.Columns; x++)
+	for (int y = 0; y < GameMatrix.Rows; y++)
 	{
-		for (int y = 0; y < GameMatrix.Rows; y++)
+		for (int x = 0; x < GameMatrix.Columns; x++)
 		{
 			if (!GameMatrix.Playfield[x][y].StatusChanged && !forceFull)
 				continue;
@@ -363,7 +358,7 @@ void RunSimulation()
 					if (pf[x - 1][y + 1].Status)
 						neighbours++;
 				}
-				else if (x==GameMatrix.Columns-1) // last column
+				else if (x == GameMatrix.Columns - 1) // last column
 				{
 					if (pf[x - 1][y].Status)
 						neighbours++;
@@ -407,7 +402,7 @@ void RunSimulation()
 					if (pf[x - 1][y - 1].Status)
 						neighbours++;
 				}
-				else if (x==GameMatrix.Columns-1)
+				else if (x == GameMatrix.Columns - 1)
 				{
 					if (pf[x - 1][y - 1].Status)
 						neighbours++;
@@ -421,7 +416,7 @@ void RunSimulation()
 						neighbours++;
 				}
 			}
-			else if (y==GameMatrix.Rows-1)// last row
+			else if (y == GameMatrix.Rows - 1) // last row
 			{
 				if (x == 0)
 				{
@@ -445,7 +440,7 @@ void RunSimulation()
 					if (pf[x + 1][y].Status)
 						neighbours++;
 				}
-				else if (x==GameMatrix.Columns-1)
+				else if (x == GameMatrix.Columns - 1)
 				{
 					if (pf[x - 1][y - 1].Status)
 						neighbours++;
@@ -456,13 +451,13 @@ void RunSimulation()
 				}
 			}
 
-			if (!pf[x][y].Status && neighbours == 3)
+			if ((pf[x][y].Status==0 && neighbours == 3))
 			{
 				pf[x][y].Status = 1;
 				pf[x][y].StatusChanged = TRUE;
 				continue;
 			}
-			if (pf[x][y].Status && (neighbours < 2 || neighbours > 3))
+			if ((pf[x][y].Status==1 && (neighbours < 2 || neighbours > 3)))
 			{
 				pf[x][y].Status = 0;
 				pf[x][y].StatusChanged = TRUE;

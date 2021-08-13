@@ -17,12 +17,12 @@ __attribute__((used)) __attribute__((section(".text.unlikely"))) void _start() {
 	unsigned long i;
 
 	count = __preinit_array_end - __preinit_array_start;
-       4:	263c 0000 3375 	move.l #13173,d3
-       a:	0483 0000 3375 	subi.l #13173,d3
+       4:	263c 0000 32b9 	move.l #12985,d3
+       a:	0483 0000 32b9 	subi.l #12985,d3
       10:	e483           	asr.l #2,d3
 	for (i = 0; i < count; i++)
       12:	6712           	beq.s 26 <_start+0x26>
-      14:	45f9 0000 3375 	lea 3375 <__fini_array_end>,a2
+      14:	45f9 0000 32b9 	lea 32b9 <__fini_array_end>,a2
       1a:	7400           	moveq #0,d2
 		__preinit_array_start[i]();
       1c:	205a           	movea.l (a2)+,a0
@@ -33,12 +33,12 @@ __attribute__((used)) __attribute__((section(".text.unlikely"))) void _start() {
       24:	66f6           	bne.s 1c <_start+0x1c>
 
 	count = __init_array_end - __init_array_start;
-      26:	263c 0000 3375 	move.l #13173,d3
-      2c:	0483 0000 3375 	subi.l #13173,d3
+      26:	263c 0000 32b9 	move.l #12985,d3
+      2c:	0483 0000 32b9 	subi.l #12985,d3
       32:	e483           	asr.l #2,d3
 	for (i = 0; i < count; i++)
       34:	6712           	beq.s 48 <_start+0x48>
-      36:	45f9 0000 3375 	lea 3375 <__fini_array_end>,a2
+      36:	45f9 0000 32b9 	lea 32b9 <__fini_array_end>,a2
       3c:	7400           	moveq #0,d2
 		__init_array_start[i]();
       3e:	205a           	movea.l (a2)+,a0
@@ -53,12 +53,12 @@ __attribute__((used)) __attribute__((section(".text.unlikely"))) void _start() {
 
 	// call dtors
 	count = __fini_array_end - __fini_array_start;
-      4e:	243c 0000 3375 	move.l #13173,d2
-      54:	0482 0000 3375 	subi.l #13173,d2
+      4e:	243c 0000 32b9 	move.l #12985,d2
+      54:	0482 0000 32b9 	subi.l #12985,d2
       5a:	e482           	asr.l #2,d2
 	for (i = count; i > 0; i--)
       5c:	6710           	beq.s 6e <_start+0x6e>
-      5e:	45f9 0000 3375 	lea 3375 <__fini_array_end>,a2
+      5e:	45f9 0000 32b9 	lea 32b9 <__fini_array_end>,a2
 		__fini_array_start[i - 1]();
       64:	5382           	subq.l #1,d2
       66:	2062           	movea.l -(a2),a0
@@ -71,24 +71,24 @@ __attribute__((used)) __attribute__((section(".text.unlikely"))) void _start() {
       72:	4e75           	rts
 
 00000074 <main>:
-#include "GameOfLife.h"
 #include "GameOfLifeUI.h"
+#include <exec/execbase.h>
 //backup
 
 int main()
 {
-      74:	4fef ff50      	lea -176(sp),sp
+      74:	4fef ff4c      	lea -180(sp),sp
       78:	48e7 3f3e      	movem.l d2-d7/a2-a6,-(sp)
-	GameMatrix.ColorAlive = 6;
-	GameMatrix.ColorDead = 8;
-	GameMatrix.Columns = 55;
+	GameMatrix.ColorAlive = 9;
+	GameMatrix.ColorDead = 12;
+	GameMatrix.Columns = 40;
 	GameMatrix.Rows = 20;
-      7c:	23fc 0014 0037 	move.l #1310775,350c <GameMatrix+0x4>
-      82:	0000 350c 
-      86:	23fc 0006 0008 	move.l #393224,3510 <GameMatrix+0x8>
-      8c:	0000 3510 
-      90:	23fc 000b 000b 	move.l #720907,3514 <GameMatrix+0xc>
-      96:	0000 3514 
+      7c:	23fc 0014 0028 	move.l #1310760,3450 <GameMatrix+0x4>
+      82:	0000 3450 
+      86:	23fc 0009 000c 	move.l #589836,3454 <GameMatrix+0x8>
+      8c:	0000 3454 
+      90:	23fc 000b 000b 	move.l #720907,3458 <GameMatrix+0xc>
+      96:	0000 3458 
 	RETURN_OK;
 }
 
@@ -96,2158 +96,2066 @@ int StartApp()
 {
 	SysBase = *((struct ExecBase **)4UL);
       9a:	2c78 0004      	movea.l 4 <_start+0x4>,a6
-      9e:	23ce 0000 34f8 	move.l a6,34f8 <SysBase>
+      9e:	23ce 0000 343c 	move.l a6,343c <SysBase>
 	custom = (struct Custom *)0xdff000;
 	unsigned int pens[] = {~0};
       a4:	70ff           	moveq #-1,d0
-      a6:	2f40 0034      	move.l d0,52(sp)
+      a6:	2f40 0038      	move.l d0,56(sp)
 
 	APTR *my_VisualInfo;
 
 	if ((DOSBase = (struct DosLibrary *)OpenLibrary((CONST_STRPTR) "dos.library", 0)))
-      aa:	43f9 0000 128c 	lea 128c <PutChar+0x4>,a1
+      aa:	43f9 0000 11d0 	lea 11d0 <PutChar+0x4>,a1
       b0:	7000           	moveq #0,d0
       b2:	4eae fdd8      	jsr -552(a6)
-      b6:	23c0 0000 34e4 	move.l d0,34e4 <DOSBase>
-      bc:	6700 0618      	beq.w 6d6 <main+0x662>
+      b6:	23c0 0000 3428 	move.l d0,3428 <DOSBase>
+      bc:	6700 05ca      	beq.w 688 <main+0x614>
 	{
 		if ((GfxBase = (struct GfxBase *)OpenLibrary((CONST_STRPTR) "graphics.library", 0)))
-      c0:	2c79 0000 34f8 	movea.l 34f8 <SysBase>,a6
-      c6:	43f9 0000 1298 	lea 1298 <PutChar+0x10>,a1
+      c0:	2c79 0000 343c 	movea.l 343c <SysBase>,a6
+      c6:	43f9 0000 11dc 	lea 11dc <PutChar+0x10>,a1
       cc:	7000           	moveq #0,d0
       ce:	4eae fdd8      	jsr -552(a6)
-      d2:	23c0 0000 34f0 	move.l d0,34f0 <GfxBase>
-      d8:	6700 05fc      	beq.w 6d6 <main+0x662>
+      d2:	23c0 0000 3434 	move.l d0,3434 <GfxBase>
+      d8:	6700 05ae      	beq.w 688 <main+0x614>
 		{
 			if ((IntuitionBase = (struct IntuitionBase *)OpenLibrary((CONST_STRPTR) "intuition.library", 0)))
-      dc:	2c79 0000 34f8 	movea.l 34f8 <SysBase>,a6
-      e2:	43f9 0000 12a9 	lea 12a9 <PutChar+0x21>,a1
+      dc:	2c79 0000 343c 	movea.l 343c <SysBase>,a6
+      e2:	43f9 0000 11ed 	lea 11ed <PutChar+0x21>,a1
       e8:	7000           	moveq #0,d0
       ea:	4eae fdd8      	jsr -552(a6)
       ee:	2c40           	movea.l d0,a6
-      f0:	23c0 0000 34f4 	move.l d0,34f4 <IntuitionBase>
-      f6:	6700 05de      	beq.w 6d6 <main+0x662>
+      f0:	23c0 0000 3438 	move.l d0,3438 <IntuitionBase>
+      f6:	6700 0590      	beq.w 688 <main+0x614>
 			{
 				if ((GolScreen = (struct Screen *)OpenScreenTags(NULL,
-      fa:	2f7c 8000 003a 	move.l #-2147483590,56(sp)
-     100:	0038 
-     102:	7434           	moveq #52,d2
+      fa:	2f7c 8000 003a 	move.l #-2147483590,60(sp)
+     100:	003c 
+     102:	7438           	moveq #56,d2
      104:	d48f           	add.l sp,d2
-     106:	2f42 003c      	move.l d2,60(sp)
-     10a:	2f7c 8000 0032 	move.l #-2147483598,64(sp)
-     110:	0040 
-     112:	2f7c 0000 8000 	move.l #32768,68(sp)
-     118:	0044 
-     11a:	2f7c 8000 0025 	move.l #-2147483611,72(sp)
-     120:	0048 
-     122:	7604           	moveq #4,d3
-     124:	2f43 004c      	move.l d3,76(sp)
-     128:	2f7c 8000 0028 	move.l #-2147483608,80(sp)
-     12e:	0050 
-     130:	2f7c 0000 12bb 	move.l #4795,84(sp)
-     136:	0054 
-     138:	2f7c 8000 002d 	move.l #-2147483603,88(sp)
-     13e:	0058 
-     140:	700f           	moveq #15,d0
-     142:	2f40 005c      	move.l d0,92(sp)
-     146:	2f7c 8000 0026 	move.l #-2147483610,96(sp)
-     14c:	0060 
-     14e:	2f43 0064      	move.l d3,100(sp)
-     152:	2f7c 8000 0027 	move.l #-2147483609,104(sp)
-     158:	0068 
-     15a:	7408           	moveq #8,d2
-     15c:	2f42 006c      	move.l d2,108(sp)
-     160:	42af 0070      	clr.l 112(sp)
+     106:	2f42 0040      	move.l d2,64(sp)
+     10a:	2f7c 8000 0032 	move.l #-2147483598,68(sp)
+     110:	0044 
+     112:	2f7c 0000 8000 	move.l #32768,72(sp)
+     118:	0048 
+     11a:	2f7c 8000 0025 	move.l #-2147483611,76(sp)
+     120:	004c 
+     122:	7004           	moveq #4,d0
+     124:	2f40 0050      	move.l d0,80(sp)
+     128:	2f7c 8000 0028 	move.l #-2147483608,84(sp)
+     12e:	0054 
+     130:	2f7c 0000 11ff 	move.l #4607,88(sp)
+     136:	0058 
+     138:	2f7c 8000 002d 	move.l #-2147483603,92(sp)
+     13e:	005c 
+     140:	740f           	moveq #15,d2
+     142:	2f42 0060      	move.l d2,96(sp)
+     146:	2f7c 8000 0026 	move.l #-2147483610,100(sp)
+     14c:	0064 
+     14e:	2f40 0068      	move.l d0,104(sp)
+     152:	2f7c 8000 0027 	move.l #-2147483609,108(sp)
+     158:	006c 
+     15a:	7008           	moveq #8,d0
+     15c:	2f40 0070      	move.l d0,112(sp)
+     160:	42af 0074      	clr.l 116(sp)
      164:	91c8           	suba.l a0,a0
-     166:	43ef 0038      	lea 56(sp),a1
+     166:	43ef 003c      	lea 60(sp),a1
      16a:	4eae fd9c      	jsr -612(a6)
-     16e:	23c0 0000 34e8 	move.l d0,34e8 <GolScreen>
-     174:	6700 0560      	beq.w 6d6 <main+0x662>
+     16e:	23c0 0000 342c 	move.l d0,342c <GolScreen>
+     174:	6700 0512      	beq.w 688 <main+0x614>
 																 SA_DetailPen, 4,
 																 SA_BlockPen, 8,
 																 TAG_END)))
 				{
 
 					if ((GadToolsBase = (struct Library *)OpenLibrary((CONST_STRPTR) "gadtools.library", 0)))
-     178:	2c79 0000 34f8 	movea.l 34f8 <SysBase>,a6
-     17e:	43f9 0000 12d3 	lea 12d3 <PutChar+0x4b>,a1
+     178:	2c79 0000 343c 	movea.l 343c <SysBase>,a6
+     17e:	43f9 0000 1217 	lea 1217 <PutChar+0x4b>,a1
      184:	7000           	moveq #0,d0
      186:	4eae fdd8      	jsr -552(a6)
-     18a:	23c0 0000 34ec 	move.l d0,34ec <GadToolsBase>
-     190:	6700 0544      	beq.w 6d6 <main+0x662>
+     18a:	23c0 0000 3430 	move.l d0,3430 <GadToolsBase>
+     190:	6700 04f6      	beq.w 688 <main+0x614>
 					{
 						if ((GolMainWindow = (struct Window *)OpenWindowTags(NULL,
-     194:	2f7c 8000 0070 	move.l #-2147483536,56(sp)
-     19a:	0038 
-     19c:	2f79 0000 34e8 	move.l 34e8 <GolScreen>,60(sp)
-     1a2:	003c 
-     1a4:	2f7c 8000 0064 	move.l #-2147483548,64(sp)
-     1aa:	0040 
-     1ac:	42af 0044      	clr.l 68(sp)
-     1b0:	2f7c 8000 0065 	move.l #-2147483547,72(sp)
-     1b6:	0048 
-     1b8:	761e           	moveq #30,d3
-     1ba:	2f43 004c      	move.l d3,76(sp)
-     1be:	2f7c 8000 0066 	move.l #-2147483546,80(sp)
-     1c4:	0050 
-     1c6:	7064           	moveq #100,d0
-     1c8:	2f40 0054      	move.l d0,84(sp)
-     1cc:	2f7c 8000 0067 	move.l #-2147483545,88(sp)
-     1d2:	0058 
-     1d4:	2079 0000 3502 	movea.l 3502 <GolMainWindow>,a0
-     1da:	3039 0000 3516 	move.w 3516 <GameMatrix+0xe>,d0
-     1e0:	c0f9 0000 350c 	mulu.w 350c <GameMatrix+0x4>,d0
-     1e6:	1228 0037      	move.b 55(a0),d1
-     1ea:	4881           	ext.w d1
-     1ec:	3401           	move.w d1,d2
-     1ee:	48c2           	ext.l d2
-     1f0:	2440           	movea.l d0,a2
-     1f2:	43f2 2800      	lea (0,a2,d2.l),a1
-     1f6:	1028 0039      	move.b 57(a0),d0
-     1fa:	4880           	ext.w d0
-     1fc:	43f1 0000      	lea (0,a1,d0.w),a1
-     200:	2f49 005c      	move.l a1,92(sp)
-     204:	2f7c 8000 0075 	move.l #-2147483531,96(sp)
-     20a:	0060 
-     20c:	2f7c 0000 0100 	move.l #256,100(sp)
-     212:	0064 
-     214:	2f7c 8000 0074 	move.l #-2147483532,104(sp)
-     21a:	0068 
-     21c:	2f7c 0000 0280 	move.l #640,108(sp)
-     222:	006c 
-     224:	2f7c 8000 006e 	move.l #-2147483538,112(sp)
-     22a:	0070 
-     22c:	2f7c 0000 12e4 	move.l #4836,116(sp)
-     232:	0074 
-     234:	2f7c 8000 0083 	move.l #-2147483517,120(sp)
-     23a:	0078 
-     23c:	7601           	moveq #1,d3
-     23e:	2f43 007c      	move.l d3,124(sp)
-     242:	2f7c 8000 0084 	move.l #-2147483516,128(sp)
-     248:	0080 
-     24a:	2f43 0084      	move.l d3,132(sp)
-     24e:	2f7c 8000 0081 	move.l #-2147483519,136(sp)
-     254:	0088 
-     256:	2f43 008c      	move.l d3,140(sp)
-     25a:	2f7c 8000 0082 	move.l #-2147483518,144(sp)
-     260:	0090 
-     262:	2f43 0094      	move.l d3,148(sp)
-     266:	2f7c 8000 0091 	move.l #-2147483503,152(sp)
-     26c:	0098 
-     26e:	2f43 009c      	move.l d3,156(sp)
-     272:	2f7c 8000 0086 	move.l #-2147483514,160(sp)
-     278:	00a0 
-     27a:	2f43 00a4      	move.l d3,164(sp)
-     27e:	2f7c 8000 0093 	move.l #-2147483501,168(sp)
-     284:	00a8 
-     286:	2f43 00ac      	move.l d3,172(sp)
-     28a:	2f7c 8000 0089 	move.l #-2147483511,176(sp)
-     290:	00b0 
-     292:	2f43 00b4      	move.l d3,180(sp)
-     296:	2f7c 8000 006f 	move.l #-2147483537,184(sp)
-     29c:	00b8 
-     29e:	2f7c 0000 12ec 	move.l #4844,188(sp)
-     2a4:	00bc 
-     2a6:	2f7c 8000 006a 	move.l #-2147483542,192(sp)
-     2ac:	00c0 
-     2ae:	2f7c 0000 031c 	move.l #796,196(sp)
-     2b4:	00c4 
-     2b6:	2f7c 8000 0068 	move.l #-2147483544,200(sp)
-     2bc:	00c8 
-     2be:	42af 00cc      	clr.l 204(sp)
-     2c2:	2f7c 8000 0069 	move.l #-2147483543,208(sp)
-     2c8:	00d0 
-     2ca:	42af 00d4      	clr.l 212(sp)
-     2ce:	42af 00d8      	clr.l 216(sp)
-     2d2:	2c79 0000 34f4 	movea.l 34f4 <IntuitionBase>,a6
-     2d8:	91c8           	suba.l a0,a0
-     2da:	43ef 0038      	lea 56(sp),a1
-     2de:	4eae fda2      	jsr -606(a6)
-     2e2:	2040           	movea.l d0,a0
-     2e4:	23c0 0000 3502 	move.l d0,3502 <GolMainWindow>
-     2ea:	6700 03ea      	beq.w 6d6 <main+0x662>
+     194:	2f7c 8000 0070 	move.l #-2147483536,60(sp)
+     19a:	003c 
+     19c:	2079 0000 342c 	movea.l 342c <GolScreen>,a0
+     1a2:	2f48 0040      	move.l a0,64(sp)
+     1a6:	2f7c 8000 0064 	move.l #-2147483548,68(sp)
+     1ac:	0044 
+     1ae:	42af 0048      	clr.l 72(sp)
+     1b2:	2f7c 8000 0065 	move.l #-2147483547,76(sp)
+     1b8:	004c 
+     1ba:	1028 001e      	move.b 30(a0),d0
+     1be:	4880           	ext.w d0
+     1c0:	48c0           	ext.l d0
+     1c2:	5280           	addq.l #1,d0
+     1c4:	2f40 0050      	move.l d0,80(sp)
+     1c8:	2f7c 8000 0066 	move.l #-2147483546,84(sp)
+     1ce:	0054 
+     1d0:	3039 0000 3458 	move.w 3458 <GameMatrix+0xc>,d0
+     1d6:	c0f9 0000 3452 	mulu.w 3452 <GameMatrix+0x6>,d0
+     1dc:	1228 0024      	move.b 36(a0),d1
+     1e0:	4881           	ext.w d1
+     1e2:	3641           	movea.w d1,a3
+     1e4:	43f3 0800      	lea (0,a3,d0.l),a1
+     1e8:	1028 0025      	move.b 37(a0),d0
+     1ec:	4880           	ext.w d0
+     1ee:	43f1 0000      	lea (0,a1,d0.w),a1
+     1f2:	2f49 0058      	move.l a1,88(sp)
+     1f6:	2f7c 8000 0067 	move.l #-2147483545,92(sp)
+     1fc:	005c 
+     1fe:	3039 0000 345a 	move.w 345a <GameMatrix+0xe>,d0
+     204:	c0f9 0000 3450 	mulu.w 3450 <GameMatrix+0x4>,d0
+     20a:	1228 0023      	move.b 35(a0),d1
+     20e:	4881           	ext.w d1
+     210:	3401           	move.w d1,d2
+     212:	48c2           	ext.l d2
+     214:	2640           	movea.l d0,a3
+     216:	45f3 2800      	lea (0,a3,d2.l),a2
+     21a:	1028 0026      	move.b 38(a0),d0
+     21e:	4880           	ext.w d0
+     220:	41f2 0000      	lea (0,a2,d0.w),a0
+     224:	2f48 0060      	move.l a0,96(sp)
+     228:	2f7c 8000 0074 	move.l #-2147483532,100(sp)
+     22e:	0064 
+     230:	2f49 0068      	move.l a1,104(sp)
+     234:	2f7c 8000 0075 	move.l #-2147483531,108(sp)
+     23a:	006c 
+     23c:	2f48 0070      	move.l a0,112(sp)
+     240:	2f7c 8000 006e 	move.l #-2147483538,116(sp)
+     246:	0074 
+     248:	2f7c 0000 1228 	move.l #4648,120(sp)
+     24e:	0078 
+     250:	2f7c 8000 0083 	move.l #-2147483517,124(sp)
+     256:	007c 
+     258:	7001           	moveq #1,d0
+     25a:	2f40 0080      	move.l d0,128(sp)
+     25e:	2f7c 8000 0084 	move.l #-2147483516,132(sp)
+     264:	0084 
+     266:	2f40 0088      	move.l d0,136(sp)
+     26a:	2f7c 8000 0081 	move.l #-2147483519,140(sp)
+     270:	008c 
+     272:	2f40 0090      	move.l d0,144(sp)
+     276:	2f7c 8000 0082 	move.l #-2147483518,148(sp)
+     27c:	0094 
+     27e:	2f40 0098      	move.l d0,152(sp)
+     282:	2f7c 8000 0091 	move.l #-2147483503,156(sp)
+     288:	009c 
+     28a:	2f40 00a0      	move.l d0,160(sp)
+     28e:	2f7c 8000 0086 	move.l #-2147483514,164(sp)
+     294:	00a4 
+     296:	2f40 00a8      	move.l d0,168(sp)
+     29a:	2f7c 8000 0093 	move.l #-2147483501,172(sp)
+     2a0:	00ac 
+     2a2:	2f40 00b0      	move.l d0,176(sp)
+     2a6:	2f7c 8000 0089 	move.l #-2147483511,180(sp)
+     2ac:	00b4 
+     2ae:	2f40 00b8      	move.l d0,184(sp)
+     2b2:	2f7c 8000 006f 	move.l #-2147483537,188(sp)
+     2b8:	00bc 
+     2ba:	2f7c 0000 1230 	move.l #4656,192(sp)
+     2c0:	00c0 
+     2c2:	2f7c 8000 006a 	move.l #-2147483542,196(sp)
+     2c8:	00c4 
+     2ca:	2f7c 0000 031c 	move.l #796,200(sp)
+     2d0:	00c8 
+     2d2:	2f7c 8000 0068 	move.l #-2147483544,204(sp)
+     2d8:	00cc 
+     2da:	42af 00d0      	clr.l 208(sp)
+     2de:	2f7c 8000 0069 	move.l #-2147483543,212(sp)
+     2e4:	00d4 
+     2e6:	42af 00d8      	clr.l 216(sp)
+     2ea:	42af 00dc      	clr.l 220(sp)
+     2ee:	2c79 0000 3438 	movea.l 3438 <IntuitionBase>,a6
+     2f4:	91c8           	suba.l a0,a0
+     2f6:	43ef 003c      	lea 60(sp),a1
+     2fa:	4eae fda2      	jsr -606(a6)
+     2fe:	2040           	movea.l d0,a0
+     300:	23c0 0000 3446 	move.l d0,3446 <GolMainWindow>
+     306:	6700 0380      	beq.w 688 <main+0x614>
 																			 WA_DetailPen, 0,
 																			 WA_BlockPen, 0,
 																			 TAG_END)))
 
 						{
-							WindowLimits(GolMainWindow,
-     2ee:	3039 0000 3514 	move.w 3514 <GameMatrix+0xc>,d0
-     2f4:	c0f9 0000 350e 	mulu.w 350e <GameMatrix+0x6>,d0
-     2fa:	1228 0036      	move.b 54(a0),d1
-     2fe:	4881           	ext.w d1
-     300:	3401           	move.w d1,d2
-     302:	48c2           	ext.l d2
-     304:	2440           	movea.l d0,a2
-     306:	43f2 2800      	lea (0,a2,d2.l),a1
-     30a:	1028 0038      	move.b 56(a0),d0
-     30e:	4880           	ext.w d0
-     310:	43f1 0000      	lea (0,a1,d0.w),a1
-     314:	2009           	move.l a1,d0
-     316:	3239 0000 3516 	move.w 3516 <GameMatrix+0xe>,d1
-     31c:	c2f9 0000 350c 	mulu.w 350c <GameMatrix+0x4>,d1
-     322:	1428 0037      	move.b 55(a0),d2
-     326:	4882           	ext.w d2
-     328:	3602           	move.w d2,d3
-     32a:	48c3           	ext.l d3
-     32c:	2441           	movea.l d1,a2
-     32e:	43f2 3800      	lea (0,a2,d3.l),a1
-     332:	1228 0039      	move.b 57(a0),d1
-     336:	4881           	ext.w d1
-     338:	43f1 1000      	lea (0,a1,d1.w),a1
-     33c:	2209           	move.l a1,d1
-     33e:	2c79 0000 34f4 	movea.l 34f4 <IntuitionBase>,a6
-     344:	2400           	move.l d0,d2
-     346:	2609           	move.l a1,d3
-     348:	4eae fec2      	jsr -318(a6)
-										 GameMatrix.CellSizeH * GameMatrix.Columns + GolMainWindow->BorderLeft + GolMainWindow->BorderRight,
-										 GameMatrix.CellSizeV * GameMatrix.Rows + GolMainWindow->BorderTop + GolMainWindow->BorderBottom,
-										 GameMatrix.CellSizeH * GameMatrix.Columns + GolMainWindow->BorderLeft + GolMainWindow->BorderRight,
-										 GameMatrix.CellSizeV * GameMatrix.Rows + GolMainWindow->BorderTop + GolMainWindow->BorderBottom);
-
 							my_VisualInfo = GetVisualInfo(GolMainWindow->WScreen, TAG_END);
-     34c:	42af 0038      	clr.l 56(sp)
-     350:	2c79 0000 34ec 	movea.l 34ec <GadToolsBase>,a6
-     356:	2079 0000 3502 	movea.l 3502 <GolMainWindow>,a0
-     35c:	2068 002e      	movea.l 46(a0),a0
-     360:	43ef 0038      	lea 56(sp),a1
-     364:	4eae ff82      	jsr -126(a6)
-     368:	2400           	move.l d0,d2
+     30a:	42af 003c      	clr.l 60(sp)
+     30e:	2c79 0000 3430 	movea.l 3430 <GadToolsBase>,a6
+     314:	2068 002e      	movea.l 46(a0),a0
+     318:	43ef 003c      	lea 60(sp),a1
+     31c:	4eae ff82      	jsr -126(a6)
+     320:	2400           	move.l d0,d2
 							MainMenuStrip = CreateMenus(GolMainMenu, TAG_END);
-     36a:	42af 0038      	clr.l 56(sp)
-     36e:	2c79 0000 34ec 	movea.l 34ec <GadToolsBase>,a6
-     374:	41f9 0000 3378 	lea 3378 <GolMainMenu>,a0
-     37a:	43ef 0038      	lea 56(sp),a1
-     37e:	4eae ffd0      	jsr -48(a6)
-     382:	2040           	movea.l d0,a0
-     384:	23c0 0000 34fe 	move.l d0,34fe <MainMenuStrip>
+     322:	42af 003c      	clr.l 60(sp)
+     326:	2c79 0000 3430 	movea.l 3430 <GadToolsBase>,a6
+     32c:	41f9 0000 32bc 	lea 32bc <GolMainMenu>,a0
+     332:	43ef 003c      	lea 60(sp),a1
+     336:	4eae ffd0      	jsr -48(a6)
+     33a:	2040           	movea.l d0,a0
+     33c:	23c0 0000 3442 	move.l d0,3442 <MainMenuStrip>
 							LayoutMenus(MainMenuStrip, my_VisualInfo, TAG_END);
-     38a:	42af 0038      	clr.l 56(sp)
-     38e:	2c79 0000 34ec 	movea.l 34ec <GadToolsBase>,a6
-     394:	2242           	movea.l d2,a1
-     396:	45ef 0038      	lea 56(sp),a2
-     39a:	4eae ffbe      	jsr -66(a6)
+     342:	42af 003c      	clr.l 60(sp)
+     346:	2c79 0000 3430 	movea.l 3430 <GadToolsBase>,a6
+     34c:	2242           	movea.l d2,a1
+     34e:	45ef 003c      	lea 60(sp),a2
+     352:	4eae ffbe      	jsr -66(a6)
 							SetMenuStrip(GolMainWindow, MainMenuStrip);
-     39e:	2c79 0000 34f4 	movea.l 34f4 <IntuitionBase>,a6
-     3a4:	2079 0000 3502 	movea.l 3502 <GolMainWindow>,a0
-     3aa:	2279 0000 34fe 	movea.l 34fe <MainMenuStrip>,a1
-     3b0:	4eae fef8      	jsr -264(a6)
+     356:	2c79 0000 3438 	movea.l 3438 <IntuitionBase>,a6
+     35c:	2079 0000 3446 	movea.l 3446 <GolMainWindow>,a0
+     362:	2279 0000 3442 	movea.l 3442 <MainMenuStrip>,a1
+     368:	4eae fef8      	jsr -264(a6)
 							//Allocate memory for the cell's data
 							GameMatrix.Playfield = AllocMem(GameMatrix.Columns * sizeof(GameOfLifeCell *), MEMF_ANY | MEMF_CLEAR);
-     3b4:	7000           	moveq #0,d0
-     3b6:	3039 0000 350e 	move.w 350e <GameMatrix+0x6>,d0
-     3bc:	2c79 0000 34f8 	movea.l 34f8 <SysBase>,a6
-     3c2:	e588           	lsl.l #2,d0
-     3c4:	7201           	moveq #1,d1
-     3c6:	4841           	swap d1
-     3c8:	4eae ff3a      	jsr -198(a6)
-     3cc:	41f9 0000 3508 	lea 3508 <GameMatrix>,a0
-     3d2:	2080           	move.l d0,(a0)
+     36c:	7000           	moveq #0,d0
+     36e:	3039 0000 3452 	move.w 3452 <GameMatrix+0x6>,d0
+     374:	2c79 0000 343c 	movea.l 343c <SysBase>,a6
+     37a:	e588           	lsl.l #2,d0
+     37c:	7201           	moveq #1,d1
+     37e:	4841           	swap d1
+     380:	4eae ff3a      	jsr -198(a6)
+     384:	41f9 0000 344c 	lea 344c <GameMatrix>,a0
+     38a:	2080           	move.l d0,(a0)
 							for (int i = 0; i < GameMatrix.Columns; i++)
-     3d4:	4a79 0000 350e 	tst.w 350e <GameMatrix+0x6>
-     3da:	6740           	beq.s 41c <main+0x3a8>
-     3dc:	7600           	moveq #0,d3
-     3de:	7400           	moveq #0,d2
+     38c:	4a79 0000 3452 	tst.w 3452 <GameMatrix+0x6>
+     392:	6740           	beq.s 3d4 <main+0x360>
+     394:	7600           	moveq #0,d3
+     396:	7400           	moveq #0,d2
 							{
 								GameMatrix.Playfield[i] = AllocMem(GameMatrix.Rows * sizeof(GameOfLifeCell), MEMF_ANY | MEMF_CLEAR);
-     3e0:	7801           	moveq #1,d4
-     3e2:	4844           	swap d4
-     3e4:	7200           	moveq #0,d1
-     3e6:	3239 0000 350c 	move.w 350c <GameMatrix+0x4>,d1
-     3ec:	2001           	move.l d1,d0
-     3ee:	d081           	add.l d1,d0
-     3f0:	d081           	add.l d1,d0
-     3f2:	2c79 0000 34f8 	movea.l 34f8 <SysBase>,a6
-     3f8:	d080           	add.l d0,d0
-     3fa:	2204           	move.l d4,d1
-     3fc:	4eae ff3a      	jsr -198(a6)
-     400:	43f9 0000 3508 	lea 3508 <GameMatrix>,a1
-     406:	2051           	movea.l (a1),a0
-     408:	2180 3800      	move.l d0,(0,a0,d3.l)
+     398:	7801           	moveq #1,d4
+     39a:	4844           	swap d4
+     39c:	7200           	moveq #0,d1
+     39e:	3239 0000 3450 	move.w 3450 <GameMatrix+0x4>,d1
+     3a4:	2001           	move.l d1,d0
+     3a6:	d081           	add.l d1,d0
+     3a8:	d081           	add.l d1,d0
+     3aa:	2c79 0000 343c 	movea.l 343c <SysBase>,a6
+     3b0:	d080           	add.l d0,d0
+     3b2:	2204           	move.l d4,d1
+     3b4:	4eae ff3a      	jsr -198(a6)
+     3b8:	43f9 0000 344c 	lea 344c <GameMatrix>,a1
+     3be:	2051           	movea.l (a1),a0
+     3c0:	2180 3800      	move.l d0,(0,a0,d3.l)
 							for (int i = 0; i < GameMatrix.Columns; i++)
-     40c:	5282           	addq.l #1,d2
-     40e:	5883           	addq.l #4,d3
-     410:	7000           	moveq #0,d0
-     412:	3039 0000 350e 	move.w 350e <GameMatrix+0x6>,d0
-     418:	b082           	cmp.l d2,d0
-     41a:	6ec8           	bgt.s 3e4 <main+0x370>
+     3c4:	5282           	addq.l #1,d2
+     3c6:	5883           	addq.l #4,d3
+     3c8:	7000           	moveq #0,d0
+     3ca:	3039 0000 3452 	move.w 3452 <GameMatrix+0x6>,d0
+     3d0:	b082           	cmp.l d2,d0
+     3d2:	6ec8           	bgt.s 39c <main+0x328>
 	return RETURN_ERROR;
 }
 
 int MainLoop()
 {
 	DrawCells(GolMainWindow, TRUE);
-     41c:	2f39 0000 3502 	move.l 3502 <GolMainWindow>,-(sp)
-     422:	4eb9 0000 0df0 	jsr df0 <DrawCells.constprop.1>
+     3d4:	2f39 0000 3446 	move.l 3446 <GolMainWindow>,-(sp)
+     3da:	4eb9 0000 0d34 	jsr d34 <DrawCells.constprop.1>
 
 	while (AppRunning)
-     428:	588f           	addq.l #4,sp
-     42a:	4a79 0000 34e0 	tst.w 34e0 <AppRunning>
-     430:	6700 01ec      	beq.w 61e <main+0x5aa>
+     3e0:	588f           	addq.l #4,sp
+     3e2:	4a79 0000 3424 	tst.w 3424 <AppRunning>
+     3e8:	6700 01e6      	beq.w 5d0 <main+0x55c>
 	{
 		EventLoop(GolMainWindow, MainMenuStrip);
-     434:	2639 0000 34fe 	move.l 34fe <MainMenuStrip>,d3
-     43a:	2679 0000 3502 	movea.l 3502 <GolMainWindow>,a3
+     3ec:	2639 0000 3442 	move.l 3442 <MainMenuStrip>,d3
+     3f2:	2679 0000 3446 	movea.l 3446 <GolMainWindow>,a3
 	SetDrMd(rport, JAM2);
 }
 
 void ToggleCellStatus(WORD coordX, WORD coordY)
 {
 	int x = coordX / GameMatrix.CellSizeH;
-     440:	49f9 0000 11fe 	lea 11fe <__divsi3>,a4
+     3f8:	49f9 0000 1142 	lea 1142 <__divsi3>,a4
 	while ((message = (struct IntuiMessage *)GetMsg(theWindow->UserPort)))
-     446:	2c79 0000 34f8 	movea.l 34f8 <SysBase>,a6
-     44c:	206b 0056      	movea.l 86(a3),a0
-     450:	4eae fe8c      	jsr -372(a6)
-     454:	2440           	movea.l d0,a2
-     456:	4a80           	tst.l d0
-     458:	6700 00ca      	beq.w 524 <main+0x4b0>
+     3fe:	2c79 0000 343c 	movea.l 343c <SysBase>,a6
+     404:	206b 0056      	movea.l 86(a3),a0
+     408:	4eae fe8c      	jsr -372(a6)
+     40c:	2440           	movea.l d0,a2
+     40e:	4a80           	tst.l d0
+     410:	6700 00ca      	beq.w 4dc <main+0x468>
 		msg_class = message->Class;
-     45c:	242a 0014      	move.l 20(a2),d2
+     414:	242a 0014      	move.l 20(a2),d2
 		msg_code = message->Code;
-     460:	382a 0018      	move.w 24(a2),d4
+     418:	382a 0018      	move.w 24(a2),d4
 		coordX = message->MouseX - theWindow->BorderLeft;
-     464:	3a2a 0020      	move.w 32(a2),d5
-     468:	102b 0036      	move.b 54(a3),d0
-     46c:	3a40           	movea.w d0,a5
+     41c:	3a2a 0020      	move.w 32(a2),d5
+     420:	102b 0036      	move.b 54(a3),d0
+     424:	3a40           	movea.w d0,a5
 		coordY = message->MouseY - theWindow->BorderTop;
-     46e:	3c2a 0022      	move.w 34(a2),d6
-     472:	1e2b 0037      	move.b 55(a3),d7
+     426:	3c2a 0022      	move.w 34(a2),d6
+     42a:	1e2b 0037      	move.b 55(a3),d7
 		ReplyMsg((struct Message *)message);
-     476:	2c79 0000 34f8 	movea.l 34f8 <SysBase>,a6
-     47c:	224a           	movea.l a2,a1
-     47e:	4eae fe86      	jsr -378(a6)
+     42e:	2c79 0000 343c 	movea.l 343c <SysBase>,a6
+     434:	224a           	movea.l a2,a1
+     436:	4eae fe86      	jsr -378(a6)
 		switch (msg_class)
-     482:	7010           	moveq #16,d0
-     484:	b082           	cmp.l d2,d0
-     486:	67be           	beq.s 446 <main+0x3d2>
-     488:	6500 0258      	bcs.w 6e2 <main+0x66e>
-     48c:	7004           	moveq #4,d0
-     48e:	b082           	cmp.l d2,d0
-     490:	6700 026c      	beq.w 6fe <main+0x68a>
-     494:	5182           	subq.l #8,d2
-     496:	66ae           	bne.s 446 <main+0x3d2>
+     43a:	7010           	moveq #16,d0
+     43c:	b082           	cmp.l d2,d0
+     43e:	67be           	beq.s 3fe <main+0x38a>
+     440:	6500 0252      	bcs.w 694 <main+0x620>
+     444:	7004           	moveq #4,d0
+     446:	b082           	cmp.l d2,d0
+     448:	6700 0266      	beq.w 6b0 <main+0x63c>
+     44c:	5182           	subq.l #8,d2
+     44e:	66ae           	bne.s 3fe <main+0x38a>
 			switch (msg_code)
-     498:	0c44 0068      	cmpi.w #104,d4
-     49c:	66a8           	bne.s 446 <main+0x3d2>
+     450:	0c44 0068      	cmpi.w #104,d4
+     454:	66a8           	bne.s 3fe <main+0x38a>
 		coordX = message->MouseX - theWindow->BorderLeft;
-     49e:	300d           	move.w a5,d0
-     4a0:	4880           	ext.w d0
-     4a2:	9a40           	sub.w d0,d5
+     456:	300d           	move.w a5,d0
+     458:	4880           	ext.w d0
+     45a:	9a40           	sub.w d0,d5
 	int x = coordX / GameMatrix.CellSizeH;
-     4a4:	7000           	moveq #0,d0
-     4a6:	3039 0000 3514 	move.w 3514 <GameMatrix+0xc>,d0
-     4ac:	2f00           	move.l d0,-(sp)
-     4ae:	3045           	movea.w d5,a0
-     4b0:	2f08           	move.l a0,-(sp)
-     4b2:	4e94           	jsr (a4)
-     4b4:	508f           	addq.l #8,sp
-     4b6:	2400           	move.l d0,d2
+     45c:	7000           	moveq #0,d0
+     45e:	3039 0000 3458 	move.w 3458 <GameMatrix+0xc>,d0
+     464:	2f00           	move.l d0,-(sp)
+     466:	3045           	movea.w d5,a0
+     468:	2f08           	move.l a0,-(sp)
+     46a:	4e94           	jsr (a4)
+     46c:	508f           	addq.l #8,sp
+     46e:	2400           	move.l d0,d2
 	int y = coordY / GameMatrix.CellSizeV;
 
 	if (!(x < 0 || x > GameMatrix.Columns - 1 || y < 0 || y > GameMatrix.Rows))
-     4b8:	7000           	moveq #0,d0
-     4ba:	3039 0000 350e 	move.w 350e <GameMatrix+0x6>,d0
-     4c0:	b082           	cmp.l d2,d0
-     4c2:	6382           	bls.s 446 <main+0x3d2>
+     470:	7000           	moveq #0,d0
+     472:	3039 0000 3452 	move.w 3452 <GameMatrix+0x6>,d0
+     478:	b082           	cmp.l d2,d0
+     47a:	6382           	bls.s 3fe <main+0x38a>
 		coordY = message->MouseY - theWindow->BorderTop;
-     4c4:	4887           	ext.w d7
-     4c6:	9c47           	sub.w d7,d6
+     47c:	4887           	ext.w d7
+     47e:	9c47           	sub.w d7,d6
 	int y = coordY / GameMatrix.CellSizeV;
-     4c8:	7000           	moveq #0,d0
-     4ca:	3039 0000 3516 	move.w 3516 <GameMatrix+0xe>,d0
-     4d0:	2f00           	move.l d0,-(sp)
-     4d2:	3246           	movea.w d6,a1
-     4d4:	2f09           	move.l a1,-(sp)
-     4d6:	4e94           	jsr (a4)
-     4d8:	508f           	addq.l #8,sp
+     480:	7000           	moveq #0,d0
+     482:	3039 0000 345a 	move.w 345a <GameMatrix+0xe>,d0
+     488:	2f00           	move.l d0,-(sp)
+     48a:	3246           	movea.w d6,a1
+     48c:	2f09           	move.l a1,-(sp)
+     48e:	4e94           	jsr (a4)
+     490:	508f           	addq.l #8,sp
 	if (!(x < 0 || x > GameMatrix.Columns - 1 || y < 0 || y > GameMatrix.Rows))
-     4da:	7200           	moveq #0,d1
-     4dc:	3239 0000 350c 	move.w 350c <GameMatrix+0x4>,d1
-     4e2:	b280           	cmp.l d0,d1
-     4e4:	6500 ff60      	bcs.w 446 <main+0x3d2>
+     492:	7200           	moveq #0,d1
+     494:	3239 0000 3450 	move.w 3450 <GameMatrix+0x4>,d1
+     49a:	b280           	cmp.l d0,d1
+     49c:	6500 ff60      	bcs.w 3fe <main+0x38a>
 	{
 
 		if (GameMatrix.Playfield[x][y].Status)
-     4e8:	45f9 0000 3508 	lea 3508 <GameMatrix>,a2
-     4ee:	2252           	movea.l (a2),a1
-     4f0:	d482           	add.l d2,d2
-     4f2:	d482           	add.l d2,d2
-     4f4:	2040           	movea.l d0,a0
-     4f6:	d1c0           	adda.l d0,a0
-     4f8:	d1c0           	adda.l d0,a0
-     4fa:	d1c8           	adda.l a0,a0
-     4fc:	d1f1 2800      	adda.l (0,a1,d2.l),a0
-     500:	4a50           	tst.w (a0)
-     502:	6700 08d0      	beq.w dd4 <main+0xd60>
+     4a0:	45f9 0000 344c 	lea 344c <GameMatrix>,a2
+     4a6:	2252           	movea.l (a2),a1
+     4a8:	d482           	add.l d2,d2
+     4aa:	d482           	add.l d2,d2
+     4ac:	2040           	movea.l d0,a0
+     4ae:	d1c0           	adda.l d0,a0
+     4b0:	d1c0           	adda.l d0,a0
+     4b2:	d1c8           	adda.l a0,a0
+     4b4:	d1f1 2800      	adda.l (0,a1,d2.l),a0
+     4b8:	4a50           	tst.w (a0)
+     4ba:	6700 085e      	beq.w d1a <main+0xca6>
 		{
 			GameMatrix.Playfield[x][y].Status = 0;
-     506:	4250           	clr.w (a0)
+     4be:	4250           	clr.w (a0)
 			GameMatrix.Playfield[x][y].StatusChanged = TRUE;
-     508:	317c 0001 0002 	move.w #1,2(a0)
+     4c0:	317c 0001 0002 	move.w #1,2(a0)
 	while ((message = (struct IntuiMessage *)GetMsg(theWindow->UserPort)))
-     50e:	2c79 0000 34f8 	movea.l 34f8 <SysBase>,a6
-     514:	206b 0056      	movea.l 86(a3),a0
-     518:	4eae fe8c      	jsr -372(a6)
-     51c:	2440           	movea.l d0,a2
-     51e:	4a80           	tst.l d0
-     520:	6600 ff3a      	bne.w 45c <main+0x3e8>
+     4c6:	2c79 0000 343c 	movea.l 343c <SysBase>,a6
+     4cc:	206b 0056      	movea.l 86(a3),a0
+     4d0:	4eae fe8c      	jsr -372(a6)
+     4d4:	2440           	movea.l d0,a2
+     4d6:	4a80           	tst.l d0
+     4d8:	6600 ff3a      	bne.w 414 <main+0x3a0>
+
+void RunSimulation()
 {
 	GameOfLifeCell **pf = GameMatrix.Playfield;
 
 	for (int y = 0; y < GameMatrix.Rows; y++)
+     4dc:	3039 0000 3450 	move.w 3450 <GameMatrix+0x4>,d0
+		if (GameRunning)
+     4e2:	4a79 0000 3440 	tst.w 3440 <GameRunning>
+     4e8:	6600 03ca      	bne.w 8b4 <main+0x840>
+		DrawCells(GolMainWindow, FALSE);
+     4ec:	2479 0000 3446 	movea.l 3446 <GolMainWindow>,a2
+	for (int y = 0; y < GameMatrix.Rows; y++)
+     4f2:	4a40           	tst.w d0
+     4f4:	6700 00d0      	beq.w 5c6 <main+0x552>
 	{
 		for (int x = 0; x < GameMatrix.Columns; x++)
-     524:	3039 0000 350e 	move.w 350e <GameMatrix+0x6>,d0
-		if (GameRunning)
-     52a:	4a79 0000 34fc 	tst.w 34fc <GameRunning>
-     530:	6600 0362      	bne.w 894 <main+0x820>
-		DrawCells(GolMainWindow, FALSE);
-     534:	2479 0000 3502 	movea.l 3502 <GolMainWindow>,a2
-	for (int x = 0; x < GameMatrix.Columns; x++)
-     53a:	4a40           	tst.w d0
-     53c:	6700 00d6      	beq.w 614 <main+0x5a0>
-     540:	3f79 0000 350c 	move.w 350c <GameMatrix+0x4>,50(sp)
-     546:	0032 
-		for (int y = 0; y < GameMatrix.Rows; y++)
-     548:	302f 0032      	move.w 50(sp),d0
-     54c:	7c00           	moveq #0,d6
-	for (int x = 0; x < GameMatrix.Columns; x++)
-     54e:	7e00           	moveq #0,d7
-		for (int y = 0; y < GameMatrix.Rows; y++)
-     550:	4a40           	tst.w d0
-     552:	6700 00c0      	beq.w 614 <main+0x5a0>
-     556:	7a00           	moveq #0,d5
-     558:	7800           	moveq #0,d4
-			if (!GameMatrix.Playfield[x][y].StatusChanged && !forceFull)
-     55a:	43f9 0000 3508 	lea 3508 <GameMatrix>,a1
-     560:	2051           	movea.l (a1),a0
-     562:	2070 6800      	movea.l (0,a0,d6.l),a0
-     566:	d1c5           	adda.l d5,a0
-     568:	4a68 0002      	tst.w 2(a0)
-     56c:	6700 0082      	beq.w 5f0 <main+0x57c>
-			GameMatrix.Playfield[x][y].StatusChanged = FALSE;
-     570:	4268 0002      	clr.w 2(a0)
-				SetAPen(theWindow->RPort, GameMatrix.ColorAlive);
-     574:	226a 0032      	movea.l 50(a2),a1
-     578:	2c79 0000 34f0 	movea.l 34f0 <GfxBase>,a6
-     57e:	7000           	moveq #0,d0
-			if (GameMatrix.Playfield[x][y].Status)
-     580:	4a50           	tst.w (a0)
-     582:	6700 0416      	beq.w 99a <main+0x926>
-				SetAPen(theWindow->RPort, GameMatrix.ColorAlive);
-     586:	3039 0000 3510 	move.w 3510 <GameMatrix+0x8>,d0
-     58c:	4eae feaa      	jsr -342(a6)
-			RectFill(theWindow->RPort,
-     590:	226a 0032      	movea.l 50(a2),a1
-     594:	7400           	moveq #0,d2
-     596:	3439 0000 3514 	move.w 3514 <GameMatrix+0xc>,d2
-     59c:	2f07           	move.l d7,-(sp)
-     59e:	2f02           	move.l d2,-(sp)
-     5a0:	2f49 0036      	move.l a1,54(sp)
-     5a4:	4eb9 0000 1180 	jsr 1180 <__mulsi3>
-     5aa:	508f           	addq.l #8,sp
-     5ac:	2640           	movea.l d0,a3
-     5ae:	4beb 0001      	lea 1(a3),a5
-     5b2:	7000           	moveq #0,d0
-     5b4:	3039 0000 3516 	move.w 3516 <GameMatrix+0xe>,d0
-     5ba:	2840           	movea.l d0,a4
-     5bc:	2f04           	move.l d4,-(sp)
-     5be:	2f0c           	move.l a4,-(sp)
-     5c0:	4eb9 0000 1180 	jsr 1180 <__mulsi3>
-     5c6:	508f           	addq.l #8,sp
-     5c8:	2600           	move.l d0,d3
-     5ca:	2c79 0000 34f0 	movea.l 34f0 <GfxBase>,a6
-     5d0:	226f 002e      	movea.l 46(sp),a1
-     5d4:	200d           	move.l a5,d0
-     5d6:	2203           	move.l d3,d1
-     5d8:	5281           	addq.l #1,d1
-     5da:	47f3 28ff      	lea (-1,a3,d2.l),a3
-     5de:	240b           	move.l a3,d2
-     5e0:	49f4 38ff      	lea (-1,a4,d3.l),a4
-     5e4:	260c           	move.l a4,d3
-     5e6:	4eae fece      	jsr -306(a6)
-		for (int y = 0; y < GameMatrix.Rows; y++)
-     5ea:	3039 0000 350c 	move.w 350c <GameMatrix+0x4>,d0
-     5f0:	5284           	addq.l #1,d4
-     5f2:	5c85           	addq.l #6,d5
-     5f4:	7200           	moveq #0,d1
-     5f6:	3200           	move.w d0,d1
-     5f8:	b284           	cmp.l d4,d1
-     5fa:	6e00 ff5e      	bgt.w 55a <main+0x4e6>
-	for (int x = 0; x < GameMatrix.Columns; x++)
-     5fe:	5287           	addq.l #1,d7
-     600:	7200           	moveq #0,d1
-     602:	3239 0000 350e 	move.w 350e <GameMatrix+0x6>,d1
-     608:	be81           	cmp.l d1,d7
-     60a:	6c08           	bge.s 614 <main+0x5a0>
-     60c:	5886           	addq.l #4,d6
-		for (int y = 0; y < GameMatrix.Rows; y++)
-     60e:	4a40           	tst.w d0
-     610:	6600 ff44      	bne.w 556 <main+0x4e2>
-	while (AppRunning)
-     614:	4a79 0000 34e0 	tst.w 34e0 <AppRunning>
-     61a:	6600 fe18      	bne.w 434 <main+0x3c0>
-	FreeMem((APTR)GameMatrix.Playfield, GameMatrix.Rows * GameMatrix.Columns * sizeof(GameOfLifeCell));
-     61e:	3239 0000 350c 	move.w 350c <GameMatrix+0x4>,d1
-     624:	c2f9 0000 350e 	mulu.w 350e <GameMatrix+0x6>,d1
-     62a:	2001           	move.l d1,d0
-     62c:	d081           	add.l d1,d0
-     62e:	d081           	add.l d1,d0
-     630:	2c79 0000 34f8 	movea.l 34f8 <SysBase>,a6
-     636:	45f9 0000 3508 	lea 3508 <GameMatrix>,a2
-     63c:	2252           	movea.l (a2),a1
-     63e:	d080           	add.l d0,d0
-     640:	4eae ff2e      	jsr -210(a6)
-	if (GolMainWindow)
-     644:	2079 0000 3502 	movea.l 3502 <GolMainWindow>,a0
-     64a:	b0fc 0000      	cmpa.w #0,a0
-     64e:	670a           	beq.s 65a <main+0x5e6>
-		CloseWindow(GolMainWindow);
-     650:	2c79 0000 34f4 	movea.l 34f4 <IntuitionBase>,a6
-     656:	4eae ffb8      	jsr -72(a6)
-	if (GadToolsBase)
-     65a:	2279 0000 34ec 	movea.l 34ec <GadToolsBase>,a1
-     660:	b2fc 0000      	cmpa.w #0,a1
-     664:	670a           	beq.s 670 <main+0x5fc>
-		CloseLibrary((struct Library *)GadToolsBase);
-     666:	2c79 0000 34f8 	movea.l 34f8 <SysBase>,a6
-     66c:	4eae fe62      	jsr -414(a6)
-	if (GolScreen)
-     670:	2079 0000 34e8 	movea.l 34e8 <GolScreen>,a0
-     676:	b0fc 0000      	cmpa.w #0,a0
-     67a:	670a           	beq.s 686 <main+0x612>
-		CloseScreen(GolScreen);
-     67c:	2c79 0000 34f4 	movea.l 34f4 <IntuitionBase>,a6
-     682:	4eae ffbe      	jsr -66(a6)
-	if (GfxBase)
-     686:	2279 0000 34f0 	movea.l 34f0 <GfxBase>,a1
-     68c:	b2fc 0000      	cmpa.w #0,a1
-     690:	670a           	beq.s 69c <main+0x628>
-		CloseLibrary((struct Library *)GfxBase);
-     692:	2c79 0000 34f8 	movea.l 34f8 <SysBase>,a6
-     698:	4eae fe62      	jsr -414(a6)
-	if (IntuitionBase)
-     69c:	2279 0000 34f4 	movea.l 34f4 <IntuitionBase>,a1
-     6a2:	b2fc 0000      	cmpa.w #0,a1
-     6a6:	670a           	beq.s 6b2 <main+0x63e>
-		CloseLibrary((struct Library *)IntuitionBase);
-     6a8:	2c79 0000 34f8 	movea.l 34f8 <SysBase>,a6
-     6ae:	4eae fe62      	jsr -414(a6)
-	if (DOSBase)
-     6b2:	2279 0000 34e4 	movea.l 34e4 <DOSBase>,a1
-     6b8:	b2fc 0000      	cmpa.w #0,a1
-     6bc:	6700 0724      	beq.w de2 <main+0xd6e>
-		CloseLibrary((struct Library *)DOSBase);
-     6c0:	2c79 0000 34f8 	movea.l 34f8 <SysBase>,a6
-     6c6:	4eae fe62      	jsr -414(a6)
-     6ca:	7000           	moveq #0,d0
-}
-     6cc:	4cdf 7cfc      	movem.l (sp)+,d2-d7/a2-a6
-     6d0:	4fef 00b0      	lea 176(sp),sp
-     6d4:	4e75           	rts
-		return RETURN_FAIL;
-     6d6:	7014           	moveq #20,d0
-}
-     6d8:	4cdf 7cfc      	movem.l (sp)+,d2-d7/a2-a6
-     6dc:	4fef 00b0      	lea 176(sp),sp
-     6e0:	4e75           	rts
-		switch (msg_class)
-     6e2:	0c82 0000 0100 	cmpi.l #256,d2
-     6e8:	6722           	beq.s 70c <main+0x698>
-     6ea:	0c82 0000 0200 	cmpi.l #512,d2
-     6f0:	6600 fd54      	bne.w 446 <main+0x3d2>
-			AppRunning = FALSE;
-     6f4:	4279 0000 34e0 	clr.w 34e0 <AppRunning>
-			break;
-     6fa:	6000 fd4a      	bra.w 446 <main+0x3d2>
-			DrawCells(theWindow, TRUE);
-     6fe:	2f0b           	move.l a3,-(sp)
-     700:	4eb9 0000 0df0 	jsr df0 <DrawCells.constprop.1>
-     706:	588f           	addq.l #4,sp
-     708:	6000 fd3c      	bra.w 446 <main+0x3d2>
-			menuNumber = message->Code;
-     70c:	342a 0018      	move.w 24(a2),d2
-			while ((menuNumber != MENUNULL) && (AppRunning))
-     710:	0c42 ffff      	cmpi.w #-1,d2
-     714:	6700 fd30      	beq.w 446 <main+0x3d2>
-     718:	4a79 0000 34e0 	tst.w 34e0 <AppRunning>
-     71e:	6700 fd26      	beq.w 446 <main+0x3d2>
-				item = ItemAddress(theMenu, menuNumber);
-     722:	2c79 0000 34f4 	movea.l 34f4 <IntuitionBase>,a6
-     728:	2043           	movea.l d3,a0
-     72a:	3002           	move.w d2,d0
-     72c:	4eae ff70      	jsr -144(a6)
-     730:	2a40           	movea.l d0,a5
-				menuNum = MENUNUM(menuNumber);
-     732:	3002           	move.w d2,d0
-     734:	0240 001f      	andi.w #31,d0
-				if ((menuNum == 0) && (itemNum == 5))
-     738:	6642           	bne.s 77c <main+0x708>
-				itemNum = ITEMNUM(menuNumber);
-     73a:	3002           	move.w d2,d0
-     73c:	ea48           	lsr.w #5,d0
-     73e:	0240 003f      	andi.w #63,d0
-				if ((menuNum == 0) && (itemNum == 5))
-     742:	0c40 0005      	cmpi.w #5,d0
-     746:	6742           	beq.s 78a <main+0x716>
-				if ((menuNum == 0) && (itemNum == 3) && (subNum == 2))
-     748:	0c40 0003      	cmpi.w #3,d0
-     74c:	662e           	bne.s 77c <main+0x708>
-				subNum = SUBNUM(menuNumber);
-     74e:	700b           	moveq #11,d0
-     750:	e06a           	lsr.w d0,d2
-				if ((menuNum == 0) && (itemNum == 3) && (subNum == 2))
-     752:	0c42 0002      	cmpi.w #2,d2
-     756:	6700 0090      	beq.w 7e8 <main+0x774>
-				if ((menuNum == 0) && (itemNum == 3) && (subNum == 0))
-     75a:	4a42           	tst.w d2
-     75c:	6658           	bne.s 7b6 <main+0x742>
-					SetWindowTitles(theWindow, (STRPTR) "Running", (STRPTR)-1);
-     75e:	2c79 0000 34f4 	movea.l 34f4 <IntuitionBase>,a6
-     764:	204b           	movea.l a3,a0
-     766:	43f9 0000 1305 	lea 1305 <PutChar+0x7d>,a1
-     76c:	347c ffff      	movea.w #-1,a2
-     770:	4eae feec      	jsr -276(a6)
-					GameRunning = TRUE;
-     774:	33fc 0001 0000 	move.w #1,34fc <GameRunning>
-     77a:	34fc 
-				menuNumber = item->NextSelect;
-     77c:	342d 0020      	move.w 32(a5),d2
-			while ((menuNumber != MENUNULL) && (AppRunning))
-     780:	0c42 ffff      	cmpi.w #-1,d2
-     784:	6692           	bne.s 718 <main+0x6a4>
-     786:	6000 fcbe      	bra.w 446 <main+0x3d2>
-					AppRunning = FALSE;
-     78a:	4279 0000 34e0 	clr.w 34e0 <AppRunning>
-					SetWindowTitles(theWindow, (STRPTR) "Running", (STRPTR)-1);
-     790:	2c79 0000 34f4 	movea.l 34f4 <IntuitionBase>,a6
-     796:	204b           	movea.l a3,a0
-     798:	43f9 0000 1305 	lea 1305 <PutChar+0x7d>,a1
-     79e:	347c ffff      	movea.w #-1,a2
-     7a2:	4eae feec      	jsr -276(a6)
-				menuNumber = item->NextSelect;
-     7a6:	342d 0020      	move.w 32(a5),d2
-			while ((menuNumber != MENUNULL) && (AppRunning))
-     7aa:	0c42 ffff      	cmpi.w #-1,d2
-     7ae:	6600 ff68      	bne.w 718 <main+0x6a4>
-     7b2:	6000 fc92      	bra.w 446 <main+0x3d2>
-				if ((menuNum == 0) && (itemNum == 3) && (subNum == 1))
-     7b6:	0c42 0001      	cmpi.w #1,d2
-     7ba:	66c0           	bne.s 77c <main+0x708>
-					SetWindowTitles(theWindow, (STRPTR) "Stopped", (STRPTR)-1);
-     7bc:	2c79 0000 34f4 	movea.l 34f4 <IntuitionBase>,a6
-     7c2:	204b           	movea.l a3,a0
-     7c4:	43f9 0000 12e4 	lea 12e4 <PutChar+0x5c>,a1
-     7ca:	347c ffff      	movea.w #-1,a2
-     7ce:	4eae feec      	jsr -276(a6)
-					GameRunning = FALSE;
-     7d2:	4279 0000 34fc 	clr.w 34fc <GameRunning>
-				menuNumber = item->NextSelect;
-     7d8:	342d 0020      	move.w 32(a5),d2
-			while ((menuNumber != MENUNULL) && (AppRunning))
-     7dc:	0c42 ffff      	cmpi.w #-1,d2
-     7e0:	6600 ff36      	bne.w 718 <main+0x6a4>
-     7e4:	6000 fc60      	bra.w 446 <main+0x3d2>
-	for (int x = 0; x < GameMatrix.Columns; x++)
-     7e8:	3239 0000 350e 	move.w 350e <GameMatrix+0x6>,d1
-     7ee:	678c           	beq.s 77c <main+0x708>
-		for (int y = 0; y < GameMatrix.Rows; y++)
-     7f0:	3439 0000 350c 	move.w 350c <GameMatrix+0x4>,d2
-			GameMatrix.Playfield[x][y].Neighbours = 0;
-     7f6:	41f9 0000 3508 	lea 3508 <GameMatrix>,a0
-     7fc:	2250           	movea.l (a0),a1
-     7fe:	673c           	beq.s 83c <main+0x7c8>
-     800:	0281 0000 ffff 	andi.l #65535,d1
-     806:	d281           	add.l d1,d1
-     808:	d281           	add.l d1,d1
-     80a:	d289           	add.l a1,d1
-     80c:	0282 0000 ffff 	andi.l #65535,d2
-     812:	2002           	move.l d2,d0
-     814:	d082           	add.l d2,d0
-     816:	d082           	add.l d2,d0
-     818:	d080           	add.l d0,d0
-		for (int y = 0; y < GameMatrix.Rows; y++)
-     81a:	2059           	movea.l (a1)+,a0
-     81c:	2408           	move.l a0,d2
-     81e:	d480           	add.l d0,d2
-			GameMatrix.Playfield[x][y].Neighbours = 0;
-     820:	4268 0004      	clr.w 4(a0)
-			GameMatrix.Playfield[x][y].Status = 0;
-     824:	4250           	clr.w (a0)
-			GameMatrix.Playfield[x][y].StatusChanged = TRUE;
-     826:	317c 0001 0002 	move.w #1,2(a0)
-		for (int y = 0; y < GameMatrix.Rows; y++)
-     82c:	5c88           	addq.l #6,a0
-     82e:	b1c2           	cmpa.l d2,a0
-     830:	66ee           	bne.s 820 <main+0x7ac>
-	for (int x = 0; x < GameMatrix.Columns; x++)
-     832:	b289           	cmp.l a1,d1
-     834:	66e4           	bne.s 81a <main+0x7a6>
-     836:	3239 0000 350e 	move.w 350e <GameMatrix+0x6>,d1
-     83c:	4a41           	tst.w d1
-     83e:	6700 ff3c      	beq.w 77c <main+0x708>
-		for (int y = 0; y < GameMatrix.Rows; y++)
-     842:	3439 0000 350c 	move.w 350c <GameMatrix+0x4>,d2
-			GameMatrix.Playfield[x][y].Neighbours = 0;
-     848:	41f9 0000 3508 	lea 3508 <GameMatrix>,a0
-     84e:	2250           	movea.l (a0),a1
-     850:	6700 ff2a      	beq.w 77c <main+0x708>
-     854:	0281 0000 ffff 	andi.l #65535,d1
-     85a:	d281           	add.l d1,d1
-     85c:	d281           	add.l d1,d1
-     85e:	d289           	add.l a1,d1
-     860:	0282 0000 ffff 	andi.l #65535,d2
-     866:	2002           	move.l d2,d0
-     868:	d082           	add.l d2,d0
-     86a:	d082           	add.l d2,d0
-     86c:	d080           	add.l d0,d0
-		for (int y = 0; y < GameMatrix.Rows; y++)
-     86e:	2059           	movea.l (a1)+,a0
-     870:	2408           	move.l a0,d2
-     872:	d480           	add.l d0,d2
-			GameMatrix.Playfield[x][y].Neighbours = 0;
-     874:	4268 0004      	clr.w 4(a0)
-			GameMatrix.Playfield[x][y].Status = 0;
-     878:	4250           	clr.w (a0)
-			GameMatrix.Playfield[x][y].StatusChanged = TRUE;
-     87a:	317c 0001 0002 	move.w #1,2(a0)
-		for (int y = 0; y < GameMatrix.Rows; y++)
-     880:	5c88           	addq.l #6,a0
-     882:	b488           	cmp.l a0,d2
-     884:	66ee           	bne.s 874 <main+0x800>
-	for (int x = 0; x < GameMatrix.Columns; x++)
-     886:	b3c1           	cmpa.l d1,a1
-     888:	6700 fef2      	beq.w 77c <main+0x708>
-		for (int y = 0; y < GameMatrix.Rows; y++)
-     88c:	2059           	movea.l (a1)+,a0
-     88e:	2408           	move.l a0,d2
-     890:	d480           	add.l d0,d2
-     892:	60e0           	bra.s 874 <main+0x800>
-	GameOfLifeCell **pf = GameMatrix.Playfield;
-     894:	43f9 0000 3508 	lea 3508 <GameMatrix>,a1
-     89a:	2451           	movea.l (a1),a2
-	for (int y = 0; y < GameMatrix.Rows; y++)
-     89c:	3f79 0000 350c 	move.w 350c <GameMatrix+0x4>,50(sp)
-     8a2:	0032 
-     8a4:	7e00           	moveq #0,d7
-     8a6:	3e2f 0032      	move.w 50(sp),d7
-     8aa:	6700 fc88      	beq.w 534 <main+0x4c0>
+     4f8:	3439 0000 3452 	move.w 3452 <GameMatrix+0x6>,d2
 		for (int x = 0; x < GameMatrix.Columns; x++)
-     8ae:	7a00           	moveq #0,d5
-     8b0:	3a00           	move.w d0,d5
-     8b2:	6700 fc80      	beq.w 534 <main+0x4c0>
-     8b6:	2605           	move.l d5,d3
-     8b8:	5383           	subq.l #1,d3
-     8ba:	7800           	moveq #0,d4
+     4fe:	7e00           	moveq #0,d7
+     500:	7c00           	moveq #0,d6
+     502:	4a42           	tst.w d2
+     504:	6700 00c0      	beq.w 5c6 <main+0x552>
+     508:	7a00           	moveq #0,d5
+     50a:	7800           	moveq #0,d4
+			if (!GameMatrix.Playfield[x][y].StatusChanged && !forceFull)
+     50c:	43f9 0000 344c 	lea 344c <GameMatrix>,a1
+     512:	2051           	movea.l (a1),a0
+     514:	2070 5800      	movea.l (0,a0,d5.l),a0
+     518:	d1c7           	adda.l d7,a0
+     51a:	4a68 0002      	tst.w 2(a0)
+     51e:	6700 0082      	beq.w 5a2 <main+0x52e>
+			GameMatrix.Playfield[x][y].StatusChanged = FALSE;
+     522:	4268 0002      	clr.w 2(a0)
+				SetAPen(theWindow->RPort, GameMatrix.ColorAlive);
+     526:	226a 0032      	movea.l 50(a2),a1
+     52a:	2c79 0000 3434 	movea.l 3434 <GfxBase>,a6
+     530:	7000           	moveq #0,d0
+			if (GameMatrix.Playfield[x][y].Status)
+     532:	4a50           	tst.w (a0)
+     534:	6700 0310      	beq.w 846 <main+0x7d2>
+				SetAPen(theWindow->RPort, GameMatrix.ColorAlive);
+     538:	3039 0000 3454 	move.w 3454 <GameMatrix+0x8>,d0
+     53e:	4eae feaa      	jsr -342(a6)
+			RectFill(theWindow->RPort,
+     542:	226a 0032      	movea.l 50(a2),a1
+     546:	7400           	moveq #0,d2
+     548:	3439 0000 3458 	move.w 3458 <GameMatrix+0xc>,d2
+     54e:	2f04           	move.l d4,-(sp)
+     550:	2f02           	move.l d2,-(sp)
+     552:	2f49 0036      	move.l a1,54(sp)
+     556:	4eb9 0000 10c4 	jsr 10c4 <__mulsi3>
+     55c:	508f           	addq.l #8,sp
+     55e:	2640           	movea.l d0,a3
+     560:	4beb 0001      	lea 1(a3),a5
+     564:	7000           	moveq #0,d0
+     566:	3039 0000 345a 	move.w 345a <GameMatrix+0xe>,d0
+     56c:	2840           	movea.l d0,a4
+     56e:	2f06           	move.l d6,-(sp)
+     570:	2f0c           	move.l a4,-(sp)
+     572:	4eb9 0000 10c4 	jsr 10c4 <__mulsi3>
+     578:	508f           	addq.l #8,sp
+     57a:	2600           	move.l d0,d3
+     57c:	2c79 0000 3434 	movea.l 3434 <GfxBase>,a6
+     582:	226f 002e      	movea.l 46(sp),a1
+     586:	200d           	move.l a5,d0
+     588:	2203           	move.l d3,d1
+     58a:	5281           	addq.l #1,d1
+     58c:	47f3 28ff      	lea (-1,a3,d2.l),a3
+     590:	240b           	move.l a3,d2
+     592:	49f4 38ff      	lea (-1,a4,d3.l),a4
+     596:	260c           	move.l a4,d3
+     598:	4eae fece      	jsr -306(a6)
+		for (int x = 0; x < GameMatrix.Columns; x++)
+     59c:	3439 0000 3452 	move.w 3452 <GameMatrix+0x6>,d2
+     5a2:	5284           	addq.l #1,d4
+     5a4:	5885           	addq.l #4,d5
+     5a6:	7000           	moveq #0,d0
+     5a8:	3002           	move.w d2,d0
+     5aa:	b084           	cmp.l d4,d0
+     5ac:	6e00 ff5e      	bgt.w 50c <main+0x498>
 	for (int y = 0; y < GameMatrix.Rows; y++)
-     8bc:	91c8           	suba.l a0,a0
+     5b0:	5286           	addq.l #1,d6
+     5b2:	7000           	moveq #0,d0
+     5b4:	3039 0000 3450 	move.w 3450 <GameMatrix+0x4>,d0
+     5ba:	b086           	cmp.l d6,d0
+     5bc:	6f08           	ble.s 5c6 <main+0x552>
+     5be:	5c87           	addq.l #6,d7
+		for (int x = 0; x < GameMatrix.Columns; x++)
+     5c0:	4a42           	tst.w d2
+     5c2:	6600 ff44      	bne.w 508 <main+0x494>
+	while (AppRunning)
+     5c6:	4a79 0000 3424 	tst.w 3424 <AppRunning>
+     5cc:	6600 fe1e      	bne.w 3ec <main+0x378>
+	FreeMem((APTR)GameMatrix.Playfield, GameMatrix.Rows * GameMatrix.Columns * sizeof(GameOfLifeCell));
+     5d0:	3239 0000 3450 	move.w 3450 <GameMatrix+0x4>,d1
+     5d6:	c2f9 0000 3452 	mulu.w 3452 <GameMatrix+0x6>,d1
+     5dc:	2001           	move.l d1,d0
+     5de:	d081           	add.l d1,d0
+     5e0:	d081           	add.l d1,d0
+     5e2:	2c79 0000 343c 	movea.l 343c <SysBase>,a6
+     5e8:	45f9 0000 344c 	lea 344c <GameMatrix>,a2
+     5ee:	2252           	movea.l (a2),a1
+     5f0:	d080           	add.l d0,d0
+     5f2:	4eae ff2e      	jsr -210(a6)
+	if (GolMainWindow)
+     5f6:	2079 0000 3446 	movea.l 3446 <GolMainWindow>,a0
+     5fc:	b0fc 0000      	cmpa.w #0,a0
+     600:	670a           	beq.s 60c <main+0x598>
+		CloseWindow(GolMainWindow);
+     602:	2c79 0000 3438 	movea.l 3438 <IntuitionBase>,a6
+     608:	4eae ffb8      	jsr -72(a6)
+	if (GadToolsBase)
+     60c:	2279 0000 3430 	movea.l 3430 <GadToolsBase>,a1
+     612:	b2fc 0000      	cmpa.w #0,a1
+     616:	670a           	beq.s 622 <main+0x5ae>
+		CloseLibrary((struct Library *)GadToolsBase);
+     618:	2c79 0000 343c 	movea.l 343c <SysBase>,a6
+     61e:	4eae fe62      	jsr -414(a6)
+	if (GolScreen)
+     622:	2079 0000 342c 	movea.l 342c <GolScreen>,a0
+     628:	b0fc 0000      	cmpa.w #0,a0
+     62c:	670a           	beq.s 638 <main+0x5c4>
+		CloseScreen(GolScreen);
+     62e:	2c79 0000 3438 	movea.l 3438 <IntuitionBase>,a6
+     634:	4eae ffbe      	jsr -66(a6)
+	if (GfxBase)
+     638:	2279 0000 3434 	movea.l 3434 <GfxBase>,a1
+     63e:	b2fc 0000      	cmpa.w #0,a1
+     642:	670a           	beq.s 64e <main+0x5da>
+		CloseLibrary((struct Library *)GfxBase);
+     644:	2c79 0000 343c 	movea.l 343c <SysBase>,a6
+     64a:	4eae fe62      	jsr -414(a6)
+	if (IntuitionBase)
+     64e:	2279 0000 3438 	movea.l 3438 <IntuitionBase>,a1
+     654:	b2fc 0000      	cmpa.w #0,a1
+     658:	670a           	beq.s 664 <main+0x5f0>
+		CloseLibrary((struct Library *)IntuitionBase);
+     65a:	2c79 0000 343c 	movea.l 343c <SysBase>,a6
+     660:	4eae fe62      	jsr -414(a6)
+	if (DOSBase)
+     664:	2279 0000 3428 	movea.l 3428 <DOSBase>,a1
+     66a:	b2fc 0000      	cmpa.w #0,a1
+     66e:	6700 06b8      	beq.w d28 <main+0xcb4>
+		CloseLibrary((struct Library *)DOSBase);
+     672:	2c79 0000 343c 	movea.l 343c <SysBase>,a6
+     678:	4eae fe62      	jsr -414(a6)
+     67c:	7000           	moveq #0,d0
+}
+     67e:	4cdf 7cfc      	movem.l (sp)+,d2-d7/a2-a6
+     682:	4fef 00b4      	lea 180(sp),sp
+     686:	4e75           	rts
+		return RETURN_FAIL;
+     688:	7014           	moveq #20,d0
+}
+     68a:	4cdf 7cfc      	movem.l (sp)+,d2-d7/a2-a6
+     68e:	4fef 00b4      	lea 180(sp),sp
+     692:	4e75           	rts
+		switch (msg_class)
+     694:	0c82 0000 0100 	cmpi.l #256,d2
+     69a:	6722           	beq.s 6be <main+0x64a>
+     69c:	0c82 0000 0200 	cmpi.l #512,d2
+     6a2:	6600 fd5a      	bne.w 3fe <main+0x38a>
+			AppRunning = FALSE;
+     6a6:	4279 0000 3424 	clr.w 3424 <AppRunning>
+			break;
+     6ac:	6000 fd50      	bra.w 3fe <main+0x38a>
+			DrawCells(theWindow, TRUE);
+     6b0:	2f0b           	move.l a3,-(sp)
+     6b2:	4eb9 0000 0d34 	jsr d34 <DrawCells.constprop.1>
+     6b8:	588f           	addq.l #4,sp
+     6ba:	6000 fd42      	bra.w 3fe <main+0x38a>
+			menuNumber = message->Code;
+     6be:	342a 0018      	move.w 24(a2),d2
+			while ((menuNumber != MENUNULL) && (AppRunning))
+     6c2:	0c42 ffff      	cmpi.w #-1,d2
+     6c6:	6700 fd36      	beq.w 3fe <main+0x38a>
+     6ca:	4a79 0000 3424 	tst.w 3424 <AppRunning>
+     6d0:	6700 fd2c      	beq.w 3fe <main+0x38a>
+				item = ItemAddress(theMenu, menuNumber);
+     6d4:	2c79 0000 3438 	movea.l 3438 <IntuitionBase>,a6
+     6da:	2043           	movea.l d3,a0
+     6dc:	3002           	move.w d2,d0
+     6de:	4eae ff70      	jsr -144(a6)
+     6e2:	2a40           	movea.l d0,a5
+				menuNum = MENUNUM(menuNumber);
+     6e4:	3002           	move.w d2,d0
+     6e6:	0240 001f      	andi.w #31,d0
+				if ((menuNum == 0) && (itemNum == 5))
+     6ea:	6642           	bne.s 72e <main+0x6ba>
+				itemNum = ITEMNUM(menuNumber);
+     6ec:	3002           	move.w d2,d0
+     6ee:	ea48           	lsr.w #5,d0
+     6f0:	0240 003f      	andi.w #63,d0
+				if ((menuNum == 0) && (itemNum == 5))
+     6f4:	0c40 0005      	cmpi.w #5,d0
+     6f8:	6742           	beq.s 73c <main+0x6c8>
+				if ((menuNum == 0) && (itemNum == 3) && (subNum == 2))
+     6fa:	0c40 0003      	cmpi.w #3,d0
+     6fe:	662e           	bne.s 72e <main+0x6ba>
+				subNum = SUBNUM(menuNumber);
+     700:	700b           	moveq #11,d0
+     702:	e06a           	lsr.w d0,d2
+				if ((menuNum == 0) && (itemNum == 3) && (subNum == 2))
+     704:	0c42 0002      	cmpi.w #2,d2
+     708:	6700 0090      	beq.w 79a <main+0x726>
+				if ((menuNum == 0) && (itemNum == 3) && (subNum == 0))
+     70c:	4a42           	tst.w d2
+     70e:	6658           	bne.s 768 <main+0x6f4>
+					SetWindowTitles(theWindow, (STRPTR) "Running", (STRPTR)-1);
+     710:	2c79 0000 3438 	movea.l 3438 <IntuitionBase>,a6
+     716:	204b           	movea.l a3,a0
+     718:	43f9 0000 1249 	lea 1249 <PutChar+0x7d>,a1
+     71e:	347c ffff      	movea.w #-1,a2
+     722:	4eae feec      	jsr -276(a6)
+					GameRunning = TRUE;
+     726:	33fc 0001 0000 	move.w #1,3440 <GameRunning>
+     72c:	3440 
+				menuNumber = item->NextSelect;
+     72e:	342d 0020      	move.w 32(a5),d2
+			while ((menuNumber != MENUNULL) && (AppRunning))
+     732:	0c42 ffff      	cmpi.w #-1,d2
+     736:	6692           	bne.s 6ca <main+0x656>
+     738:	6000 fcc4      	bra.w 3fe <main+0x38a>
+					AppRunning = FALSE;
+     73c:	4279 0000 3424 	clr.w 3424 <AppRunning>
+					SetWindowTitles(theWindow, (STRPTR) "Running", (STRPTR)-1);
+     742:	2c79 0000 3438 	movea.l 3438 <IntuitionBase>,a6
+     748:	204b           	movea.l a3,a0
+     74a:	43f9 0000 1249 	lea 1249 <PutChar+0x7d>,a1
+     750:	347c ffff      	movea.w #-1,a2
+     754:	4eae feec      	jsr -276(a6)
+				menuNumber = item->NextSelect;
+     758:	342d 0020      	move.w 32(a5),d2
+			while ((menuNumber != MENUNULL) && (AppRunning))
+     75c:	0c42 ffff      	cmpi.w #-1,d2
+     760:	6600 ff68      	bne.w 6ca <main+0x656>
+     764:	6000 fc98      	bra.w 3fe <main+0x38a>
+				if ((menuNum == 0) && (itemNum == 3) && (subNum == 1))
+     768:	0c42 0001      	cmpi.w #1,d2
+     76c:	66c0           	bne.s 72e <main+0x6ba>
+					SetWindowTitles(theWindow, (STRPTR) "Stopped", (STRPTR)-1);
+     76e:	2c79 0000 3438 	movea.l 3438 <IntuitionBase>,a6
+     774:	204b           	movea.l a3,a0
+     776:	43f9 0000 1228 	lea 1228 <PutChar+0x5c>,a1
+     77c:	347c ffff      	movea.w #-1,a2
+     780:	4eae feec      	jsr -276(a6)
+					GameRunning = FALSE;
+     784:	4279 0000 3440 	clr.w 3440 <GameRunning>
+				menuNumber = item->NextSelect;
+     78a:	342d 0020      	move.w 32(a5),d2
+			while ((menuNumber != MENUNULL) && (AppRunning))
+     78e:	0c42 ffff      	cmpi.w #-1,d2
+     792:	6600 ff36      	bne.w 6ca <main+0x656>
+     796:	6000 fc66      	bra.w 3fe <main+0x38a>
+	for (int x = 0; x < GameMatrix.Columns; x++)
+     79a:	3239 0000 3452 	move.w 3452 <GameMatrix+0x6>,d1
+     7a0:	678c           	beq.s 72e <main+0x6ba>
+		for (int y = 0; y < GameMatrix.Rows; y++)
+     7a2:	3439 0000 3450 	move.w 3450 <GameMatrix+0x4>,d2
+			GameMatrix.Playfield[x][y].Neighbours = 0;
+     7a8:	41f9 0000 344c 	lea 344c <GameMatrix>,a0
+     7ae:	2250           	movea.l (a0),a1
+     7b0:	673c           	beq.s 7ee <main+0x77a>
+     7b2:	0281 0000 ffff 	andi.l #65535,d1
+     7b8:	d281           	add.l d1,d1
+     7ba:	d281           	add.l d1,d1
+     7bc:	d289           	add.l a1,d1
+     7be:	0282 0000 ffff 	andi.l #65535,d2
+     7c4:	2002           	move.l d2,d0
+     7c6:	d082           	add.l d2,d0
+     7c8:	d082           	add.l d2,d0
+     7ca:	d080           	add.l d0,d0
+		for (int y = 0; y < GameMatrix.Rows; y++)
+     7cc:	2059           	movea.l (a1)+,a0
+     7ce:	2408           	move.l a0,d2
+     7d0:	d480           	add.l d0,d2
+			GameMatrix.Playfield[x][y].Neighbours = 0;
+     7d2:	4268 0004      	clr.w 4(a0)
+			GameMatrix.Playfield[x][y].Status = 0;
+     7d6:	4250           	clr.w (a0)
+			GameMatrix.Playfield[x][y].StatusChanged = TRUE;
+     7d8:	317c 0001 0002 	move.w #1,2(a0)
+		for (int y = 0; y < GameMatrix.Rows; y++)
+     7de:	5c88           	addq.l #6,a0
+     7e0:	b1c2           	cmpa.l d2,a0
+     7e2:	66ee           	bne.s 7d2 <main+0x75e>
+	for (int x = 0; x < GameMatrix.Columns; x++)
+     7e4:	b3c1           	cmpa.l d1,a1
+     7e6:	66e4           	bne.s 7cc <main+0x758>
+     7e8:	3239 0000 3452 	move.w 3452 <GameMatrix+0x6>,d1
+     7ee:	4a41           	tst.w d1
+     7f0:	6700 ff3c      	beq.w 72e <main+0x6ba>
+		for (int y = 0; y < GameMatrix.Rows; y++)
+     7f4:	3439 0000 3450 	move.w 3450 <GameMatrix+0x4>,d2
+			GameMatrix.Playfield[x][y].Neighbours = 0;
+     7fa:	41f9 0000 344c 	lea 344c <GameMatrix>,a0
+     800:	2250           	movea.l (a0),a1
+     802:	6700 ff2a      	beq.w 72e <main+0x6ba>
+     806:	0281 0000 ffff 	andi.l #65535,d1
+     80c:	d281           	add.l d1,d1
+     80e:	d281           	add.l d1,d1
+     810:	d289           	add.l a1,d1
+     812:	0282 0000 ffff 	andi.l #65535,d2
+     818:	2002           	move.l d2,d0
+     81a:	d082           	add.l d2,d0
+     81c:	d082           	add.l d2,d0
+     81e:	d080           	add.l d0,d0
+		for (int y = 0; y < GameMatrix.Rows; y++)
+     820:	2059           	movea.l (a1)+,a0
+     822:	2408           	move.l a0,d2
+     824:	d480           	add.l d0,d2
+			GameMatrix.Playfield[x][y].Neighbours = 0;
+     826:	4268 0004      	clr.w 4(a0)
+			GameMatrix.Playfield[x][y].Status = 0;
+     82a:	4250           	clr.w (a0)
+			GameMatrix.Playfield[x][y].StatusChanged = TRUE;
+     82c:	317c 0001 0002 	move.w #1,2(a0)
+		for (int y = 0; y < GameMatrix.Rows; y++)
+     832:	5c88           	addq.l #6,a0
+     834:	b488           	cmp.l a0,d2
+     836:	66ee           	bne.s 826 <main+0x7b2>
+	for (int x = 0; x < GameMatrix.Columns; x++)
+     838:	b289           	cmp.l a1,d1
+     83a:	6700 fef2      	beq.w 72e <main+0x6ba>
+		for (int y = 0; y < GameMatrix.Rows; y++)
+     83e:	2059           	movea.l (a1)+,a0
+     840:	2408           	move.l a0,d2
+     842:	d480           	add.l d0,d2
+     844:	60e0           	bra.s 826 <main+0x7b2>
+				SetAPen(theWindow->RPort, GameMatrix.ColorDead);
+     846:	3039 0000 3456 	move.w 3456 <GameMatrix+0xa>,d0
+     84c:	4eae feaa      	jsr -342(a6)
+			RectFill(theWindow->RPort,
+     850:	226a 0032      	movea.l 50(a2),a1
+     854:	7400           	moveq #0,d2
+     856:	3439 0000 3458 	move.w 3458 <GameMatrix+0xc>,d2
+     85c:	2f04           	move.l d4,-(sp)
+     85e:	2f02           	move.l d2,-(sp)
+     860:	2f49 0036      	move.l a1,54(sp)
+     864:	4eb9 0000 10c4 	jsr 10c4 <__mulsi3>
+     86a:	508f           	addq.l #8,sp
+     86c:	2640           	movea.l d0,a3
+     86e:	4beb 0001      	lea 1(a3),a5
+     872:	7000           	moveq #0,d0
+     874:	3039 0000 345a 	move.w 345a <GameMatrix+0xe>,d0
+     87a:	2840           	movea.l d0,a4
+     87c:	2f06           	move.l d6,-(sp)
+     87e:	2f0c           	move.l a4,-(sp)
+     880:	4eb9 0000 10c4 	jsr 10c4 <__mulsi3>
+     886:	508f           	addq.l #8,sp
+     888:	2600           	move.l d0,d3
+     88a:	2c79 0000 3434 	movea.l 3434 <GfxBase>,a6
+     890:	226f 002e      	movea.l 46(sp),a1
+     894:	200d           	move.l a5,d0
+     896:	2203           	move.l d3,d1
+     898:	5281           	addq.l #1,d1
+     89a:	47f3 28ff      	lea (-1,a3,d2.l),a3
+     89e:	240b           	move.l a3,d2
+     8a0:	49f4 38ff      	lea (-1,a4,d3.l),a4
+     8a4:	260c           	move.l a4,d3
+     8a6:	4eae fece      	jsr -306(a6)
+		for (int x = 0; x < GameMatrix.Columns; x++)
+     8aa:	3439 0000 3452 	move.w 3452 <GameMatrix+0x6>,d2
+     8b0:	6000 fcf0      	bra.w 5a2 <main+0x52e>
+	for (int y = 0; y < GameMatrix.Rows; y++)
+     8b4:	7c00           	moveq #0,d6
+     8b6:	3c00           	move.w d0,d6
+	GameOfLifeCell **pf = GameMatrix.Playfield;
+     8b8:	45f9 0000 344c 	lea 344c <GameMatrix>,a2
+     8be:	2252           	movea.l (a2),a1
+	for (int y = 0; y < GameMatrix.Rows; y++)
+     8c0:	6700 fd04      	beq.w 5c6 <main+0x552>
+		for (int x = 0; x < GameMatrix.Columns; x++)
+     8c4:	3439 0000 3452 	move.w 3452 <GameMatrix+0x6>,d2
+     8ca:	7000           	moveq #0,d0
+     8cc:	3002           	move.w d2,d0
+     8ce:	2c40           	movea.l d0,a6
+     8d0:	677e           	beq.s 950 <main+0x8dc>
+     8d2:	280e           	move.l a6,d4
+     8d4:	5384           	subq.l #1,d4
+     8d6:	7a00           	moveq #0,d5
+	for (int y = 0; y < GameMatrix.Rows; y++)
+     8d8:	7200           	moveq #0,d1
 						neighbours++;
 					if (pf[x][y + 1].Status)
 						neighbours++;
 				}
 			}
 			else if (y > 0 && y < GameMatrix.Rows - 1) // rows between 1st and last
-     8be:	2407           	move.l d7,d2
-     8c0:	5382           	subq.l #1,d2
+     8da:	2606           	move.l d6,d3
+     8dc:	5383           	subq.l #1,d3
+     8de:	3f42 0036      	move.w d2,54(sp)
+     8e2:	2a46           	movea.l d6,a5
 		for (int x = 0; x < GameMatrix.Columns; x++)
-     8c2:	2c04           	move.l d4,d6
-     8c4:	5d86           	subq.l #6,d6
-     8c6:	2244           	movea.l d4,a1
-     8c8:	5c84           	addq.l #6,d4
-     8ca:	4a83           	tst.l d3
-     8cc:	6600 0250      	bne.w b1e <main+0xaaa>
+     8e4:	2405           	move.l d5,d2
+     8e6:	5d82           	subq.l #6,d2
+     8e8:	2045           	movea.l d5,a0
+     8ea:	5c85           	addq.l #6,d5
+     8ec:	4a84           	tst.l d4
+     8ee:	6600 01a6      	bne.w a96 <main+0xa22>
 			else if (y > 0 && y < GameMatrix.Rows - 1) // rows between 1st and last
-     8d0:	7000           	moveq #0,d0
-     8d2:	2840           	movea.l d0,a4
-     8d4:	d9c0           	adda.l d0,a4
-     8d6:	d9cc           	adda.l a4,a4
-     8d8:	49f2 c800      	lea (0,a2,a4.l),a4
+     8f2:	7000           	moveq #0,d0
+     8f4:	2840           	movea.l d0,a4
+     8f6:	d9c0           	adda.l d0,a4
+     8f8:	d9cc           	adda.l a4,a4
+     8fa:	49f1 c800      	lea (0,a1,a4.l),a4
+					if (pf[x][y + 1].Status)
+     8fe:	245c           	movea.l (a4)+,a2
 			if (y == 0) // 1st row
-     8dc:	b0fc 0000      	cmpa.w #0,a0
-     8e0:	6600 0126      	bne.w a08 <main+0x994>
+     900:	4a81           	tst.l d1
+     902:	6600 0088      	bne.w 98c <main+0x918>
 				if (x == 0) // 1st column
-     8e4:	4a80           	tst.l d0
-     8e6:	6600 017c      	bne.w a64 <main+0x9f0>
+     906:	4a80           	tst.l d0
+     908:	6600 012a      	bne.w a34 <main+0x9c0>
 					if (pf[x + 1][y].Status)
-     8ea:	266a 0004      	movea.l 4(a2),a3
-     8ee:	4a53           	tst.w (a3)
-     8f0:	56c1           	sne d1
-     8f2:	4881           	ext.w d1
-     8f4:	4441           	neg.w d1
+     90c:	2669 0004      	movea.l 4(a1),a3
+     910:	4a53           	tst.w (a3)
+     912:	56c6           	sne d6
+     914:	4886           	ext.w d6
+     916:	4446           	neg.w d6
 					if (pf[x + 1][y + 1].Status)
-     8f6:	4a6b 0006      	tst.w 6(a3)
-     8fa:	6702           	beq.s 8fe <main+0x88a>
+     918:	4a6b 0006      	tst.w 6(a3)
+     91c:	6702           	beq.s 920 <main+0x8ac>
 						neighbours++;
-     8fc:	5241           	addq.w #1,d1
+     91e:	5246           	addq.w #1,d6
 					if (pf[x][y + 1].Status)
-     8fe:	2654           	movea.l (a4),a3
-					if (pf[x][y + 1].Status)
-     900:	2a52           	movea.l (a2),a5
-     902:	4a6d 0006      	tst.w 6(a5)
-     906:	675a           	beq.s 962 <main+0x8ee>
+     920:	2651           	movea.l (a1),a3
+     922:	4a6b 0006      	tst.w 6(a3)
+     926:	673e           	beq.s 966 <main+0x8f2>
 					if (pf[x - 1][y - 1].Status)
 						neighbours++;
 					if (pf[x - 1][y].Status)
 						neighbours++;
 					if (pf[x][y - 1].Status)
 						neighbours++;
-     908:	5241           	addq.w #1,d1
+     928:	5246           	addq.w #1,d6
 				}
 			}
 
-			if (!pf[x][y].Status && neighbours == 3)
-     90a:	d7c9           	adda.l a1,a3
-     90c:	4a53           	tst.w (a3)
-     90e:	6658           	bne.s 968 <main+0x8f4>
-     910:	0c41 0003      	cmpi.w #3,d1
-     914:	676e           	beq.s 984 <main+0x910>
-		for (int x = 0; x < GameMatrix.Columns; x++)
-     916:	5280           	addq.l #1,d0
-     918:	588c           	addq.l #4,a4
-     91a:	b085           	cmp.l d5,d0
-     91c:	6dbe           	blt.s 8dc <main+0x868>
-	for (int y = 0; y < GameMatrix.Rows; y++)
-     91e:	5288           	addq.l #1,a0
-     920:	be88           	cmp.l a0,d7
-     922:	669e           	bne.s 8c2 <main+0x84e>
-		DrawCells(GolMainWindow, FALSE);
-     924:	2479 0000 3502 	movea.l 3502 <GolMainWindow>,a2
-		for (int y = 0; y < GameMatrix.Rows; y++)
-     92a:	302f 0032      	move.w 50(sp),d0
-     92e:	7c00           	moveq #0,d6
-	for (int x = 0; x < GameMatrix.Columns; x++)
-     930:	7e00           	moveq #0,d7
-     932:	6000 fc1c      	bra.w 550 <main+0x4dc>
-			else if (y==GameMatrix.Rows-1)// last row
-     936:	b1c2           	cmpa.l d2,a0
-     938:	6600 0112      	bne.w a4c <main+0x9d8>
-				if (x == 0)
-     93c:	4a80           	tst.l d0
-     93e:	6600 042e      	bne.w d6e <main+0xcfa>
-					if (pf[x][y - 1].Status)
-     942:	2652           	movea.l (a2),a3
-     944:	4a73 6800      	tst.w (0,a3,d6.l)
-     948:	56c1           	sne d1
-     94a:	4881           	ext.w d1
-     94c:	4441           	neg.w d1
-					if (pf[x + 1][y - 1].Status)
-     94e:	2a6a 0004      	movea.l 4(a2),a5
-     952:	4a75 6800      	tst.w (0,a5,d6.l)
-     956:	6702           	beq.s 95a <main+0x8e6>
-						neighbours++;
-     958:	5241           	addq.w #1,d1
-					if (pf[x][y + 1].Status)
-     95a:	2654           	movea.l (a4),a3
-					if (pf[x + 1][y].Status)
-     95c:	4a75 9800      	tst.w (0,a5,a1.l)
-     960:	66a6           	bne.s 908 <main+0x894>
-			if (!pf[x][y].Status && neighbours == 3)
-     962:	d7c9           	adda.l a1,a3
-     964:	4a53           	tst.w (a3)
-     966:	67ae           	beq.s 916 <main+0x8a2>
+			if ((pf[x][y].Status==0 && neighbours == 3))
+     92a:	d5c8           	adda.l a0,a2
+     92c:	3e12           	move.w (a2),d7
+     92e:	663c           	bne.s 96c <main+0x8f8>
+     930:	0c46 0003      	cmpi.w #3,d6
+     934:	660a           	bne.s 940 <main+0x8cc>
 			{
 				pf[x][y].Status = 1;
+     936:	34bc 0001      	move.w #1,(a2)
 				pf[x][y].StatusChanged = TRUE;
+     93a:	357c 0001 0002 	move.w #1,2(a2)
+		for (int x = 0; x < GameMatrix.Columns; x++)
+     940:	5280           	addq.l #1,d0
+     942:	b08e           	cmp.l a6,d0
+     944:	6db8           	blt.s 8fe <main+0x88a>
+	for (int y = 0; y < GameMatrix.Rows; y++)
+     946:	5281           	addq.l #1,d1
+     948:	bbc1           	cmpa.l d1,a5
+     94a:	6698           	bne.s 8e4 <main+0x870>
+     94c:	342f 0036      	move.w 54(sp),d2
+		DrawCells(GolMainWindow, FALSE);
+     950:	2479 0000 3446 	movea.l 3446 <GolMainWindow>,a2
+		for (int x = 0; x < GameMatrix.Columns; x++)
+     956:	7e00           	moveq #0,d7
+     958:	7c00           	moveq #0,d6
+     95a:	6000 fba6      	bra.w 502 <main+0x48e>
+			else if (y == GameMatrix.Rows - 1) // last row
+     95e:	b283           	cmp.l d3,d1
+     960:	6700 00a6      	beq.w a08 <main+0x994>
+			USHORT neighbours = 0;
+     964:	4246           	clr.w d6
+			if ((pf[x][y].Status==0 && neighbours == 3))
+     966:	d5c8           	adda.l a0,a2
+     968:	3e12           	move.w (a2),d7
+     96a:	67d4           	beq.s 940 <main+0x8cc>
 				continue;
 			}
-			if (pf[x][y].Status && (neighbours < 2 || neighbours > 3))
-     968:	5541           	subq.w #2,d1
-     96a:	0c41 0001      	cmpi.w #1,d1
-     96e:	63a6           	bls.s 916 <main+0x8a2>
+			if ((pf[x][y].Status==1 && (neighbours < 2 || neighbours > 3)))
+     96c:	0c47 0001      	cmpi.w #1,d7
+     970:	66ce           	bne.s 940 <main+0x8cc>
+     972:	5546           	subq.w #2,d6
+     974:	0c46 0001      	cmpi.w #1,d6
+     978:	63c6           	bls.s 940 <main+0x8cc>
 			{
 				pf[x][y].Status = 0;
-     970:	4253           	clr.w (a3)
+     97a:	4252           	clr.w (a2)
 				pf[x][y].StatusChanged = TRUE;
-     972:	377c 0001 0002 	move.w #1,2(a3)
+     97c:	357c 0001 0002 	move.w #1,2(a2)
 		for (int x = 0; x < GameMatrix.Columns; x++)
-     978:	5280           	addq.l #1,d0
-     97a:	588c           	addq.l #4,a4
-     97c:	b085           	cmp.l d5,d0
-     97e:	6d00 ff5c      	blt.w 8dc <main+0x868>
-     982:	609a           	bra.s 91e <main+0x8aa>
-				pf[x][y].Status = 1;
-     984:	36bc 0001      	move.w #1,(a3)
-				pf[x][y].StatusChanged = TRUE;
-     988:	377c 0001 0002 	move.w #1,2(a3)
-		for (int x = 0; x < GameMatrix.Columns; x++)
-     98e:	5280           	addq.l #1,d0
-     990:	588c           	addq.l #4,a4
-     992:	b085           	cmp.l d5,d0
-     994:	6d00 ff46      	blt.w 8dc <main+0x868>
-     998:	6084           	bra.s 91e <main+0x8aa>
-				SetAPen(theWindow->RPort, GameMatrix.ColorDead);
-     99a:	3039 0000 3512 	move.w 3512 <GameMatrix+0xa>,d0
-     9a0:	4eae feaa      	jsr -342(a6)
-			RectFill(theWindow->RPort,
-     9a4:	226a 0032      	movea.l 50(a2),a1
-     9a8:	7400           	moveq #0,d2
-     9aa:	3439 0000 3514 	move.w 3514 <GameMatrix+0xc>,d2
-     9b0:	2f07           	move.l d7,-(sp)
-     9b2:	2f02           	move.l d2,-(sp)
-     9b4:	2f49 0036      	move.l a1,54(sp)
-     9b8:	4eb9 0000 1180 	jsr 1180 <__mulsi3>
-     9be:	508f           	addq.l #8,sp
-     9c0:	2640           	movea.l d0,a3
-     9c2:	4beb 0001      	lea 1(a3),a5
-     9c6:	7000           	moveq #0,d0
-     9c8:	3039 0000 3516 	move.w 3516 <GameMatrix+0xe>,d0
-     9ce:	2840           	movea.l d0,a4
-     9d0:	2f04           	move.l d4,-(sp)
-     9d2:	2f0c           	move.l a4,-(sp)
-     9d4:	4eb9 0000 1180 	jsr 1180 <__mulsi3>
-     9da:	508f           	addq.l #8,sp
-     9dc:	2600           	move.l d0,d3
-     9de:	2c79 0000 34f0 	movea.l 34f0 <GfxBase>,a6
-     9e4:	226f 002e      	movea.l 46(sp),a1
-     9e8:	200d           	move.l a5,d0
-     9ea:	2203           	move.l d3,d1
-     9ec:	5281           	addq.l #1,d1
-     9ee:	47f3 28ff      	lea (-1,a3,d2.l),a3
-     9f2:	240b           	move.l a3,d2
-     9f4:	49f4 38ff      	lea (-1,a4,d3.l),a4
-     9f8:	260c           	move.l a4,d3
-     9fa:	4eae fece      	jsr -306(a6)
-		for (int y = 0; y < GameMatrix.Rows; y++)
-     9fe:	3039 0000 350c 	move.w 350c <GameMatrix+0x4>,d0
-     a04:	6000 fbea      	bra.w 5f0 <main+0x57c>
+     982:	5280           	addq.l #1,d0
+     984:	b08e           	cmp.l a6,d0
+     986:	6d00 ff76      	blt.w 8fe <main+0x88a>
+     98a:	60ba           	bra.s 946 <main+0x8d2>
 			else if (y > 0 && y < GameMatrix.Rows - 1) // rows between 1st and last
-     a08:	b1c2           	cmpa.l d2,a0
-     a0a:	6c00 ff2a      	bge.w 936 <main+0x8c2>
+     98c:	b283           	cmp.l d3,d1
+     98e:	6cce           	bge.s 95e <main+0x8ea>
 				if (x == 0)
-     a0e:	4a80           	tst.l d0
-     a10:	6600 00b4      	bne.w ac6 <main+0xa52>
+     990:	4a80           	tst.l d0
+     992:	6634           	bne.s 9c8 <main+0x954>
 					if (pf[x][y - 1].Status)
-     a14:	2652           	movea.l (a2),a3
-     a16:	4a73 6800      	tst.w (0,a3,d6.l)
-     a1a:	56c1           	sne d1
-     a1c:	4881           	ext.w d1
-     a1e:	4441           	neg.w d1
+     994:	2651           	movea.l (a1),a3
+     996:	4a73 2800      	tst.w (0,a3,d2.l)
+     99a:	56c6           	sne d6
+     99c:	4886           	ext.w d6
+     99e:	4446           	neg.w d6
 					if (pf[x][y + 1].Status)
-     a20:	4a73 4800      	tst.w (0,a3,d4.l)
-     a24:	6702           	beq.s a28 <main+0x9b4>
+     9a0:	4a73 5800      	tst.w (0,a3,d5.l)
+     9a4:	6702           	beq.s 9a8 <main+0x934>
 						neighbours++;
-     a26:	5241           	addq.w #1,d1
+     9a6:	5246           	addq.w #1,d6
 					if (pf[x + 1][y].Status)
-     a28:	2a6a 0004      	movea.l 4(a2),a5
-     a2c:	4a75 9800      	tst.w (0,a5,a1.l)
-     a30:	6702           	beq.s a34 <main+0x9c0>
-						neighbours++;
-     a32:	5241           	addq.w #1,d1
-					if (pf[x + 1][y + 1].Status)
-     a34:	4a75 4800      	tst.w (0,a5,d4.l)
-     a38:	6702           	beq.s a3c <main+0x9c8>
-						neighbours++;
-     a3a:	5241           	addq.w #1,d1
-					if (pf[x][y + 1].Status)
-     a3c:	2654           	movea.l (a4),a3
-					if (pf[x + 1][y - 1].Status)
-     a3e:	4a75 6800      	tst.w (0,a5,d6.l)
-     a42:	6700 fec6      	beq.w 90a <main+0x896>
-						neighbours++;
-     a46:	5241           	addq.w #1,d1
-     a48:	6000 fec0      	bra.w 90a <main+0x896>
-			if (!pf[x][y].Status && neighbours == 3)
-     a4c:	2654           	movea.l (a4),a3
-     a4e:	d7c9           	adda.l a1,a3
-     a50:	4a53           	tst.w (a3)
-     a52:	6600 ff1c      	bne.w 970 <main+0x8fc>
-		for (int x = 0; x < GameMatrix.Columns; x++)
-     a56:	5280           	addq.l #1,d0
-     a58:	588c           	addq.l #4,a4
-     a5a:	b085           	cmp.l d5,d0
-     a5c:	6d00 fe7e      	blt.w 8dc <main+0x868>
-     a60:	6000 febc      	bra.w 91e <main+0x8aa>
-				else if (x > 0 && x < GameMatrix.Columns - 1) // columns in between 1st and last
-     a64:	b083           	cmp.l d3,d0
-     a66:	6c36           	bge.s a9e <main+0xa2a>
-					if (pf[x + 1][y].Status)
-     a68:	266c 0004      	movea.l 4(a4),a3
-     a6c:	4a53           	tst.w (a3)
-     a6e:	56c1           	sne d1
-     a70:	4881           	ext.w d1
-     a72:	4441           	neg.w d1
-					if (pf[x + 1][y + 1].Status)
-     a74:	4a6b 0006      	tst.w 6(a3)
-     a78:	6702           	beq.s a7c <main+0xa08>
-						neighbours++;
-     a7a:	5241           	addq.w #1,d1
-					if (pf[x][y + 1].Status)
-     a7c:	2654           	movea.l (a4),a3
-     a7e:	4a6b 0006      	tst.w 6(a3)
-     a82:	6702           	beq.s a86 <main+0xa12>
-						neighbours++;
-     a84:	5241           	addq.w #1,d1
-					if (pf[x - 1][y].Status)
-     a86:	2a6c fffc      	movea.l -4(a4),a5
-     a8a:	4a55           	tst.w (a5)
-     a8c:	6702           	beq.s a90 <main+0xa1c>
-						neighbours++;
-     a8e:	5241           	addq.w #1,d1
+     9a8:	2669 0004      	movea.l 4(a1),a3
+     9ac:	4a73 8800      	tst.w (0,a3,a0.l)
+     9b0:	6652           	bne.s a04 <main+0x990>
 					if (pf[x - 1][y + 1].Status)
-     a90:	4a6d 0006      	tst.w 6(a5)
-     a94:	6700 fe74      	beq.w 90a <main+0x896>
+     9b2:	4a73 5800      	tst.w (0,a3,d5.l)
+     9b6:	6702           	beq.s 9ba <main+0x946>
 						neighbours++;
-     a98:	5241           	addq.w #1,d1
-     a9a:	6000 fe6e      	bra.w 90a <main+0x896>
-				else if (x==GameMatrix.Columns-1) // last column
-     a9e:	b083           	cmp.l d3,d0
-     aa0:	66aa           	bne.s a4c <main+0x9d8>
-					if (pf[x - 1][y].Status)
-     aa2:	266c fffc      	movea.l -4(a4),a3
-     aa6:	4a53           	tst.w (a3)
-     aa8:	56c1           	sne d1
-     aaa:	4881           	ext.w d1
-     aac:	4441           	neg.w d1
-					if (pf[x - 1][y + 1].Status)
-     aae:	4a6b 0006      	tst.w 6(a3)
-     ab2:	6702           	beq.s ab6 <main+0xa42>
-						neighbours++;
-     ab4:	5241           	addq.w #1,d1
-					if (pf[x][y + 1].Status)
-     ab6:	2654           	movea.l (a4),a3
-     ab8:	4a6b 0006      	tst.w 6(a3)
-     abc:	6700 fea4      	beq.w 962 <main+0x8ee>
-						neighbours++;
-     ac0:	5241           	addq.w #1,d1
-     ac2:	6000 fe46      	bra.w 90a <main+0x896>
-				else if (x > 0 && x < GameMatrix.Columns - 1)
-     ac6:	b680           	cmp.l d0,d3
-     ac8:	6f00 0268      	ble.w d32 <main+0xcbe>
-					if (pf[x][y + 1].Status)
-     acc:	2654           	movea.l (a4),a3
-     ace:	4a73 4800      	tst.w (0,a3,d4.l)
-     ad2:	56c1           	sne d1
-     ad4:	4881           	ext.w d1
-     ad6:	4441           	neg.w d1
-					if (pf[x][y - 1].Status)
-     ad8:	4a73 6800      	tst.w (0,a3,d6.l)
-     adc:	6702           	beq.s ae0 <main+0xa6c>
-						neighbours++;
-     ade:	5241           	addq.w #1,d1
-					if (pf[x + 1][y].Status)
-     ae0:	2a6c 0004      	movea.l 4(a4),a5
-     ae4:	4a75 9800      	tst.w (0,a5,a1.l)
-     ae8:	6702           	beq.s aec <main+0xa78>
-						neighbours++;
-     aea:	5241           	addq.w #1,d1
-					if (pf[x + 1][y - 1].Status)
-     aec:	4a75 6800      	tst.w (0,a5,d6.l)
-     af0:	6702           	beq.s af4 <main+0xa80>
-						neighbours++;
-     af2:	5241           	addq.w #1,d1
-					if (pf[x + 1][y + 1].Status)
-     af4:	4a75 4800      	tst.w (0,a5,d4.l)
-     af8:	6702           	beq.s afc <main+0xa88>
-						neighbours++;
-     afa:	5241           	addq.w #1,d1
-					if (pf[x - 1][y].Status)
-     afc:	2a6c fffc      	movea.l -4(a4),a5
-     b00:	4a75 9800      	tst.w (0,a5,a1.l)
-     b04:	6702           	beq.s b08 <main+0xa94>
-						neighbours++;
-     b06:	5241           	addq.w #1,d1
-					if (pf[x - 1][y + 1].Status)
-     b08:	4a75 4800      	tst.w (0,a5,d4.l)
-     b0c:	6702           	beq.s b10 <main+0xa9c>
-						neighbours++;
-     b0e:	5241           	addq.w #1,d1
+     9b8:	5246           	addq.w #1,d6
 					if (pf[x - 1][y - 1].Status)
-     b10:	4a75 6800      	tst.w (0,a5,d6.l)
-     b14:	6700 fdf4      	beq.w 90a <main+0x896>
+     9ba:	4a73 2800      	tst.w (0,a3,d2.l)
+     9be:	6700 ff6a      	beq.w 92a <main+0x8b6>
 						neighbours++;
-     b18:	5241           	addq.w #1,d1
-     b1a:	6000 fdee      	bra.w 90a <main+0x896>
-     b1e:	2a43           	movea.l d3,a5
-     b20:	ba83           	cmp.l d3,d5
-     b22:	6c02           	bge.s b26 <main+0xab2>
-     b24:	2a45           	movea.l d5,a5
-     b26:	284a           	movea.l a2,a4
+     9c2:	5246           	addq.w #1,d6
+     9c4:	6000 ff64      	bra.w 92a <main+0x8b6>
+				else if (x > 0 && x < GameMatrix.Columns - 1)
+     9c8:	b084           	cmp.l d4,d0
+     9ca:	6c00 02b4      	bge.w c80 <main+0xc0c>
+					if (pf[x][y + 1].Status)
+     9ce:	4a72 5800      	tst.w (0,a2,d5.l)
+     9d2:	56c6           	sne d6
+     9d4:	4886           	ext.w d6
+     9d6:	4446           	neg.w d6
+					if (pf[x][y - 1].Status)
+     9d8:	4a72 2800      	tst.w (0,a2,d2.l)
+     9dc:	6702           	beq.s 9e0 <main+0x96c>
+						neighbours++;
+     9de:	5246           	addq.w #1,d6
+					if (pf[x + 1][y].Status)
+     9e0:	2654           	movea.l (a4),a3
+     9e2:	4a73 8800      	tst.w (0,a3,a0.l)
+     9e6:	6702           	beq.s 9ea <main+0x976>
+						neighbours++;
+     9e8:	5246           	addq.w #1,d6
+					if (pf[x + 1][y - 1].Status)
+     9ea:	4a73 2800      	tst.w (0,a3,d2.l)
+     9ee:	6702           	beq.s 9f2 <main+0x97e>
+						neighbours++;
+     9f0:	5246           	addq.w #1,d6
+					if (pf[x + 1][y + 1].Status)
+     9f2:	4a73 5800      	tst.w (0,a3,d5.l)
+     9f6:	6702           	beq.s 9fa <main+0x986>
+						neighbours++;
+     9f8:	5246           	addq.w #1,d6
+					if (pf[x - 1][y].Status)
+     9fa:	266c fff8      	movea.l -8(a4),a3
+     9fe:	4a73 8800      	tst.w (0,a3,a0.l)
+     a02:	67ae           	beq.s 9b2 <main+0x93e>
+						neighbours++;
+     a04:	5246           	addq.w #1,d6
+     a06:	60aa           	bra.s 9b2 <main+0x93e>
+				if (x == 0)
+     a08:	4a80           	tst.l d0
+     a0a:	6600 02e4      	bne.w cf0 <main+0xc7c>
+					if (pf[x][y - 1].Status)
+     a0e:	2651           	movea.l (a1),a3
+     a10:	4a73 2800      	tst.w (0,a3,d2.l)
+     a14:	56c6           	sne d6
+     a16:	4886           	ext.w d6
+     a18:	4446           	neg.w d6
+					if (pf[x + 1][y - 1].Status)
+     a1a:	2669 0004      	movea.l 4(a1),a3
+     a1e:	4a73 2800      	tst.w (0,a3,d2.l)
+     a22:	6702           	beq.s a26 <main+0x9b2>
+						neighbours++;
+     a24:	5246           	addq.w #1,d6
+					if (pf[x + 1][y].Status)
+     a26:	4a73 8800      	tst.w (0,a3,a0.l)
+     a2a:	6700 ff3a      	beq.w 966 <main+0x8f2>
+						neighbours++;
+     a2e:	5246           	addq.w #1,d6
+     a30:	6000 fef8      	bra.w 92a <main+0x8b6>
+				else if (x > 0 && x < GameMatrix.Columns - 1) // columns in between 1st and last
+     a34:	b880           	cmp.l d0,d4
+     a36:	6f32           	ble.s a6a <main+0x9f6>
+					if (pf[x + 1][y].Status)
+     a38:	2654           	movea.l (a4),a3
+     a3a:	4a53           	tst.w (a3)
+     a3c:	56c6           	sne d6
+     a3e:	4886           	ext.w d6
+     a40:	4446           	neg.w d6
+					if (pf[x + 1][y + 1].Status)
+     a42:	4a6b 0006      	tst.w 6(a3)
+     a46:	6702           	beq.s a4a <main+0x9d6>
+						neighbours++;
+     a48:	5246           	addq.w #1,d6
+					if (pf[x][y + 1].Status)
+     a4a:	4a6a 0006      	tst.w 6(a2)
+     a4e:	6702           	beq.s a52 <main+0x9de>
+						neighbours++;
+     a50:	5246           	addq.w #1,d6
+					if (pf[x - 1][y].Status)
+     a52:	266c fff8      	movea.l -8(a4),a3
+     a56:	4a53           	tst.w (a3)
+     a58:	6702           	beq.s a5c <main+0x9e8>
+						neighbours++;
+     a5a:	5246           	addq.w #1,d6
+					if (pf[x - 1][y + 1].Status)
+     a5c:	4a6b 0006      	tst.w 6(a3)
+     a60:	6700 fec8      	beq.w 92a <main+0x8b6>
+						neighbours++;
+     a64:	5246           	addq.w #1,d6
+     a66:	6000 fec2      	bra.w 92a <main+0x8b6>
+				else if (x == GameMatrix.Columns - 1) // last column
+     a6a:	b880           	cmp.l d0,d4
+     a6c:	6600 fef6      	bne.w 964 <main+0x8f0>
+					if (pf[x - 1][y].Status)
+     a70:	266c fff8      	movea.l -8(a4),a3
+     a74:	4a53           	tst.w (a3)
+     a76:	56c6           	sne d6
+     a78:	4886           	ext.w d6
+     a7a:	4446           	neg.w d6
+					if (pf[x - 1][y + 1].Status)
+     a7c:	4a6b 0006      	tst.w 6(a3)
+     a80:	6702           	beq.s a84 <main+0xa10>
+						neighbours++;
+     a82:	5246           	addq.w #1,d6
+					if (pf[x][y + 1].Status)
+     a84:	266c fffc      	movea.l -4(a4),a3
+     a88:	4a6b 0006      	tst.w 6(a3)
+     a8c:	6700 fed8      	beq.w 966 <main+0x8f2>
+						neighbours++;
+     a90:	5246           	addq.w #1,d6
+     a92:	6000 fe96      	bra.w 92a <main+0x8b6>
+     a96:	2c0e           	move.l a6,d6
+     a98:	b88e           	cmp.l a6,d4
+     a9a:	6c02           	bge.s a9e <main+0xa2a>
+     a9c:	2c04           	move.l d4,d6
+     a9e:	2849           	movea.l a1,a4
 		for (int x = 0; x < GameMatrix.Columns; x++)
-     b28:	7000           	moveq #0,d0
+     aa0:	7000           	moveq #0,d0
+     aa2:	2f44 0032      	move.l d4,50(sp)
+					if (pf[x][y + 1].Status)
+     aa6:	245c           	movea.l (a4)+,a2
 			if (y == 0) // 1st row
-     b2a:	b0fc 0000      	cmpa.w #0,a0
-     b2e:	6600 00aa      	bne.w bda <main+0xb66>
+     aa8:	4a81           	tst.l d1
+     aaa:	6600 0088      	bne.w b34 <main+0xac0>
 				if (x == 0) // 1st column
-     b32:	4a80           	tst.l d0
-     b34:	6600 012e      	bne.w c64 <main+0xbf0>
+     aae:	4a80           	tst.l d0
+     ab0:	6600 012c      	bne.w bde <main+0xb6a>
 					if (pf[x + 1][y].Status)
-     b38:	266a 0004      	movea.l 4(a2),a3
-     b3c:	4a53           	tst.w (a3)
-     b3e:	56c1           	sne d1
-     b40:	4881           	ext.w d1
-     b42:	4441           	neg.w d1
+     ab4:	2669 0004      	movea.l 4(a1),a3
+     ab8:	4a53           	tst.w (a3)
+     aba:	56c7           	sne d7
+     abc:	4887           	ext.w d7
+     abe:	4447           	neg.w d7
 					if (pf[x + 1][y + 1].Status)
-     b44:	4a6b 0006      	tst.w 6(a3)
-     b48:	6702           	beq.s b4c <main+0xad8>
+     ac0:	4a6b 0006      	tst.w 6(a3)
+     ac4:	6702           	beq.s ac8 <main+0xa54>
 						neighbours++;
-     b4a:	5241           	addq.w #1,d1
+     ac6:	5247           	addq.w #1,d7
 					if (pf[x][y + 1].Status)
-     b4c:	2c54           	movea.l (a4),a6
-					if (pf[x][y + 1].Status)
-     b4e:	2652           	movea.l (a2),a3
-     b50:	4a6b 0006      	tst.w 6(a3)
-     b54:	674c           	beq.s ba2 <main+0xb2e>
+     ac8:	2651           	movea.l (a1),a3
+     aca:	4a6b 0006      	tst.w 6(a3)
+     ace:	673e           	beq.s b0e <main+0xa9a>
 						neighbours++;
-     b56:	5241           	addq.w #1,d1
-			if (!pf[x][y].Status && neighbours == 3)
-     b58:	ddc9           	adda.l a1,a6
-     b5a:	4a56           	tst.w (a6)
-     b5c:	664a           	bne.s ba8 <main+0xb34>
-     b5e:	0c41 0003      	cmpi.w #3,d1
-     b62:	6760           	beq.s bc4 <main+0xb50>
-		for (int x = 0; x < GameMatrix.Columns; x++)
-     b64:	5280           	addq.l #1,d0
-     b66:	588c           	addq.l #4,a4
-     b68:	bbc0           	cmpa.l d0,a5
-     b6a:	6ebe           	bgt.s b2a <main+0xab6>
-     b6c:	ba80           	cmp.l d0,d5
-     b6e:	6f00 fdae      	ble.w 91e <main+0x8aa>
-     b72:	2840           	movea.l d0,a4
-     b74:	d9c0           	adda.l d0,a4
-     b76:	d9cc           	adda.l a4,a4
-     b78:	49f2 c800      	lea (0,a2,a4.l),a4
-     b7c:	6000 fd5e      	bra.w 8dc <main+0x868>
-				else if (x==GameMatrix.Columns-1) // last column
-     b80:	b083           	cmp.l d3,d0
-     b82:	6600 009c      	bne.w c20 <main+0xbac>
-					if (pf[x - 1][y].Status)
-     b86:	266c fffc      	movea.l -4(a4),a3
-     b8a:	4a53           	tst.w (a3)
-     b8c:	56c1           	sne d1
-     b8e:	4881           	ext.w d1
-     b90:	4441           	neg.w d1
-					if (pf[x - 1][y + 1].Status)
-     b92:	4a6b 0006      	tst.w 6(a3)
-     b96:	6702           	beq.s b9a <main+0xb26>
-						neighbours++;
-     b98:	5241           	addq.w #1,d1
-					if (pf[x][y + 1].Status)
-     b9a:	2c54           	movea.l (a4),a6
-     b9c:	4a6e 0006      	tst.w 6(a6)
-     ba0:	66b4           	bne.s b56 <main+0xae2>
-			if (!pf[x][y].Status && neighbours == 3)
-     ba2:	ddc9           	adda.l a1,a6
-     ba4:	4a56           	tst.w (a6)
-     ba6:	67bc           	beq.s b64 <main+0xaf0>
-			if (pf[x][y].Status && (neighbours < 2 || neighbours > 3))
-     ba8:	5541           	subq.w #2,d1
-     baa:	0c41 0001      	cmpi.w #1,d1
-     bae:	63b4           	bls.s b64 <main+0xaf0>
-				pf[x][y].Status = 0;
-     bb0:	4256           	clr.w (a6)
-				pf[x][y].StatusChanged = TRUE;
-     bb2:	3d7c 0001 0002 	move.w #1,2(a6)
-		for (int x = 0; x < GameMatrix.Columns; x++)
-     bb8:	5280           	addq.l #1,d0
-     bba:	588c           	addq.l #4,a4
-     bbc:	bbc0           	cmpa.l d0,a5
-     bbe:	6e00 ff6a      	bgt.w b2a <main+0xab6>
-     bc2:	60a8           	bra.s b6c <main+0xaf8>
+     ad0:	5247           	addq.w #1,d7
+			if ((pf[x][y].Status==0 && neighbours == 3))
+     ad2:	d5c8           	adda.l a0,a2
+     ad4:	3812           	move.w (a2),d4
+     ad6:	663c           	bne.s b14 <main+0xaa0>
+     ad8:	0c47 0003      	cmpi.w #3,d7
+     adc:	660a           	bne.s ae8 <main+0xa74>
 				pf[x][y].Status = 1;
-     bc4:	3cbc 0001      	move.w #1,(a6)
+     ade:	34bc 0001      	move.w #1,(a2)
 				pf[x][y].StatusChanged = TRUE;
-     bc8:	3d7c 0001 0002 	move.w #1,2(a6)
+     ae2:	357c 0001 0002 	move.w #1,2(a2)
 		for (int x = 0; x < GameMatrix.Columns; x++)
-     bce:	5280           	addq.l #1,d0
-     bd0:	588c           	addq.l #4,a4
-     bd2:	bbc0           	cmpa.l d0,a5
-     bd4:	6e00 ff54      	bgt.w b2a <main+0xab6>
-     bd8:	6092           	bra.s b6c <main+0xaf8>
+     ae8:	5280           	addq.l #1,d0
+     aea:	bc80           	cmp.l d0,d6
+     aec:	6eb8           	bgt.s aa6 <main+0xa32>
+     aee:	282f 0032      	move.l 50(sp),d4
+     af2:	bdc0           	cmpa.l d0,a6
+     af4:	6f00 fe50      	ble.w 946 <main+0x8d2>
+     af8:	2840           	movea.l d0,a4
+     afa:	d9c0           	adda.l d0,a4
+     afc:	d9cc           	adda.l a4,a4
+     afe:	49f1 c800      	lea (0,a1,a4.l),a4
+     b02:	6000 fdfa      	bra.w 8fe <main+0x88a>
+			else if (y == GameMatrix.Rows - 1) // last row
+     b06:	b283           	cmp.l d3,d1
+     b08:	6700 00a8      	beq.w bb2 <main+0xb3e>
+			USHORT neighbours = 0;
+     b0c:	4247           	clr.w d7
+			if ((pf[x][y].Status==0 && neighbours == 3))
+     b0e:	d5c8           	adda.l a0,a2
+     b10:	3812           	move.w (a2),d4
+     b12:	67d4           	beq.s ae8 <main+0xa74>
+			if ((pf[x][y].Status==1 && (neighbours < 2 || neighbours > 3)))
+     b14:	0c44 0001      	cmpi.w #1,d4
+     b18:	66ce           	bne.s ae8 <main+0xa74>
+     b1a:	5547           	subq.w #2,d7
+     b1c:	0c47 0001      	cmpi.w #1,d7
+     b20:	63c6           	bls.s ae8 <main+0xa74>
+				pf[x][y].Status = 0;
+     b22:	4252           	clr.w (a2)
+				pf[x][y].StatusChanged = TRUE;
+     b24:	357c 0001 0002 	move.w #1,2(a2)
+		for (int x = 0; x < GameMatrix.Columns; x++)
+     b2a:	5280           	addq.l #1,d0
+     b2c:	bc80           	cmp.l d0,d6
+     b2e:	6e00 ff76      	bgt.w aa6 <main+0xa32>
+     b32:	60ba           	bra.s aee <main+0xa7a>
 			else if (y > 0 && y < GameMatrix.Rows - 1) // rows between 1st and last
-     bda:	b1c2           	cmpa.l d2,a0
-     bdc:	6c3e           	bge.s c1c <main+0xba8>
+     b34:	b283           	cmp.l d3,d1
+     b36:	6cce           	bge.s b06 <main+0xa92>
 				if (x == 0)
-     bde:	4a80           	tst.l d0
-     be0:	6600 00be      	bne.w ca0 <main+0xc2c>
+     b38:	4a80           	tst.l d0
+     b3a:	6634           	bne.s b70 <main+0xafc>
 					if (pf[x][y - 1].Status)
-     be4:	2652           	movea.l (a2),a3
-     be6:	4a73 6800      	tst.w (0,a3,d6.l)
-     bea:	56c1           	sne d1
-     bec:	4881           	ext.w d1
-     bee:	4441           	neg.w d1
+     b3c:	2651           	movea.l (a1),a3
+     b3e:	4a73 2800      	tst.w (0,a3,d2.l)
+     b42:	56c7           	sne d7
+     b44:	4887           	ext.w d7
+     b46:	4447           	neg.w d7
 					if (pf[x][y + 1].Status)
-     bf0:	4a73 4800      	tst.w (0,a3,d4.l)
-     bf4:	6702           	beq.s bf8 <main+0xb84>
+     b48:	4a73 5800      	tst.w (0,a3,d5.l)
+     b4c:	6702           	beq.s b50 <main+0xadc>
 						neighbours++;
-     bf6:	5241           	addq.w #1,d1
+     b4e:	5247           	addq.w #1,d7
 					if (pf[x + 1][y].Status)
-     bf8:	266a 0004      	movea.l 4(a2),a3
-     bfc:	4a73 9800      	tst.w (0,a3,a1.l)
-     c00:	6702           	beq.s c04 <main+0xb90>
-						neighbours++;
-     c02:	5241           	addq.w #1,d1
-					if (pf[x + 1][y + 1].Status)
-     c04:	4a73 4800      	tst.w (0,a3,d4.l)
-     c08:	6702           	beq.s c0c <main+0xb98>
-						neighbours++;
-     c0a:	5241           	addq.w #1,d1
-					if (pf[x][y + 1].Status)
-     c0c:	2c54           	movea.l (a4),a6
-					if (pf[x + 1][y - 1].Status)
-     c0e:	4a73 6800      	tst.w (0,a3,d6.l)
-     c12:	6700 ff44      	beq.w b58 <main+0xae4>
-						neighbours++;
-     c16:	5241           	addq.w #1,d1
-     c18:	6000 ff3e      	bra.w b58 <main+0xae4>
-			else if (y==GameMatrix.Rows-1)// last row
-     c1c:	b1c2           	cmpa.l d2,a0
-     c1e:	6716           	beq.s c36 <main+0xbc2>
-			if (!pf[x][y].Status && neighbours == 3)
-     c20:	2c54           	movea.l (a4),a6
-     c22:	ddc9           	adda.l a1,a6
-     c24:	4a56           	tst.w (a6)
-     c26:	6688           	bne.s bb0 <main+0xb3c>
-		for (int x = 0; x < GameMatrix.Columns; x++)
-     c28:	5280           	addq.l #1,d0
-     c2a:	588c           	addq.l #4,a4
-     c2c:	bbc0           	cmpa.l d0,a5
-     c2e:	6e00 fefa      	bgt.w b2a <main+0xab6>
-     c32:	6000 ff38      	bra.w b6c <main+0xaf8>
-				if (x == 0)
-     c36:	4a80           	tst.l d0
-     c38:	6600 0160      	bne.w d9a <main+0xd26>
-					if (pf[x][y - 1].Status)
-     c3c:	2652           	movea.l (a2),a3
-     c3e:	4a73 6800      	tst.w (0,a3,d6.l)
-     c42:	56c1           	sne d1
-     c44:	4881           	ext.w d1
-     c46:	4441           	neg.w d1
-					if (pf[x + 1][y - 1].Status)
-     c48:	266a 0004      	movea.l 4(a2),a3
-     c4c:	4a73 6800      	tst.w (0,a3,d6.l)
-     c50:	6702           	beq.s c54 <main+0xbe0>
-						neighbours++;
-     c52:	5241           	addq.w #1,d1
-					if (pf[x][y + 1].Status)
-     c54:	2c54           	movea.l (a4),a6
-					if (pf[x + 1][y].Status)
-     c56:	4a73 9800      	tst.w (0,a3,a1.l)
-     c5a:	6700 ff46      	beq.w ba2 <main+0xb2e>
-						neighbours++;
-     c5e:	5241           	addq.w #1,d1
-     c60:	6000 fef6      	bra.w b58 <main+0xae4>
-				else if (x > 0 && x < GameMatrix.Columns - 1) // columns in between 1st and last
-     c64:	b083           	cmp.l d3,d0
-     c66:	6c00 ff18      	bge.w b80 <main+0xb0c>
-					if (pf[x + 1][y].Status)
-     c6a:	266c 0004      	movea.l 4(a4),a3
-     c6e:	4a53           	tst.w (a3)
-     c70:	56c1           	sne d1
-     c72:	4881           	ext.w d1
-     c74:	4441           	neg.w d1
-					if (pf[x + 1][y + 1].Status)
-     c76:	4a6b 0006      	tst.w 6(a3)
-     c7a:	6702           	beq.s c7e <main+0xc0a>
-						neighbours++;
-     c7c:	5241           	addq.w #1,d1
-					if (pf[x][y + 1].Status)
-     c7e:	2c54           	movea.l (a4),a6
-     c80:	4a6e 0006      	tst.w 6(a6)
-     c84:	6702           	beq.s c88 <main+0xc14>
-						neighbours++;
-     c86:	5241           	addq.w #1,d1
-					if (pf[x - 1][y].Status)
-     c88:	266c fffc      	movea.l -4(a4),a3
-     c8c:	4a53           	tst.w (a3)
-     c8e:	6702           	beq.s c92 <main+0xc1e>
-						neighbours++;
-     c90:	5241           	addq.w #1,d1
+     b50:	2669 0004      	movea.l 4(a1),a3
+     b54:	4a73 8800      	tst.w (0,a3,a0.l)
+     b58:	6654           	bne.s bae <main+0xb3a>
 					if (pf[x - 1][y + 1].Status)
-     c92:	4a6b 0006      	tst.w 6(a3)
-     c96:	6700 fec0      	beq.w b58 <main+0xae4>
+     b5a:	4a73 5800      	tst.w (0,a3,d5.l)
+     b5e:	6702           	beq.s b62 <main+0xaee>
 						neighbours++;
-     c9a:	5241           	addq.w #1,d1
-     c9c:	6000 feba      	bra.w b58 <main+0xae4>
+     b60:	5247           	addq.w #1,d7
+					if (pf[x - 1][y - 1].Status)
+     b62:	4a73 2800      	tst.w (0,a3,d2.l)
+     b66:	6700 ff6a      	beq.w ad2 <main+0xa5e>
+						neighbours++;
+     b6a:	5247           	addq.w #1,d7
+     b6c:	6000 ff64      	bra.w ad2 <main+0xa5e>
 				else if (x > 0 && x < GameMatrix.Columns - 1)
-     ca0:	b083           	cmp.l d3,d0
-     ca2:	6c52           	bge.s cf6 <main+0xc82>
+     b70:	b0af 0032      	cmp.l 50(sp),d0
+     b74:	6c00 00ce      	bge.w c44 <main+0xbd0>
 					if (pf[x][y + 1].Status)
-     ca4:	2c54           	movea.l (a4),a6
-     ca6:	4a76 4800      	tst.w (0,a6,d4.l)
-     caa:	56c1           	sne d1
-     cac:	4881           	ext.w d1
-     cae:	4441           	neg.w d1
+     b78:	4a72 5800      	tst.w (0,a2,d5.l)
+     b7c:	56c7           	sne d7
+     b7e:	4887           	ext.w d7
+     b80:	4447           	neg.w d7
 					if (pf[x][y - 1].Status)
-     cb0:	4a76 6800      	tst.w (0,a6,d6.l)
-     cb4:	6702           	beq.s cb8 <main+0xc44>
+     b82:	4a72 2800      	tst.w (0,a2,d2.l)
+     b86:	6702           	beq.s b8a <main+0xb16>
 						neighbours++;
-     cb6:	5241           	addq.w #1,d1
+     b88:	5247           	addq.w #1,d7
 					if (pf[x + 1][y].Status)
-     cb8:	266c 0004      	movea.l 4(a4),a3
-     cbc:	4a73 9800      	tst.w (0,a3,a1.l)
-     cc0:	6702           	beq.s cc4 <main+0xc50>
+     b8a:	2654           	movea.l (a4),a3
+     b8c:	4a73 8800      	tst.w (0,a3,a0.l)
+     b90:	6702           	beq.s b94 <main+0xb20>
 						neighbours++;
-     cc2:	5241           	addq.w #1,d1
+     b92:	5247           	addq.w #1,d7
 					if (pf[x + 1][y - 1].Status)
-     cc4:	4a73 6800      	tst.w (0,a3,d6.l)
-     cc8:	6702           	beq.s ccc <main+0xc58>
+     b94:	4a73 2800      	tst.w (0,a3,d2.l)
+     b98:	6702           	beq.s b9c <main+0xb28>
 						neighbours++;
-     cca:	5241           	addq.w #1,d1
+     b9a:	5247           	addq.w #1,d7
 					if (pf[x + 1][y + 1].Status)
-     ccc:	4a73 4800      	tst.w (0,a3,d4.l)
-     cd0:	6702           	beq.s cd4 <main+0xc60>
+     b9c:	4a73 5800      	tst.w (0,a3,d5.l)
+     ba0:	6702           	beq.s ba4 <main+0xb30>
 						neighbours++;
-     cd2:	5241           	addq.w #1,d1
+     ba2:	5247           	addq.w #1,d7
 					if (pf[x - 1][y].Status)
-     cd4:	266c fffc      	movea.l -4(a4),a3
-     cd8:	4a73 9800      	tst.w (0,a3,a1.l)
-     cdc:	6702           	beq.s ce0 <main+0xc6c>
+     ba4:	266c fff8      	movea.l -8(a4),a3
+     ba8:	4a73 8800      	tst.w (0,a3,a0.l)
+     bac:	67ac           	beq.s b5a <main+0xae6>
 						neighbours++;
-     cde:	5241           	addq.w #1,d1
-					if (pf[x - 1][y + 1].Status)
-     ce0:	4a73 4800      	tst.w (0,a3,d4.l)
-     ce4:	6702           	beq.s ce8 <main+0xc74>
-						neighbours++;
-     ce6:	5241           	addq.w #1,d1
-					if (pf[x - 1][y - 1].Status)
-     ce8:	4a73 6800      	tst.w (0,a3,d6.l)
-     cec:	6700 fe6a      	beq.w b58 <main+0xae4>
-						neighbours++;
-     cf0:	5241           	addq.w #1,d1
-     cf2:	6000 fe64      	bra.w b58 <main+0xae4>
-				else if (x==GameMatrix.Columns-1)
-     cf6:	b083           	cmp.l d3,d0
-     cf8:	6600 ff26      	bne.w c20 <main+0xbac>
-					if (pf[x - 1][y - 1].Status)
-     cfc:	266c fffc      	movea.l -4(a4),a3
-     d00:	4a73 6800      	tst.w (0,a3,d6.l)
-     d04:	56c1           	sne d1
-     d06:	4881           	ext.w d1
-     d08:	4441           	neg.w d1
-					if (pf[x - 1][y].Status)
-     d0a:	4a73 9800      	tst.w (0,a3,a1.l)
-     d0e:	6702           	beq.s d12 <main+0xc9e>
-						neighbours++;
-     d10:	5241           	addq.w #1,d1
-					if (pf[x - 1][y + 1].Status)
-     d12:	4a73 4800      	tst.w (0,a3,d4.l)
-     d16:	6702           	beq.s d1a <main+0xca6>
-						neighbours++;
-     d18:	5241           	addq.w #1,d1
+     bae:	5247           	addq.w #1,d7
+     bb0:	60a8           	bra.s b5a <main+0xae6>
+				if (x == 0)
+     bb2:	4a80           	tst.l d0
+     bb4:	6600 0104      	bne.w cba <main+0xc46>
 					if (pf[x][y - 1].Status)
-     d1a:	2c54           	movea.l (a4),a6
-     d1c:	4a76 6800      	tst.w (0,a6,d6.l)
-     d20:	6702           	beq.s d24 <main+0xcb0>
-						neighbours++;
-     d22:	5241           	addq.w #1,d1
-					if (pf[x][y + 1].Status)
-     d24:	4a76 4800      	tst.w (0,a6,d4.l)
-     d28:	6700 fe2e      	beq.w b58 <main+0xae4>
-						neighbours++;
-     d2c:	5241           	addq.w #1,d1
-     d2e:	6000 fe28      	bra.w b58 <main+0xae4>
-				else if (x==GameMatrix.Columns-1)
-     d32:	b680           	cmp.l d0,d3
-     d34:	6600 fd16      	bne.w a4c <main+0x9d8>
-					if (pf[x - 1][y - 1].Status)
-     d38:	266c fffc      	movea.l -4(a4),a3
-     d3c:	4a73 6800      	tst.w (0,a3,d6.l)
-     d40:	56c1           	sne d1
-     d42:	4881           	ext.w d1
-     d44:	4441           	neg.w d1
-					if (pf[x - 1][y].Status)
-     d46:	4a73 9800      	tst.w (0,a3,a1.l)
-     d4a:	6702           	beq.s d4e <main+0xcda>
-						neighbours++;
-     d4c:	5241           	addq.w #1,d1
-					if (pf[x - 1][y + 1].Status)
-     d4e:	4a73 4800      	tst.w (0,a3,d4.l)
-     d52:	6702           	beq.s d56 <main+0xce2>
-						neighbours++;
-     d54:	5241           	addq.w #1,d1
-					if (pf[x][y - 1].Status)
-     d56:	2654           	movea.l (a4),a3
-     d58:	4a73 6800      	tst.w (0,a3,d6.l)
-     d5c:	6702           	beq.s d60 <main+0xcec>
-						neighbours++;
-     d5e:	5241           	addq.w #1,d1
-					if (pf[x][y + 1].Status)
-     d60:	4a73 4800      	tst.w (0,a3,d4.l)
-     d64:	6700 fba4      	beq.w 90a <main+0x896>
-						neighbours++;
-     d68:	5241           	addq.w #1,d1
-     d6a:	6000 fb9e      	bra.w 90a <main+0x896>
-				else if (x==GameMatrix.Columns-1)
-     d6e:	b083           	cmp.l d3,d0
-     d70:	6600 fcda      	bne.w a4c <main+0x9d8>
-					if (pf[x - 1][y - 1].Status)
-     d74:	266c fffc      	movea.l -4(a4),a3
-     d78:	4a73 6800      	tst.w (0,a3,d6.l)
-     d7c:	56c1           	sne d1
-     d7e:	4881           	ext.w d1
-     d80:	4441           	neg.w d1
-					if (pf[x - 1][y].Status)
-     d82:	4a73 9800      	tst.w (0,a3,a1.l)
-     d86:	6702           	beq.s d8a <main+0xd16>
-						neighbours++;
-     d88:	5241           	addq.w #1,d1
-					if (pf[x][y - 1].Status)
-     d8a:	2654           	movea.l (a4),a3
-     d8c:	4a73 6800      	tst.w (0,a3,d6.l)
-     d90:	6700 fbd0      	beq.w 962 <main+0x8ee>
-						neighbours++;
-     d94:	5241           	addq.w #1,d1
-     d96:	6000 fb72      	bra.w 90a <main+0x896>
-					if (pf[x - 1][y].Status)
-     d9a:	266c fffc      	movea.l -4(a4),a3
-     d9e:	4a73 9800      	tst.w (0,a3,a1.l)
-     da2:	56c1           	sne d1
-     da4:	4881           	ext.w d1
-     da6:	4441           	neg.w d1
-					if (pf[x - 1][y - 1].Status)
-     da8:	4a73 6800      	tst.w (0,a3,d6.l)
-     dac:	6702           	beq.s db0 <main+0xd3c>
-						neighbours++;
-     dae:	5241           	addq.w #1,d1
-					if (pf[x][y - 1].Status)
-     db0:	2c54           	movea.l (a4),a6
-     db2:	4a76 6800      	tst.w (0,a6,d6.l)
-     db6:	6702           	beq.s dba <main+0xd46>
-						neighbours++;
-     db8:	5241           	addq.w #1,d1
+     bb8:	2651           	movea.l (a1),a3
+     bba:	4a73 2800      	tst.w (0,a3,d2.l)
+     bbe:	56c7           	sne d7
+     bc0:	4887           	ext.w d7
+     bc2:	4447           	neg.w d7
 					if (pf[x + 1][y - 1].Status)
-     dba:	266c 0004      	movea.l 4(a4),a3
-     dbe:	4a73 6800      	tst.w (0,a3,d6.l)
-     dc2:	6702           	beq.s dc6 <main+0xd52>
+     bc4:	2669 0004      	movea.l 4(a1),a3
+     bc8:	4a73 2800      	tst.w (0,a3,d2.l)
+     bcc:	6702           	beq.s bd0 <main+0xb5c>
 						neighbours++;
-     dc4:	5241           	addq.w #1,d1
+     bce:	5247           	addq.w #1,d7
 					if (pf[x + 1][y].Status)
-     dc6:	4a73 9800      	tst.w (0,a3,a1.l)
-     dca:	6700 fd8c      	beq.w b58 <main+0xae4>
+     bd0:	4a73 8800      	tst.w (0,a3,a0.l)
+     bd4:	6700 ff38      	beq.w b0e <main+0xa9a>
 						neighbours++;
-     dce:	5241           	addq.w #1,d1
-     dd0:	6000 fd86      	bra.w b58 <main+0xae4>
+     bd8:	5247           	addq.w #1,d7
+     bda:	6000 fef6      	bra.w ad2 <main+0xa5e>
+				else if (x > 0 && x < GameMatrix.Columns - 1) // columns in between 1st and last
+     bde:	b0af 0032      	cmp.l 50(sp),d0
+     be2:	6c32           	bge.s c16 <main+0xba2>
+					if (pf[x + 1][y].Status)
+     be4:	2654           	movea.l (a4),a3
+     be6:	4a53           	tst.w (a3)
+     be8:	56c7           	sne d7
+     bea:	4887           	ext.w d7
+     bec:	4447           	neg.w d7
+					if (pf[x + 1][y + 1].Status)
+     bee:	4a6b 0006      	tst.w 6(a3)
+     bf2:	6702           	beq.s bf6 <main+0xb82>
+						neighbours++;
+     bf4:	5247           	addq.w #1,d7
+					if (pf[x][y + 1].Status)
+     bf6:	4a6a 0006      	tst.w 6(a2)
+     bfa:	6702           	beq.s bfe <main+0xb8a>
+						neighbours++;
+     bfc:	5247           	addq.w #1,d7
+					if (pf[x - 1][y].Status)
+     bfe:	266c fff8      	movea.l -8(a4),a3
+     c02:	4a53           	tst.w (a3)
+     c04:	6702           	beq.s c08 <main+0xb94>
+						neighbours++;
+     c06:	5247           	addq.w #1,d7
+					if (pf[x - 1][y + 1].Status)
+     c08:	4a6b 0006      	tst.w 6(a3)
+     c0c:	6700 fec4      	beq.w ad2 <main+0xa5e>
+						neighbours++;
+     c10:	5247           	addq.w #1,d7
+     c12:	6000 febe      	bra.w ad2 <main+0xa5e>
+				else if (x == GameMatrix.Columns - 1) // last column
+     c16:	b0af 0032      	cmp.l 50(sp),d0
+     c1a:	6600 fef0      	bne.w b0c <main+0xa98>
+					if (pf[x - 1][y].Status)
+     c1e:	266c fff8      	movea.l -8(a4),a3
+     c22:	4a53           	tst.w (a3)
+     c24:	56c7           	sne d7
+     c26:	4887           	ext.w d7
+     c28:	4447           	neg.w d7
+					if (pf[x - 1][y + 1].Status)
+     c2a:	4a6b 0006      	tst.w 6(a3)
+     c2e:	6702           	beq.s c32 <main+0xbbe>
+						neighbours++;
+     c30:	5247           	addq.w #1,d7
+					if (pf[x][y + 1].Status)
+     c32:	266c fffc      	movea.l -4(a4),a3
+     c36:	4a6b 0006      	tst.w 6(a3)
+     c3a:	6700 fed2      	beq.w b0e <main+0xa9a>
+						neighbours++;
+     c3e:	5247           	addq.w #1,d7
+     c40:	6000 fe90      	bra.w ad2 <main+0xa5e>
+				else if (x == GameMatrix.Columns - 1)
+     c44:	b0af 0032      	cmp.l 50(sp),d0
+     c48:	6600 fec2      	bne.w b0c <main+0xa98>
+					if (pf[x - 1][y - 1].Status)
+     c4c:	266c fff8      	movea.l -8(a4),a3
+     c50:	4a73 2800      	tst.w (0,a3,d2.l)
+     c54:	56c7           	sne d7
+     c56:	4887           	ext.w d7
+     c58:	4447           	neg.w d7
+					if (pf[x - 1][y].Status)
+     c5a:	4a73 8800      	tst.w (0,a3,a0.l)
+     c5e:	6702           	beq.s c62 <main+0xbee>
+						neighbours++;
+     c60:	5247           	addq.w #1,d7
+					if (pf[x - 1][y + 1].Status)
+     c62:	4a73 5800      	tst.w (0,a3,d5.l)
+     c66:	6702           	beq.s c6a <main+0xbf6>
+						neighbours++;
+     c68:	5247           	addq.w #1,d7
+					if (pf[x][y - 1].Status)
+     c6a:	4a72 2800      	tst.w (0,a2,d2.l)
+     c6e:	6702           	beq.s c72 <main+0xbfe>
+						neighbours++;
+     c70:	5247           	addq.w #1,d7
+					if (pf[x][y + 1].Status)
+     c72:	4a72 5800      	tst.w (0,a2,d5.l)
+     c76:	6700 fe5a      	beq.w ad2 <main+0xa5e>
+						neighbours++;
+     c7a:	5247           	addq.w #1,d7
+     c7c:	6000 fe54      	bra.w ad2 <main+0xa5e>
+				else if (x == GameMatrix.Columns - 1)
+     c80:	b084           	cmp.l d4,d0
+     c82:	6600 fce0      	bne.w 964 <main+0x8f0>
+					if (pf[x - 1][y - 1].Status)
+     c86:	266c fff8      	movea.l -8(a4),a3
+     c8a:	4a73 2800      	tst.w (0,a3,d2.l)
+     c8e:	56c6           	sne d6
+     c90:	4886           	ext.w d6
+     c92:	4446           	neg.w d6
+					if (pf[x - 1][y].Status)
+     c94:	4a73 8800      	tst.w (0,a3,a0.l)
+     c98:	6702           	beq.s c9c <main+0xc28>
+						neighbours++;
+     c9a:	5246           	addq.w #1,d6
+					if (pf[x - 1][y + 1].Status)
+     c9c:	4a73 5800      	tst.w (0,a3,d5.l)
+     ca0:	6702           	beq.s ca4 <main+0xc30>
+						neighbours++;
+     ca2:	5246           	addq.w #1,d6
+					if (pf[x][y - 1].Status)
+     ca4:	4a72 2800      	tst.w (0,a2,d2.l)
+     ca8:	6702           	beq.s cac <main+0xc38>
+						neighbours++;
+     caa:	5246           	addq.w #1,d6
+					if (pf[x][y + 1].Status)
+     cac:	4a72 5800      	tst.w (0,a2,d5.l)
+     cb0:	6700 fc78      	beq.w 92a <main+0x8b6>
+						neighbours++;
+     cb4:	5246           	addq.w #1,d6
+     cb6:	6000 fc72      	bra.w 92a <main+0x8b6>
+					if (pf[x - 1][y].Status)
+     cba:	266c fff8      	movea.l -8(a4),a3
+     cbe:	4a73 8800      	tst.w (0,a3,a0.l)
+     cc2:	56c7           	sne d7
+     cc4:	4887           	ext.w d7
+     cc6:	4447           	neg.w d7
+					if (pf[x - 1][y - 1].Status)
+     cc8:	4a73 2800      	tst.w (0,a3,d2.l)
+     ccc:	6702           	beq.s cd0 <main+0xc5c>
+						neighbours++;
+     cce:	5247           	addq.w #1,d7
+					if (pf[x][y - 1].Status)
+     cd0:	4a72 2800      	tst.w (0,a2,d2.l)
+     cd4:	6702           	beq.s cd8 <main+0xc64>
+						neighbours++;
+     cd6:	5247           	addq.w #1,d7
+					if (pf[x + 1][y - 1].Status)
+     cd8:	2654           	movea.l (a4),a3
+     cda:	4a73 2800      	tst.w (0,a3,d2.l)
+     cde:	6702           	beq.s ce2 <main+0xc6e>
+						neighbours++;
+     ce0:	5247           	addq.w #1,d7
+					if (pf[x + 1][y].Status)
+     ce2:	4a73 8800      	tst.w (0,a3,a0.l)
+     ce6:	6700 fdea      	beq.w ad2 <main+0xa5e>
+						neighbours++;
+     cea:	5247           	addq.w #1,d7
+     cec:	6000 fde4      	bra.w ad2 <main+0xa5e>
+				else if (x == GameMatrix.Columns - 1)
+     cf0:	b084           	cmp.l d4,d0
+     cf2:	6600 fc70      	bne.w 964 <main+0x8f0>
+					if (pf[x - 1][y - 1].Status)
+     cf6:	266c fff8      	movea.l -8(a4),a3
+     cfa:	4a73 2800      	tst.w (0,a3,d2.l)
+     cfe:	56c6           	sne d6
+     d00:	4886           	ext.w d6
+     d02:	4446           	neg.w d6
+					if (pf[x - 1][y].Status)
+     d04:	4a73 8800      	tst.w (0,a3,a0.l)
+     d08:	6702           	beq.s d0c <main+0xc98>
+						neighbours++;
+     d0a:	5246           	addq.w #1,d6
+					if (pf[x][y - 1].Status)
+     d0c:	4a72 2800      	tst.w (0,a2,d2.l)
+     d10:	6700 fc54      	beq.w 966 <main+0x8f2>
+						neighbours++;
+     d14:	5246           	addq.w #1,d6
+     d16:	6000 fc12      	bra.w 92a <main+0x8b6>
 			GameMatrix.Playfield[x][y].Status = 1;
-     dd4:	30bc 0001      	move.w #1,(a0)
+     d1a:	30bc 0001      	move.w #1,(a0)
 			GameMatrix.Playfield[x][y].StatusChanged = TRUE;
-     dd8:	317c 0001 0002 	move.w #1,2(a0)
-     dde:	6000 f666      	bra.w 446 <main+0x3d2>
-     de2:	7000           	moveq #0,d0
+     d1e:	317c 0001 0002 	move.w #1,2(a0)
+     d24:	6000 f6d8      	bra.w 3fe <main+0x38a>
+     d28:	7000           	moveq #0,d0
 }
-     de4:	4cdf 7cfc      	movem.l (sp)+,d2-d7/a2-a6
-     de8:	4fef 00b0      	lea 176(sp),sp
-     dec:	4e75           	rts
-     dee:	4e71           	nop
+     d2a:	4cdf 7cfc      	movem.l (sp)+,d2-d7/a2-a6
+     d2e:	4fef 00b4      	lea 180(sp),sp
+     d32:	4e75           	rts
 
-00000df0 <DrawCells.constprop.1>:
+00000d34 <DrawCells.constprop.1>:
 void DrawCells(struct Window *theWindow, BOOL forceFull)
-     df0:	4fef fff4      	lea -12(sp),sp
-     df4:	48e7 3f3e      	movem.l d2-d7/a2-a6,-(sp)
-     df8:	246f 003c      	movea.l 60(sp),a2
-	for (int x = 0; x < GameMatrix.Columns; x++)
-     dfc:	4a79 0000 350e 	tst.w 350e <GameMatrix+0x6>
-     e02:	6700 00d6      	beq.w eda <DrawCells.constprop.1+0xea>
-		for (int y = 0; y < GameMatrix.Rows; y++)
-     e06:	3039 0000 350c 	move.w 350c <GameMatrix+0x4>,d0
-     e0c:	42af 0034      	clr.l 52(sp)
-	for (int x = 0; x < GameMatrix.Columns; x++)
-     e10:	42af 0030      	clr.l 48(sp)
-     e14:	49f9 0000 3508 	lea 3508 <GameMatrix>,a4
-     e1a:	47f9 0000 1180 	lea 1180 <__mulsi3>,a3
-		for (int y = 0; y < GameMatrix.Rows; y++)
-     e20:	4a40           	tst.w d0
-     e22:	6700 00b6      	beq.w eda <DrawCells.constprop.1+0xea>
-     e26:	7a00           	moveq #0,d5
-     e28:	7800           	moveq #0,d4
+     d34:	4fef fff4      	lea -12(sp),sp
+     d38:	48e7 3f3e      	movem.l d2-d7/a2-a6,-(sp)
+     d3c:	246f 003c      	movea.l 60(sp),a2
+	for (int y = 0; y < GameMatrix.Rows; y++)
+     d40:	4a79 0000 3450 	tst.w 3450 <GameMatrix+0x4>
+     d46:	6700 00d4      	beq.w e1c <DrawCells.constprop.1+0xe8>
+		for (int x = 0; x < GameMatrix.Columns; x++)
+     d4a:	3039 0000 3452 	move.w 3452 <GameMatrix+0x6>,d0
+     d50:	42af 0034      	clr.l 52(sp)
+	for (int y = 0; y < GameMatrix.Rows; y++)
+     d54:	42af 0030      	clr.l 48(sp)
+     d58:	49f9 0000 344c 	lea 344c <GameMatrix>,a4
+     d5e:	47f9 0000 10c4 	lea 10c4 <__mulsi3>,a3
+		for (int x = 0; x < GameMatrix.Columns; x++)
+     d64:	4a40           	tst.w d0
+     d66:	6700 00b4      	beq.w e1c <DrawCells.constprop.1+0xe8>
+     d6a:	7a00           	moveq #0,d5
+     d6c:	7800           	moveq #0,d4
 			if (!GameMatrix.Playfield[x][y].StatusChanged && !forceFull)
-     e2a:	2054           	movea.l (a4),a0
-     e2c:	202f 0034      	move.l 52(sp),d0
-     e30:	2070 0800      	movea.l (0,a0,d0.l),a0
-     e34:	d1c5           	adda.l d5,a0
+     d6e:	2054           	movea.l (a4),a0
+     d70:	2070 5800      	movea.l (0,a0,d5.l),a0
+     d74:	d1ef 0034      	adda.l 52(sp),a0
 			GameMatrix.Playfield[x][y].StatusChanged = FALSE;
-     e36:	4268 0002      	clr.w 2(a0)
+     d78:	4268 0002      	clr.w 2(a0)
 				SetAPen(theWindow->RPort, GameMatrix.ColorAlive);
-     e3a:	226a 0032      	movea.l 50(a2),a1
-     e3e:	2c79 0000 34f0 	movea.l 34f0 <GfxBase>,a6
-     e44:	7000           	moveq #0,d0
+     d7c:	226a 0032      	movea.l 50(a2),a1
+     d80:	2c79 0000 3434 	movea.l 3434 <GfxBase>,a6
+     d86:	7000           	moveq #0,d0
 			if (GameMatrix.Playfield[x][y].Status)
-     e46:	4a50           	tst.w (a0)
-     e48:	6700 009a      	beq.w ee4 <DrawCells.constprop.1+0xf4>
+     d88:	4a50           	tst.w (a0)
+     d8a:	6700 009a      	beq.w e26 <DrawCells.constprop.1+0xf2>
 				SetAPen(theWindow->RPort, GameMatrix.ColorAlive);
-     e4c:	3039 0000 3510 	move.w 3510 <GameMatrix+0x8>,d0
-     e52:	4eae feaa      	jsr -342(a6)
+     d8e:	3039 0000 3454 	move.w 3454 <GameMatrix+0x8>,d0
+     d94:	4eae feaa      	jsr -342(a6)
 			RectFill(theWindow->RPort,
-     e56:	226a 0032      	movea.l 50(a2),a1
-     e5a:	7400           	moveq #0,d2
-     e5c:	3439 0000 3514 	move.w 3514 <GameMatrix+0xc>,d2
-     e62:	2f2f 0030      	move.l 48(sp),-(sp)
-     e66:	2f02           	move.l d2,-(sp)
-     e68:	2f49 0034      	move.l a1,52(sp)
-     e6c:	4e93           	jsr (a3)
-     e6e:	508f           	addq.l #8,sp
-     e70:	2a40           	movea.l d0,a5
-     e72:	2e00           	move.l d0,d7
-     e74:	5287           	addq.l #1,d7
-     e76:	7c00           	moveq #0,d6
-     e78:	3c39 0000 3516 	move.w 3516 <GameMatrix+0xe>,d6
-     e7e:	2f04           	move.l d4,-(sp)
-     e80:	2f06           	move.l d6,-(sp)
-     e82:	4e93           	jsr (a3)
-     e84:	508f           	addq.l #8,sp
-     e86:	2600           	move.l d0,d3
-     e88:	2c79 0000 34f0 	movea.l 34f0 <GfxBase>,a6
-     e8e:	226f 002c      	movea.l 44(sp),a1
-     e92:	2007           	move.l d7,d0
-     e94:	2203           	move.l d3,d1
-     e96:	5281           	addq.l #1,d1
-     e98:	4bf5 28ff      	lea (-1,a5,d2.l),a5
-     e9c:	240d           	move.l a5,d2
-     e9e:	2046           	movea.l d6,a0
-     ea0:	41f0 38ff      	lea (-1,a0,d3.l),a0
-     ea4:	2608           	move.l a0,d3
-     ea6:	4eae fece      	jsr -306(a6)
-		for (int y = 0; y < GameMatrix.Rows; y++)
-     eaa:	5284           	addq.l #1,d4
-     eac:	3039 0000 350c 	move.w 350c <GameMatrix+0x4>,d0
-     eb2:	5c85           	addq.l #6,d5
-     eb4:	7200           	moveq #0,d1
-     eb6:	3200           	move.w d0,d1
-     eb8:	b284           	cmp.l d4,d1
-     eba:	6e00 ff6e      	bgt.w e2a <DrawCells.constprop.1+0x3a>
-	for (int x = 0; x < GameMatrix.Columns; x++)
-     ebe:	52af 0030      	addq.l #1,48(sp)
-     ec2:	7200           	moveq #0,d1
-     ec4:	3239 0000 350e 	move.w 350e <GameMatrix+0x6>,d1
-     eca:	b2af 0030      	cmp.l 48(sp),d1
-     ece:	6f0a           	ble.s eda <DrawCells.constprop.1+0xea>
-     ed0:	58af 0034      	addq.l #4,52(sp)
-		for (int y = 0; y < GameMatrix.Rows; y++)
-     ed4:	4a40           	tst.w d0
-     ed6:	6600 ff4e      	bne.w e26 <DrawCells.constprop.1+0x36>
+     d98:	226a 0032      	movea.l 50(a2),a1
+     d9c:	7400           	moveq #0,d2
+     d9e:	3439 0000 3458 	move.w 3458 <GameMatrix+0xc>,d2
+     da4:	2f04           	move.l d4,-(sp)
+     da6:	2f02           	move.l d2,-(sp)
+     da8:	2f49 0034      	move.l a1,52(sp)
+     dac:	4e93           	jsr (a3)
+     dae:	508f           	addq.l #8,sp
+     db0:	2a40           	movea.l d0,a5
+     db2:	2c00           	move.l d0,d6
+     db4:	5286           	addq.l #1,d6
+     db6:	7e00           	moveq #0,d7
+     db8:	3e39 0000 345a 	move.w 345a <GameMatrix+0xe>,d7
+     dbe:	2f2f 0030      	move.l 48(sp),-(sp)
+     dc2:	2f07           	move.l d7,-(sp)
+     dc4:	4e93           	jsr (a3)
+     dc6:	508f           	addq.l #8,sp
+     dc8:	2600           	move.l d0,d3
+     dca:	2c79 0000 3434 	movea.l 3434 <GfxBase>,a6
+     dd0:	226f 002c      	movea.l 44(sp),a1
+     dd4:	2006           	move.l d6,d0
+     dd6:	2203           	move.l d3,d1
+     dd8:	5281           	addq.l #1,d1
+     dda:	4bf5 28ff      	lea (-1,a5,d2.l),a5
+     dde:	240d           	move.l a5,d2
+     de0:	2047           	movea.l d7,a0
+     de2:	41f0 38ff      	lea (-1,a0,d3.l),a0
+     de6:	2608           	move.l a0,d3
+     de8:	4eae fece      	jsr -306(a6)
+		for (int x = 0; x < GameMatrix.Columns; x++)
+     dec:	5284           	addq.l #1,d4
+     dee:	3039 0000 3452 	move.w 3452 <GameMatrix+0x6>,d0
+     df4:	5885           	addq.l #4,d5
+     df6:	7200           	moveq #0,d1
+     df8:	3200           	move.w d0,d1
+     dfa:	b284           	cmp.l d4,d1
+     dfc:	6e00 ff70      	bgt.w d6e <DrawCells.constprop.1+0x3a>
+	for (int y = 0; y < GameMatrix.Rows; y++)
+     e00:	52af 0030      	addq.l #1,48(sp)
+     e04:	7200           	moveq #0,d1
+     e06:	3239 0000 3450 	move.w 3450 <GameMatrix+0x4>,d1
+     e0c:	b2af 0030      	cmp.l 48(sp),d1
+     e10:	6f0a           	ble.s e1c <DrawCells.constprop.1+0xe8>
+     e12:	5caf 0034      	addq.l #6,52(sp)
+		for (int x = 0; x < GameMatrix.Columns; x++)
+     e16:	4a40           	tst.w d0
+     e18:	6600 ff50      	bne.w d6a <DrawCells.constprop.1+0x36>
 }
-     eda:	4cdf 7cfc      	movem.l (sp)+,d2-d7/a2-a6
-     ede:	4fef 000c      	lea 12(sp),sp
-     ee2:	4e75           	rts
+     e1c:	4cdf 7cfc      	movem.l (sp)+,d2-d7/a2-a6
+     e20:	4fef 000c      	lea 12(sp),sp
+     e24:	4e75           	rts
 				SetAPen(theWindow->RPort, GameMatrix.ColorDead);
-     ee4:	3039 0000 3512 	move.w 3512 <GameMatrix+0xa>,d0
-     eea:	4eae feaa      	jsr -342(a6)
+     e26:	3039 0000 3456 	move.w 3456 <GameMatrix+0xa>,d0
+     e2c:	4eae feaa      	jsr -342(a6)
 			RectFill(theWindow->RPort,
-     eee:	226a 0032      	movea.l 50(a2),a1
-     ef2:	7400           	moveq #0,d2
-     ef4:	3439 0000 3514 	move.w 3514 <GameMatrix+0xc>,d2
-     efa:	2f2f 0030      	move.l 48(sp),-(sp)
-     efe:	2f02           	move.l d2,-(sp)
-     f00:	2f49 0034      	move.l a1,52(sp)
-     f04:	4e93           	jsr (a3)
-     f06:	508f           	addq.l #8,sp
-     f08:	2a40           	movea.l d0,a5
-     f0a:	2e00           	move.l d0,d7
-     f0c:	5287           	addq.l #1,d7
-     f0e:	7c00           	moveq #0,d6
-     f10:	3c39 0000 3516 	move.w 3516 <GameMatrix+0xe>,d6
-     f16:	2f04           	move.l d4,-(sp)
-     f18:	2f06           	move.l d6,-(sp)
-     f1a:	4e93           	jsr (a3)
-     f1c:	508f           	addq.l #8,sp
-     f1e:	2600           	move.l d0,d3
-     f20:	2c79 0000 34f0 	movea.l 34f0 <GfxBase>,a6
-     f26:	226f 002c      	movea.l 44(sp),a1
-     f2a:	2007           	move.l d7,d0
-     f2c:	2203           	move.l d3,d1
-     f2e:	5281           	addq.l #1,d1
-     f30:	4bf5 28ff      	lea (-1,a5,d2.l),a5
-     f34:	240d           	move.l a5,d2
-     f36:	2046           	movea.l d6,a0
-     f38:	41f0 38ff      	lea (-1,a0,d3.l),a0
-     f3c:	2608           	move.l a0,d3
-     f3e:	4eae fece      	jsr -306(a6)
-		for (int y = 0; y < GameMatrix.Rows; y++)
-     f42:	5284           	addq.l #1,d4
-     f44:	3039 0000 350c 	move.w 350c <GameMatrix+0x4>,d0
-     f4a:	5c85           	addq.l #6,d5
-     f4c:	7200           	moveq #0,d1
-     f4e:	3200           	move.w d0,d1
-     f50:	b284           	cmp.l d4,d1
-     f52:	6e00 fed6      	bgt.w e2a <DrawCells.constprop.1+0x3a>
-     f56:	6000 ff66      	bra.w ebe <DrawCells.constprop.1+0xce>
+     e30:	226a 0032      	movea.l 50(a2),a1
+     e34:	7400           	moveq #0,d2
+     e36:	3439 0000 3458 	move.w 3458 <GameMatrix+0xc>,d2
+     e3c:	2f04           	move.l d4,-(sp)
+     e3e:	2f02           	move.l d2,-(sp)
+     e40:	2f49 0034      	move.l a1,52(sp)
+     e44:	4e93           	jsr (a3)
+     e46:	508f           	addq.l #8,sp
+     e48:	2a40           	movea.l d0,a5
+     e4a:	2c00           	move.l d0,d6
+     e4c:	5286           	addq.l #1,d6
+     e4e:	7e00           	moveq #0,d7
+     e50:	3e39 0000 345a 	move.w 345a <GameMatrix+0xe>,d7
+     e56:	2f2f 0030      	move.l 48(sp),-(sp)
+     e5a:	2f07           	move.l d7,-(sp)
+     e5c:	4e93           	jsr (a3)
+     e5e:	508f           	addq.l #8,sp
+     e60:	2600           	move.l d0,d3
+     e62:	2c79 0000 3434 	movea.l 3434 <GfxBase>,a6
+     e68:	226f 002c      	movea.l 44(sp),a1
+     e6c:	2006           	move.l d6,d0
+     e6e:	2203           	move.l d3,d1
+     e70:	5281           	addq.l #1,d1
+     e72:	4bf5 28ff      	lea (-1,a5,d2.l),a5
+     e76:	240d           	move.l a5,d2
+     e78:	2047           	movea.l d7,a0
+     e7a:	41f0 38ff      	lea (-1,a0,d3.l),a0
+     e7e:	2608           	move.l a0,d3
+     e80:	4eae fece      	jsr -306(a6)
+		for (int x = 0; x < GameMatrix.Columns; x++)
+     e84:	5284           	addq.l #1,d4
+     e86:	3039 0000 3452 	move.w 3452 <GameMatrix+0x6>,d0
+     e8c:	5885           	addq.l #4,d5
+     e8e:	7200           	moveq #0,d1
+     e90:	3200           	move.w d0,d1
+     e92:	b284           	cmp.l d4,d1
+     e94:	6e00 fed8      	bgt.w d6e <DrawCells.constprop.1+0x3a>
+     e98:	6000 ff66      	bra.w e00 <DrawCells.constprop.1+0xcc>
 
-00000f5a <strlen>:
+00000e9c <strlen>:
 {
-     f5a:	206f 0004      	movea.l 4(sp),a0
+     e9c:	206f 0004      	movea.l 4(sp),a0
 	unsigned long t=0;
-     f5e:	7000           	moveq #0,d0
+     ea0:	7000           	moveq #0,d0
 	while(*s++)
-     f60:	4a10           	tst.b (a0)
-     f62:	6708           	beq.s f6c <strlen+0x12>
+     ea2:	4a10           	tst.b (a0)
+     ea4:	6708           	beq.s eae <strlen+0x12>
 		t++;
-     f64:	5280           	addq.l #1,d0
+     ea6:	5280           	addq.l #1,d0
 	while(*s++)
-     f66:	4a30 0800      	tst.b (0,a0,d0.l)
-     f6a:	66f8           	bne.s f64 <strlen+0xa>
+     ea8:	4a30 0800      	tst.b (0,a0,d0.l)
+     eac:	66f8           	bne.s ea6 <strlen+0xa>
 }
-     f6c:	4e75           	rts
+     eae:	4e75           	rts
 
-00000f6e <memset>:
+00000eb0 <memset>:
 {
-     f6e:	48e7 3f30      	movem.l d2-d7/a2-a3,-(sp)
-     f72:	202f 0024      	move.l 36(sp),d0
-     f76:	282f 0028      	move.l 40(sp),d4
-     f7a:	226f 002c      	movea.l 44(sp),a1
+     eb0:	48e7 3f30      	movem.l d2-d7/a2-a3,-(sp)
+     eb4:	202f 0024      	move.l 36(sp),d0
+     eb8:	282f 0028      	move.l 40(sp),d4
+     ebc:	226f 002c      	movea.l 44(sp),a1
 	while(len-- > 0)
-     f7e:	2a09           	move.l a1,d5
-     f80:	5385           	subq.l #1,d5
-     f82:	b2fc 0000      	cmpa.w #0,a1
-     f86:	6700 00ae      	beq.w 1036 <memset+0xc8>
+     ec0:	2a09           	move.l a1,d5
+     ec2:	5385           	subq.l #1,d5
+     ec4:	b2fc 0000      	cmpa.w #0,a1
+     ec8:	6700 00ae      	beq.w f78 <memset+0xc8>
 		*ptr++ = val;
-     f8a:	1e04           	move.b d4,d7
-     f8c:	2200           	move.l d0,d1
-     f8e:	4481           	neg.l d1
-     f90:	7403           	moveq #3,d2
-     f92:	c282           	and.l d2,d1
-     f94:	7c05           	moveq #5,d6
-     f96:	2440           	movea.l d0,a2
-     f98:	bc85           	cmp.l d5,d6
-     f9a:	646a           	bcc.s 1006 <memset+0x98>
-     f9c:	4a81           	tst.l d1
-     f9e:	6724           	beq.s fc4 <memset+0x56>
-     fa0:	14c4           	move.b d4,(a2)+
+     ecc:	1e04           	move.b d4,d7
+     ece:	2200           	move.l d0,d1
+     ed0:	4481           	neg.l d1
+     ed2:	7403           	moveq #3,d2
+     ed4:	c282           	and.l d2,d1
+     ed6:	7c05           	moveq #5,d6
+     ed8:	2440           	movea.l d0,a2
+     eda:	bc85           	cmp.l d5,d6
+     edc:	646a           	bcc.s f48 <memset+0x98>
+     ede:	4a81           	tst.l d1
+     ee0:	6724           	beq.s f06 <memset+0x56>
+     ee2:	14c4           	move.b d4,(a2)+
 	while(len-- > 0)
-     fa2:	5385           	subq.l #1,d5
-     fa4:	7401           	moveq #1,d2
-     fa6:	b481           	cmp.l d1,d2
-     fa8:	671a           	beq.s fc4 <memset+0x56>
+     ee4:	5385           	subq.l #1,d5
+     ee6:	7401           	moveq #1,d2
+     ee8:	b481           	cmp.l d1,d2
+     eea:	671a           	beq.s f06 <memset+0x56>
 		*ptr++ = val;
-     faa:	2440           	movea.l d0,a2
-     fac:	548a           	addq.l #2,a2
-     fae:	2040           	movea.l d0,a0
-     fb0:	1144 0001      	move.b d4,1(a0)
+     eec:	2440           	movea.l d0,a2
+     eee:	548a           	addq.l #2,a2
+     ef0:	2040           	movea.l d0,a0
+     ef2:	1144 0001      	move.b d4,1(a0)
 	while(len-- > 0)
-     fb4:	5385           	subq.l #1,d5
-     fb6:	7403           	moveq #3,d2
-     fb8:	b481           	cmp.l d1,d2
-     fba:	6608           	bne.s fc4 <memset+0x56>
+     ef6:	5385           	subq.l #1,d5
+     ef8:	7403           	moveq #3,d2
+     efa:	b481           	cmp.l d1,d2
+     efc:	6608           	bne.s f06 <memset+0x56>
 		*ptr++ = val;
-     fbc:	528a           	addq.l #1,a2
-     fbe:	1144 0002      	move.b d4,2(a0)
+     efe:	528a           	addq.l #1,a2
+     f00:	1144 0002      	move.b d4,2(a0)
 	while(len-- > 0)
-     fc2:	5385           	subq.l #1,d5
-     fc4:	2609           	move.l a1,d3
-     fc6:	9681           	sub.l d1,d3
-     fc8:	7c00           	moveq #0,d6
-     fca:	1c04           	move.b d4,d6
-     fcc:	2406           	move.l d6,d2
-     fce:	4842           	swap d2
-     fd0:	4242           	clr.w d2
-     fd2:	2042           	movea.l d2,a0
-     fd4:	2404           	move.l d4,d2
-     fd6:	e14a           	lsl.w #8,d2
-     fd8:	4842           	swap d2
-     fda:	4242           	clr.w d2
-     fdc:	e18e           	lsl.l #8,d6
-     fde:	2646           	movea.l d6,a3
-     fe0:	2c08           	move.l a0,d6
-     fe2:	8486           	or.l d6,d2
-     fe4:	2c0b           	move.l a3,d6
-     fe6:	8486           	or.l d6,d2
-     fe8:	1407           	move.b d7,d2
-     fea:	2040           	movea.l d0,a0
-     fec:	d1c1           	adda.l d1,a0
-     fee:	72fc           	moveq #-4,d1
-     ff0:	c283           	and.l d3,d1
-     ff2:	d288           	add.l a0,d1
+     f04:	5385           	subq.l #1,d5
+     f06:	2609           	move.l a1,d3
+     f08:	9681           	sub.l d1,d3
+     f0a:	7c00           	moveq #0,d6
+     f0c:	1c04           	move.b d4,d6
+     f0e:	2406           	move.l d6,d2
+     f10:	4842           	swap d2
+     f12:	4242           	clr.w d2
+     f14:	2042           	movea.l d2,a0
+     f16:	2404           	move.l d4,d2
+     f18:	e14a           	lsl.w #8,d2
+     f1a:	4842           	swap d2
+     f1c:	4242           	clr.w d2
+     f1e:	e18e           	lsl.l #8,d6
+     f20:	2646           	movea.l d6,a3
+     f22:	2c08           	move.l a0,d6
+     f24:	8486           	or.l d6,d2
+     f26:	2c0b           	move.l a3,d6
+     f28:	8486           	or.l d6,d2
+     f2a:	1407           	move.b d7,d2
+     f2c:	2040           	movea.l d0,a0
+     f2e:	d1c1           	adda.l d1,a0
+     f30:	72fc           	moveq #-4,d1
+     f32:	c283           	and.l d3,d1
+     f34:	d288           	add.l a0,d1
 		*ptr++ = val;
-     ff4:	20c2           	move.l d2,(a0)+
+     f36:	20c2           	move.l d2,(a0)+
 	while(len-- > 0)
-     ff6:	b1c1           	cmpa.l d1,a0
-     ff8:	66fa           	bne.s ff4 <memset+0x86>
-     ffa:	72fc           	moveq #-4,d1
-     ffc:	c283           	and.l d3,d1
-     ffe:	d5c1           	adda.l d1,a2
-    1000:	9a81           	sub.l d1,d5
-    1002:	b283           	cmp.l d3,d1
-    1004:	6730           	beq.s 1036 <memset+0xc8>
+     f38:	b1c1           	cmpa.l d1,a0
+     f3a:	66fa           	bne.s f36 <memset+0x86>
+     f3c:	72fc           	moveq #-4,d1
+     f3e:	c283           	and.l d3,d1
+     f40:	d5c1           	adda.l d1,a2
+     f42:	9a81           	sub.l d1,d5
+     f44:	b283           	cmp.l d3,d1
+     f46:	6730           	beq.s f78 <memset+0xc8>
 		*ptr++ = val;
-    1006:	1484           	move.b d4,(a2)
+     f48:	1484           	move.b d4,(a2)
 	while(len-- > 0)
-    1008:	4a85           	tst.l d5
-    100a:	672a           	beq.s 1036 <memset+0xc8>
+     f4a:	4a85           	tst.l d5
+     f4c:	672a           	beq.s f78 <memset+0xc8>
 		*ptr++ = val;
-    100c:	1544 0001      	move.b d4,1(a2)
+     f4e:	1544 0001      	move.b d4,1(a2)
 	while(len-- > 0)
-    1010:	7201           	moveq #1,d1
-    1012:	b285           	cmp.l d5,d1
-    1014:	6720           	beq.s 1036 <memset+0xc8>
+     f52:	7201           	moveq #1,d1
+     f54:	b285           	cmp.l d5,d1
+     f56:	6720           	beq.s f78 <memset+0xc8>
 		*ptr++ = val;
-    1016:	1544 0002      	move.b d4,2(a2)
+     f58:	1544 0002      	move.b d4,2(a2)
 	while(len-- > 0)
-    101a:	7402           	moveq #2,d2
-    101c:	b485           	cmp.l d5,d2
-    101e:	6716           	beq.s 1036 <memset+0xc8>
+     f5c:	7402           	moveq #2,d2
+     f5e:	b485           	cmp.l d5,d2
+     f60:	6716           	beq.s f78 <memset+0xc8>
 		*ptr++ = val;
-    1020:	1544 0003      	move.b d4,3(a2)
+     f62:	1544 0003      	move.b d4,3(a2)
 	while(len-- > 0)
-    1024:	7c03           	moveq #3,d6
-    1026:	bc85           	cmp.l d5,d6
-    1028:	670c           	beq.s 1036 <memset+0xc8>
+     f66:	7c03           	moveq #3,d6
+     f68:	bc85           	cmp.l d5,d6
+     f6a:	670c           	beq.s f78 <memset+0xc8>
 		*ptr++ = val;
-    102a:	1544 0004      	move.b d4,4(a2)
+     f6c:	1544 0004      	move.b d4,4(a2)
 	while(len-- > 0)
-    102e:	5985           	subq.l #4,d5
-    1030:	6704           	beq.s 1036 <memset+0xc8>
+     f70:	5985           	subq.l #4,d5
+     f72:	6704           	beq.s f78 <memset+0xc8>
 		*ptr++ = val;
-    1032:	1544 0005      	move.b d4,5(a2)
+     f74:	1544 0005      	move.b d4,5(a2)
 }
-    1036:	4cdf 0cfc      	movem.l (sp)+,d2-d7/a2-a3
-    103a:	4e75           	rts
+     f78:	4cdf 0cfc      	movem.l (sp)+,d2-d7/a2-a3
+     f7c:	4e75           	rts
 
-0000103c <memcpy>:
+00000f7e <memcpy>:
 {
-    103c:	48e7 3e00      	movem.l d2-d6,-(sp)
-    1040:	202f 0018      	move.l 24(sp),d0
-    1044:	222f 001c      	move.l 28(sp),d1
-    1048:	262f 0020      	move.l 32(sp),d3
+     f7e:	48e7 3e00      	movem.l d2-d6,-(sp)
+     f82:	202f 0018      	move.l 24(sp),d0
+     f86:	222f 001c      	move.l 28(sp),d1
+     f8a:	262f 0020      	move.l 32(sp),d3
 	while(len--)
-    104c:	2803           	move.l d3,d4
-    104e:	5384           	subq.l #1,d4
-    1050:	4a83           	tst.l d3
-    1052:	675e           	beq.s 10b2 <memcpy+0x76>
-    1054:	2041           	movea.l d1,a0
-    1056:	5288           	addq.l #1,a0
-    1058:	2400           	move.l d0,d2
-    105a:	9488           	sub.l a0,d2
-    105c:	7a02           	moveq #2,d5
-    105e:	ba82           	cmp.l d2,d5
-    1060:	55c2           	sc.s d2
-    1062:	4402           	neg.b d2
-    1064:	7c08           	moveq #8,d6
-    1066:	bc84           	cmp.l d4,d6
-    1068:	55c5           	sc.s d5
-    106a:	4405           	neg.b d5
-    106c:	c405           	and.b d5,d2
-    106e:	6748           	beq.s 10b8 <memcpy+0x7c>
-    1070:	2400           	move.l d0,d2
-    1072:	8481           	or.l d1,d2
-    1074:	7a03           	moveq #3,d5
-    1076:	c485           	and.l d5,d2
-    1078:	663e           	bne.s 10b8 <memcpy+0x7c>
-    107a:	2041           	movea.l d1,a0
-    107c:	2240           	movea.l d0,a1
-    107e:	74fc           	moveq #-4,d2
-    1080:	c483           	and.l d3,d2
-    1082:	d481           	add.l d1,d2
+     f8e:	2803           	move.l d3,d4
+     f90:	5384           	subq.l #1,d4
+     f92:	4a83           	tst.l d3
+     f94:	675e           	beq.s ff4 <memcpy+0x76>
+     f96:	2041           	movea.l d1,a0
+     f98:	5288           	addq.l #1,a0
+     f9a:	2400           	move.l d0,d2
+     f9c:	9488           	sub.l a0,d2
+     f9e:	7a02           	moveq #2,d5
+     fa0:	ba82           	cmp.l d2,d5
+     fa2:	55c2           	sc.s d2
+     fa4:	4402           	neg.b d2
+     fa6:	7c08           	moveq #8,d6
+     fa8:	bc84           	cmp.l d4,d6
+     faa:	55c5           	sc.s d5
+     fac:	4405           	neg.b d5
+     fae:	c405           	and.b d5,d2
+     fb0:	6748           	beq.s ffa <memcpy+0x7c>
+     fb2:	2400           	move.l d0,d2
+     fb4:	8481           	or.l d1,d2
+     fb6:	7a03           	moveq #3,d5
+     fb8:	c485           	and.l d5,d2
+     fba:	663e           	bne.s ffa <memcpy+0x7c>
+     fbc:	2041           	movea.l d1,a0
+     fbe:	2240           	movea.l d0,a1
+     fc0:	74fc           	moveq #-4,d2
+     fc2:	c483           	and.l d3,d2
+     fc4:	d481           	add.l d1,d2
 		*d++ = *s++;
-    1084:	22d8           	move.l (a0)+,(a1)+
+     fc6:	22d8           	move.l (a0)+,(a1)+
 	while(len--)
-    1086:	b488           	cmp.l a0,d2
-    1088:	66fa           	bne.s 1084 <memcpy+0x48>
-    108a:	74fc           	moveq #-4,d2
-    108c:	c483           	and.l d3,d2
-    108e:	2040           	movea.l d0,a0
-    1090:	d1c2           	adda.l d2,a0
-    1092:	d282           	add.l d2,d1
-    1094:	9882           	sub.l d2,d4
-    1096:	b483           	cmp.l d3,d2
-    1098:	6718           	beq.s 10b2 <memcpy+0x76>
+     fc8:	b488           	cmp.l a0,d2
+     fca:	66fa           	bne.s fc6 <memcpy+0x48>
+     fcc:	74fc           	moveq #-4,d2
+     fce:	c483           	and.l d3,d2
+     fd0:	2040           	movea.l d0,a0
+     fd2:	d1c2           	adda.l d2,a0
+     fd4:	d282           	add.l d2,d1
+     fd6:	9882           	sub.l d2,d4
+     fd8:	b483           	cmp.l d3,d2
+     fda:	6718           	beq.s ff4 <memcpy+0x76>
 		*d++ = *s++;
-    109a:	2241           	movea.l d1,a1
-    109c:	1091           	move.b (a1),(a0)
+     fdc:	2241           	movea.l d1,a1
+     fde:	1091           	move.b (a1),(a0)
 	while(len--)
-    109e:	4a84           	tst.l d4
-    10a0:	6710           	beq.s 10b2 <memcpy+0x76>
+     fe0:	4a84           	tst.l d4
+     fe2:	6710           	beq.s ff4 <memcpy+0x76>
 		*d++ = *s++;
-    10a2:	1169 0001 0001 	move.b 1(a1),1(a0)
+     fe4:	1169 0001 0001 	move.b 1(a1),1(a0)
 	while(len--)
-    10a8:	5384           	subq.l #1,d4
-    10aa:	6706           	beq.s 10b2 <memcpy+0x76>
+     fea:	5384           	subq.l #1,d4
+     fec:	6706           	beq.s ff4 <memcpy+0x76>
 		*d++ = *s++;
-    10ac:	1169 0002 0002 	move.b 2(a1),2(a0)
+     fee:	1169 0002 0002 	move.b 2(a1),2(a0)
 }
-    10b2:	4cdf 007c      	movem.l (sp)+,d2-d6
-    10b6:	4e75           	rts
-    10b8:	2240           	movea.l d0,a1
-    10ba:	d283           	add.l d3,d1
+     ff4:	4cdf 007c      	movem.l (sp)+,d2-d6
+     ff8:	4e75           	rts
+     ffa:	2240           	movea.l d0,a1
+     ffc:	d283           	add.l d3,d1
 		*d++ = *s++;
-    10bc:	12e8 ffff      	move.b -1(a0),(a1)+
+     ffe:	12e8 ffff      	move.b -1(a0),(a1)+
 	while(len--)
-    10c0:	b288           	cmp.l a0,d1
-    10c2:	67ee           	beq.s 10b2 <memcpy+0x76>
-    10c4:	5288           	addq.l #1,a0
-    10c6:	60f4           	bra.s 10bc <memcpy+0x80>
+    1002:	b288           	cmp.l a0,d1
+    1004:	67ee           	beq.s ff4 <memcpy+0x76>
+    1006:	5288           	addq.l #1,a0
+    1008:	60f4           	bra.s ffe <memcpy+0x80>
 
-000010c8 <memmove>:
+0000100a <memmove>:
 {
-    10c8:	48e7 3c20      	movem.l d2-d5/a2,-(sp)
-    10cc:	202f 0018      	move.l 24(sp),d0
-    10d0:	222f 001c      	move.l 28(sp),d1
-    10d4:	242f 0020      	move.l 32(sp),d2
+    100a:	48e7 3c20      	movem.l d2-d5/a2,-(sp)
+    100e:	202f 0018      	move.l 24(sp),d0
+    1012:	222f 001c      	move.l 28(sp),d1
+    1016:	242f 0020      	move.l 32(sp),d2
 		while (len--)
-    10d8:	2242           	movea.l d2,a1
-    10da:	5389           	subq.l #1,a1
+    101a:	2242           	movea.l d2,a1
+    101c:	5389           	subq.l #1,a1
 	if (d < s) {
-    10dc:	b280           	cmp.l d0,d1
-    10de:	636c           	bls.s 114c <memmove+0x84>
+    101e:	b280           	cmp.l d0,d1
+    1020:	636c           	bls.s 108e <memmove+0x84>
 		while (len--)
-    10e0:	4a82           	tst.l d2
-    10e2:	6762           	beq.s 1146 <memmove+0x7e>
-    10e4:	2441           	movea.l d1,a2
-    10e6:	528a           	addq.l #1,a2
-    10e8:	2600           	move.l d0,d3
-    10ea:	968a           	sub.l a2,d3
-    10ec:	7802           	moveq #2,d4
-    10ee:	b883           	cmp.l d3,d4
-    10f0:	55c3           	sc.s d3
-    10f2:	4403           	neg.b d3
-    10f4:	7a08           	moveq #8,d5
-    10f6:	ba89           	cmp.l a1,d5
-    10f8:	55c4           	sc.s d4
-    10fa:	4404           	neg.b d4
-    10fc:	c604           	and.b d4,d3
-    10fe:	6770           	beq.s 1170 <memmove+0xa8>
-    1100:	2600           	move.l d0,d3
-    1102:	8681           	or.l d1,d3
-    1104:	7803           	moveq #3,d4
-    1106:	c684           	and.l d4,d3
-    1108:	6666           	bne.s 1170 <memmove+0xa8>
-    110a:	2041           	movea.l d1,a0
-    110c:	2440           	movea.l d0,a2
-    110e:	76fc           	moveq #-4,d3
-    1110:	c682           	and.l d2,d3
-    1112:	d681           	add.l d1,d3
+    1022:	4a82           	tst.l d2
+    1024:	6762           	beq.s 1088 <memmove+0x7e>
+    1026:	2441           	movea.l d1,a2
+    1028:	528a           	addq.l #1,a2
+    102a:	2600           	move.l d0,d3
+    102c:	968a           	sub.l a2,d3
+    102e:	7802           	moveq #2,d4
+    1030:	b883           	cmp.l d3,d4
+    1032:	55c3           	sc.s d3
+    1034:	4403           	neg.b d3
+    1036:	7a08           	moveq #8,d5
+    1038:	ba89           	cmp.l a1,d5
+    103a:	55c4           	sc.s d4
+    103c:	4404           	neg.b d4
+    103e:	c604           	and.b d4,d3
+    1040:	6770           	beq.s 10b2 <memmove+0xa8>
+    1042:	2600           	move.l d0,d3
+    1044:	8681           	or.l d1,d3
+    1046:	7803           	moveq #3,d4
+    1048:	c684           	and.l d4,d3
+    104a:	6666           	bne.s 10b2 <memmove+0xa8>
+    104c:	2041           	movea.l d1,a0
+    104e:	2440           	movea.l d0,a2
+    1050:	76fc           	moveq #-4,d3
+    1052:	c682           	and.l d2,d3
+    1054:	d681           	add.l d1,d3
 			*d++ = *s++;
-    1114:	24d8           	move.l (a0)+,(a2)+
+    1056:	24d8           	move.l (a0)+,(a2)+
 		while (len--)
-    1116:	b688           	cmp.l a0,d3
-    1118:	66fa           	bne.s 1114 <memmove+0x4c>
-    111a:	76fc           	moveq #-4,d3
-    111c:	c682           	and.l d2,d3
-    111e:	2440           	movea.l d0,a2
-    1120:	d5c3           	adda.l d3,a2
-    1122:	2041           	movea.l d1,a0
-    1124:	d1c3           	adda.l d3,a0
-    1126:	93c3           	suba.l d3,a1
-    1128:	b682           	cmp.l d2,d3
-    112a:	671a           	beq.s 1146 <memmove+0x7e>
+    1058:	b688           	cmp.l a0,d3
+    105a:	66fa           	bne.s 1056 <memmove+0x4c>
+    105c:	76fc           	moveq #-4,d3
+    105e:	c682           	and.l d2,d3
+    1060:	2440           	movea.l d0,a2
+    1062:	d5c3           	adda.l d3,a2
+    1064:	2041           	movea.l d1,a0
+    1066:	d1c3           	adda.l d3,a0
+    1068:	93c3           	suba.l d3,a1
+    106a:	b682           	cmp.l d2,d3
+    106c:	671a           	beq.s 1088 <memmove+0x7e>
 			*d++ = *s++;
-    112c:	1490           	move.b (a0),(a2)
+    106e:	1490           	move.b (a0),(a2)
 		while (len--)
-    112e:	b2fc 0000      	cmpa.w #0,a1
-    1132:	6712           	beq.s 1146 <memmove+0x7e>
+    1070:	b2fc 0000      	cmpa.w #0,a1
+    1074:	6712           	beq.s 1088 <memmove+0x7e>
 			*d++ = *s++;
-    1134:	1568 0001 0001 	move.b 1(a0),1(a2)
+    1076:	1568 0001 0001 	move.b 1(a0),1(a2)
 		while (len--)
-    113a:	7a01           	moveq #1,d5
-    113c:	ba89           	cmp.l a1,d5
-    113e:	6706           	beq.s 1146 <memmove+0x7e>
+    107c:	7a01           	moveq #1,d5
+    107e:	ba89           	cmp.l a1,d5
+    1080:	6706           	beq.s 1088 <memmove+0x7e>
 			*d++ = *s++;
-    1140:	1568 0002 0002 	move.b 2(a0),2(a2)
+    1082:	1568 0002 0002 	move.b 2(a0),2(a2)
 }
-    1146:	4cdf 043c      	movem.l (sp)+,d2-d5/a2
-    114a:	4e75           	rts
+    1088:	4cdf 043c      	movem.l (sp)+,d2-d5/a2
+    108c:	4e75           	rts
 		const char *lasts = s + (len - 1);
-    114c:	41f1 1800      	lea (0,a1,d1.l),a0
+    108e:	41f1 1800      	lea (0,a1,d1.l),a0
 		char *lastd = d + (len - 1);
-    1150:	d3c0           	adda.l d0,a1
+    1092:	d3c0           	adda.l d0,a1
 		while (len--)
-    1152:	4a82           	tst.l d2
-    1154:	67f0           	beq.s 1146 <memmove+0x7e>
-    1156:	2208           	move.l a0,d1
-    1158:	9282           	sub.l d2,d1
+    1094:	4a82           	tst.l d2
+    1096:	67f0           	beq.s 1088 <memmove+0x7e>
+    1098:	2208           	move.l a0,d1
+    109a:	9282           	sub.l d2,d1
 			*lastd-- = *lasts--;
-    115a:	1290           	move.b (a0),(a1)
+    109c:	1290           	move.b (a0),(a1)
 		while (len--)
-    115c:	5388           	subq.l #1,a0
-    115e:	5389           	subq.l #1,a1
-    1160:	b288           	cmp.l a0,d1
-    1162:	67e2           	beq.s 1146 <memmove+0x7e>
+    109e:	5388           	subq.l #1,a0
+    10a0:	5389           	subq.l #1,a1
+    10a2:	b288           	cmp.l a0,d1
+    10a4:	67e2           	beq.s 1088 <memmove+0x7e>
 			*lastd-- = *lasts--;
-    1164:	1290           	move.b (a0),(a1)
+    10a6:	1290           	move.b (a0),(a1)
 		while (len--)
-    1166:	5388           	subq.l #1,a0
-    1168:	5389           	subq.l #1,a1
-    116a:	b288           	cmp.l a0,d1
-    116c:	66ec           	bne.s 115a <memmove+0x92>
-    116e:	60d6           	bra.s 1146 <memmove+0x7e>
-    1170:	2240           	movea.l d0,a1
-    1172:	d282           	add.l d2,d1
+    10a8:	5388           	subq.l #1,a0
+    10aa:	5389           	subq.l #1,a1
+    10ac:	b288           	cmp.l a0,d1
+    10ae:	66ec           	bne.s 109c <memmove+0x92>
+    10b0:	60d6           	bra.s 1088 <memmove+0x7e>
+    10b2:	2240           	movea.l d0,a1
+    10b4:	d282           	add.l d2,d1
 			*d++ = *s++;
-    1174:	12ea ffff      	move.b -1(a2),(a1)+
+    10b6:	12ea ffff      	move.b -1(a2),(a1)+
 		while (len--)
-    1178:	b28a           	cmp.l a2,d1
-    117a:	67ca           	beq.s 1146 <memmove+0x7e>
-    117c:	528a           	addq.l #1,a2
-    117e:	60f4           	bra.s 1174 <memmove+0xac>
+    10ba:	b28a           	cmp.l a2,d1
+    10bc:	67ca           	beq.s 1088 <memmove+0x7e>
+    10be:	528a           	addq.l #1,a2
+    10c0:	60f4           	bra.s 10b6 <memmove+0xac>
+    10c2:	4e71           	nop
 
-00001180 <__mulsi3>:
+000010c4 <__mulsi3>:
 	.text
 	FUNC(__mulsi3)
 	.globl	SYM (__mulsi3)
 SYM (__mulsi3):
 	.cfi_startproc
 	movew	sp@(4), d0	/* x0 -> d0 */
-    1180:	302f 0004      	move.w 4(sp),d0
+    10c4:	302f 0004      	move.w 4(sp),d0
 	muluw	sp@(10), d0	/* x0*y1 */
-    1184:	c0ef 000a      	mulu.w 10(sp),d0
+    10c8:	c0ef 000a      	mulu.w 10(sp),d0
 	movew	sp@(6), d1	/* x1 -> d1 */
-    1188:	322f 0006      	move.w 6(sp),d1
+    10cc:	322f 0006      	move.w 6(sp),d1
 	muluw	sp@(8), d1	/* x1*y0 */
-    118c:	c2ef 0008      	mulu.w 8(sp),d1
+    10d0:	c2ef 0008      	mulu.w 8(sp),d1
 	addw	d1, d0
-    1190:	d041           	add.w d1,d0
+    10d4:	d041           	add.w d1,d0
 	swap	d0
-    1192:	4840           	swap d0
+    10d6:	4840           	swap d0
 	clrw	d0
-    1194:	4240           	clr.w d0
+    10d8:	4240           	clr.w d0
 	movew	sp@(6), d1	/* x1 -> d1 */
-    1196:	322f 0006      	move.w 6(sp),d1
+    10da:	322f 0006      	move.w 6(sp),d1
 	muluw	sp@(10), d1	/* x1*y1 */
-    119a:	c2ef 000a      	mulu.w 10(sp),d1
+    10de:	c2ef 000a      	mulu.w 10(sp),d1
 	addl	d1, d0
-    119e:	d081           	add.l d1,d0
+    10e2:	d081           	add.l d1,d0
 	rts
-    11a0:	4e75           	rts
+    10e4:	4e75           	rts
 
-000011a2 <__udivsi3>:
+000010e6 <__udivsi3>:
 	.text
 	FUNC(__udivsi3)
 	.globl	SYM (__udivsi3)
 SYM (__udivsi3):
 	.cfi_startproc
 	movel	d2, sp@-
-    11a2:	2f02           	move.l d2,-(sp)
+    10e6:	2f02           	move.l d2,-(sp)
 	.cfi_adjust_cfa_offset 4
 	movel	sp@(12), d1	/* d1 = divisor */
-    11a4:	222f 000c      	move.l 12(sp),d1
+    10e8:	222f 000c      	move.l 12(sp),d1
 	movel	sp@(8), d0	/* d0 = dividend */
-    11a8:	202f 0008      	move.l 8(sp),d0
+    10ec:	202f 0008      	move.l 8(sp),d0
 
 	cmpl	IMM (0x10000), d1 /* divisor >= 2 ^ 16 ?   */
-    11ac:	0c81 0001 0000 	cmpi.l #65536,d1
+    10f0:	0c81 0001 0000 	cmpi.l #65536,d1
 	jcc	3f		/* then try next algorithm */
-    11b2:	6416           	bcc.s 11ca <__udivsi3+0x28>
+    10f6:	6416           	bcc.s 110e <__udivsi3+0x28>
 	movel	d0, d2
-    11b4:	2400           	move.l d0,d2
+    10f8:	2400           	move.l d0,d2
 	clrw	d2
-    11b6:	4242           	clr.w d2
+    10fa:	4242           	clr.w d2
 	swap	d2
-    11b8:	4842           	swap d2
+    10fc:	4842           	swap d2
 	divu	d1, d2          /* high quotient in lower word */
-    11ba:	84c1           	divu.w d1,d2
+    10fe:	84c1           	divu.w d1,d2
 	movew	d2, d0		/* save high quotient */
-    11bc:	3002           	move.w d2,d0
+    1100:	3002           	move.w d2,d0
 	swap	d0
-    11be:	4840           	swap d0
+    1102:	4840           	swap d0
 	movew	sp@(10), d2	/* get low dividend + high rest */
-    11c0:	342f 000a      	move.w 10(sp),d2
+    1104:	342f 000a      	move.w 10(sp),d2
 	divu	d1, d2		/* low quotient */
-    11c4:	84c1           	divu.w d1,d2
+    1108:	84c1           	divu.w d1,d2
 	movew	d2, d0
-    11c6:	3002           	move.w d2,d0
+    110a:	3002           	move.w d2,d0
 	jra	6f
-    11c8:	6030           	bra.s 11fa <__udivsi3+0x58>
+    110c:	6030           	bra.s 113e <__udivsi3+0x58>
 
 3:	movel	d1, d2		/* use d2 as divisor backup */
-    11ca:	2401           	move.l d1,d2
+    110e:	2401           	move.l d1,d2
 4:	lsrl	IMM (1), d1	/* shift divisor */
-    11cc:	e289           	lsr.l #1,d1
+    1110:	e289           	lsr.l #1,d1
 	lsrl	IMM (1), d0	/* shift dividend */
-    11ce:	e288           	lsr.l #1,d0
+    1112:	e288           	lsr.l #1,d0
 	cmpl	IMM (0x10000), d1 /* still divisor >= 2 ^ 16 ?  */
-    11d0:	0c81 0001 0000 	cmpi.l #65536,d1
+    1114:	0c81 0001 0000 	cmpi.l #65536,d1
 	jcc	4b
-    11d6:	64f4           	bcc.s 11cc <__udivsi3+0x2a>
+    111a:	64f4           	bcc.s 1110 <__udivsi3+0x2a>
 	divu	d1, d0		/* now we have 16-bit divisor */
-    11d8:	80c1           	divu.w d1,d0
+    111c:	80c1           	divu.w d1,d0
 	andl	IMM (0xffff), d0 /* mask out divisor, ignore remainder */
-    11da:	0280 0000 ffff 	andi.l #65535,d0
+    111e:	0280 0000 ffff 	andi.l #65535,d0
 
 /* Multiply the 16-bit tentative quotient with the 32-bit divisor.  Because of
    the operand ranges, this might give a 33-bit product.  If this product is
    greater than the dividend, the tentative quotient was too large. */
 	movel	d2, d1
-    11e0:	2202           	move.l d2,d1
+    1124:	2202           	move.l d2,d1
 	mulu	d0, d1		/* low part, 32 bits */
-    11e2:	c2c0           	mulu.w d0,d1
+    1126:	c2c0           	mulu.w d0,d1
 	swap	d2
-    11e4:	4842           	swap d2
+    1128:	4842           	swap d2
 	mulu	d0, d2		/* high part, at most 17 bits */
-    11e6:	c4c0           	mulu.w d0,d2
+    112a:	c4c0           	mulu.w d0,d2
 	swap	d2		/* align high part with low part */
-    11e8:	4842           	swap d2
+    112c:	4842           	swap d2
 	tstw	d2		/* high part 17 bits? */
-    11ea:	4a42           	tst.w d2
+    112e:	4a42           	tst.w d2
 	jne	5f		/* if 17 bits, quotient was too large */
-    11ec:	660a           	bne.s 11f8 <__udivsi3+0x56>
+    1130:	660a           	bne.s 113c <__udivsi3+0x56>
 	addl	d2, d1		/* add parts */
-    11ee:	d282           	add.l d2,d1
+    1132:	d282           	add.l d2,d1
 	jcs	5f		/* if sum is 33 bits, quotient was too large */
-    11f0:	6506           	bcs.s 11f8 <__udivsi3+0x56>
+    1134:	6506           	bcs.s 113c <__udivsi3+0x56>
 	cmpl	sp@(8), d1	/* compare the sum with the dividend */
-    11f2:	b2af 0008      	cmp.l 8(sp),d1
+    1136:	b2af 0008      	cmp.l 8(sp),d1
 	jls	6f		/* if sum > dividend, quotient was too large */
-    11f6:	6302           	bls.s 11fa <__udivsi3+0x58>
+    113a:	6302           	bls.s 113e <__udivsi3+0x58>
 5:	subql	IMM (1), d0	/* adjust quotient */
-    11f8:	5380           	subq.l #1,d0
+    113c:	5380           	subq.l #1,d0
 
 6:	movel	sp@+, d2
-    11fa:	241f           	move.l (sp)+,d2
+    113e:	241f           	move.l (sp)+,d2
 	.cfi_adjust_cfa_offset -4
 	rts
-    11fc:	4e75           	rts
+    1140:	4e75           	rts
 
-000011fe <__divsi3>:
+00001142 <__divsi3>:
 	.text
 	FUNC(__divsi3)
 	.globl	SYM (__divsi3)
 SYM (__divsi3):
 	.cfi_startproc
 	movel	d2, sp@-
-    11fe:	2f02           	move.l d2,-(sp)
+    1142:	2f02           	move.l d2,-(sp)
 	.cfi_adjust_cfa_offset 4
 
 	moveq	IMM (1), d2	/* sign of result stored in d2 (=1 or =-1) */
-    1200:	7401           	moveq #1,d2
+    1144:	7401           	moveq #1,d2
 	movel	sp@(12), d1	/* d1 = divisor */
-    1202:	222f 000c      	move.l 12(sp),d1
+    1146:	222f 000c      	move.l 12(sp),d1
 	jpl	1f
-    1206:	6a04           	bpl.s 120c <__divsi3+0xe>
+    114a:	6a04           	bpl.s 1150 <__divsi3+0xe>
 	negl	d1
-    1208:	4481           	neg.l d1
+    114c:	4481           	neg.l d1
 	negb	d2		/* change sign because divisor <0  */
-    120a:	4402           	neg.b d2
+    114e:	4402           	neg.b d2
 1:	movel	sp@(8), d0	/* d0 = dividend */
-    120c:	202f 0008      	move.l 8(sp),d0
+    1150:	202f 0008      	move.l 8(sp),d0
 	jpl	2f
-    1210:	6a04           	bpl.s 1216 <__divsi3+0x18>
+    1154:	6a04           	bpl.s 115a <__divsi3+0x18>
 	negl	d0
-    1212:	4480           	neg.l d0
+    1156:	4480           	neg.l d0
 	negb	d2
-    1214:	4402           	neg.b d2
+    1158:	4402           	neg.b d2
 
 2:	movel	d1, sp@-
-    1216:	2f01           	move.l d1,-(sp)
+    115a:	2f01           	move.l d1,-(sp)
 	movel	d0, sp@-
-    1218:	2f00           	move.l d0,-(sp)
+    115c:	2f00           	move.l d0,-(sp)
 	PICCALL	SYM (__udivsi3)	/* divide abs(dividend) by abs(divisor) */
-    121a:	6186           	bsr.s 11a2 <__udivsi3>
+    115e:	6186           	bsr.s 10e6 <__udivsi3>
 	addql	IMM (8), sp
-    121c:	508f           	addq.l #8,sp
+    1160:	508f           	addq.l #8,sp
 
 	tstb	d2
-    121e:	4a02           	tst.b d2
+    1162:	4a02           	tst.b d2
 	jpl	3f
-    1220:	6a02           	bpl.s 1224 <__divsi3+0x26>
+    1164:	6a02           	bpl.s 1168 <__divsi3+0x26>
 	negl	d0
-    1222:	4480           	neg.l d0
+    1166:	4480           	neg.l d0
 
 3:	movel	sp@+, d2
-    1224:	241f           	move.l (sp)+,d2
+    1168:	241f           	move.l (sp)+,d2
 	.cfi_adjust_cfa_offset -4
 	rts
-    1226:	4e75           	rts
+    116a:	4e75           	rts
 
-00001228 <__modsi3>:
+0000116c <__modsi3>:
 	.text
 	FUNC(__modsi3)
 	.globl	SYM (__modsi3)
 SYM (__modsi3):
 	.cfi_startproc
 	movel	sp@(8), d1	/* d1 = divisor */
-    1228:	222f 0008      	move.l 8(sp),d1
+    116c:	222f 0008      	move.l 8(sp),d1
 	movel	sp@(4), d0	/* d0 = dividend */
-    122c:	202f 0004      	move.l 4(sp),d0
+    1170:	202f 0004      	move.l 4(sp),d0
 	movel	d1, sp@-
-    1230:	2f01           	move.l d1,-(sp)
+    1174:	2f01           	move.l d1,-(sp)
 	.cfi_adjust_cfa_offset 4
 	movel	d0, sp@-
-    1232:	2f00           	move.l d0,-(sp)
+    1176:	2f00           	move.l d0,-(sp)
 	.cfi_adjust_cfa_offset 4
 	PICCALL	SYM (__divsi3)
-    1234:	61c8           	bsr.s 11fe <__divsi3>
+    1178:	61c8           	bsr.s 1142 <__divsi3>
 	addql	IMM (8), sp
-    1236:	508f           	addq.l #8,sp
+    117a:	508f           	addq.l #8,sp
 	.cfi_adjust_cfa_offset -8
 	movel	sp@(8), d1	/* d1 = divisor */
-    1238:	222f 0008      	move.l 8(sp),d1
+    117c:	222f 0008      	move.l 8(sp),d1
 	movel	d1, sp@-
-    123c:	2f01           	move.l d1,-(sp)
+    1180:	2f01           	move.l d1,-(sp)
 	.cfi_adjust_cfa_offset 4
 	movel	d0, sp@-
-    123e:	2f00           	move.l d0,-(sp)
+    1182:	2f00           	move.l d0,-(sp)
 	.cfi_adjust_cfa_offset 4
 	PICCALL	SYM (__mulsi3)	/* d0 = (a/b)*b */
-    1240:	6100 ff3e      	bsr.w 1180 <__mulsi3>
+    1184:	6100 ff3e      	bsr.w 10c4 <__mulsi3>
 	addql	IMM (8), sp
-    1244:	508f           	addq.l #8,sp
+    1188:	508f           	addq.l #8,sp
 	.cfi_adjust_cfa_offset -8
 	movel	sp@(4), d1	/* d1 = dividend */
-    1246:	222f 0004      	move.l 4(sp),d1
+    118a:	222f 0004      	move.l 4(sp),d1
 	subl	d0, d1		/* d1 = a - (a/b)*b */
-    124a:	9280           	sub.l d0,d1
+    118e:	9280           	sub.l d0,d1
 	movel	d1, d0
-    124c:	2001           	move.l d1,d0
+    1190:	2001           	move.l d1,d0
 	rts
-    124e:	4e75           	rts
+    1192:	4e75           	rts
 
-00001250 <__umodsi3>:
+00001194 <__umodsi3>:
 	.text
 	FUNC(__umodsi3)
 	.globl	SYM (__umodsi3)
 SYM (__umodsi3):
 	.cfi_startproc
 	movel	sp@(8), d1	/* d1 = divisor */
-    1250:	222f 0008      	move.l 8(sp),d1
+    1194:	222f 0008      	move.l 8(sp),d1
 	movel	sp@(4), d0	/* d0 = dividend */
-    1254:	202f 0004      	move.l 4(sp),d0
+    1198:	202f 0004      	move.l 4(sp),d0
 	movel	d1, sp@-
-    1258:	2f01           	move.l d1,-(sp)
+    119c:	2f01           	move.l d1,-(sp)
 	.cfi_adjust_cfa_offset 4
 	movel	d0, sp@-
-    125a:	2f00           	move.l d0,-(sp)
+    119e:	2f00           	move.l d0,-(sp)
 	.cfi_adjust_cfa_offset 4
 	PICCALL	SYM (__udivsi3)
-    125c:	6100 ff44      	bsr.w 11a2 <__udivsi3>
+    11a0:	6100 ff44      	bsr.w 10e6 <__udivsi3>
 	addql	IMM (8), sp
-    1260:	508f           	addq.l #8,sp
+    11a4:	508f           	addq.l #8,sp
 	.cfi_adjust_cfa_offset -8
 	movel	sp@(8), d1	/* d1 = divisor */
-    1262:	222f 0008      	move.l 8(sp),d1
+    11a6:	222f 0008      	move.l 8(sp),d1
 	movel	d1, sp@-
-    1266:	2f01           	move.l d1,-(sp)
+    11aa:	2f01           	move.l d1,-(sp)
 	.cfi_adjust_cfa_offset 4
 	movel	d0, sp@-
-    1268:	2f00           	move.l d0,-(sp)
+    11ac:	2f00           	move.l d0,-(sp)
 	.cfi_adjust_cfa_offset 4
 	PICCALL	SYM (__mulsi3)	/* d0 = (a/b)*b */
-    126a:	6100 ff14      	bsr.w 1180 <__mulsi3>
+    11ae:	6100 ff14      	bsr.w 10c4 <__mulsi3>
 	addql	IMM (8), sp
-    126e:	508f           	addq.l #8,sp
+    11b2:	508f           	addq.l #8,sp
 	.cfi_adjust_cfa_offset -8
 	movel	sp@(4), d1	/* d1 = dividend */
-    1270:	222f 0004      	move.l 4(sp),d1
+    11b4:	222f 0004      	move.l 4(sp),d1
 	subl	d0, d1		/* d1 = a - (a/b)*b */
-    1274:	9280           	sub.l d0,d1
+    11b8:	9280           	sub.l d0,d1
 	movel	d1, d0
-    1276:	2001           	move.l d1,d0
+    11ba:	2001           	move.l d1,d0
 	rts
-    1278:	4e75           	rts
+    11bc:	4e75           	rts
 
-0000127a <KPutCharX>:
+000011be <KPutCharX>:
 	FUNC(KPutCharX)
 	.globl	SYM (KPutCharX)
 
 SYM(KPutCharX):
 	.cfi_startproc
     move.l  a6, -(sp)
-    127a:	2f0e           	move.l a6,-(sp)
+    11be:	2f0e           	move.l a6,-(sp)
 	.cfi_adjust_cfa_offset 4
     move.l  4.w, a6
-    127c:	2c78 0004      	movea.l 4 <_start+0x4>,a6
+    11c0:	2c78 0004      	movea.l 4 <_start+0x4>,a6
     jsr     -0x204(a6)
-    1280:	4eae fdfc      	jsr -516(a6)
+    11c4:	4eae fdfc      	jsr -516(a6)
     movea.l (sp)+, a6
-    1284:	2c5f           	movea.l (sp)+,a6
+    11c8:	2c5f           	movea.l (sp)+,a6
 	.cfi_adjust_cfa_offset -4
     rts
-    1286:	4e75           	rts
+    11ca:	4e75           	rts
 
-00001288 <PutChar>:
+000011cc <PutChar>:
 	FUNC(PutChar)
 	.globl	SYM (PutChar)
 
 SYM(PutChar):
 	.cfi_startproc
 	move.b d0, (a3)+
-    1288:	16c0           	move.b d0,(a3)+
+    11cc:	16c0           	move.b d0,(a3)+
 	rts
-    128a:	4e75           	rts
+    11ce:	4e75           	rts
