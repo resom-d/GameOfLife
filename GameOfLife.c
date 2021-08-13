@@ -4,9 +4,9 @@
 
 int main()
 {
-	GameMatrix.ColorAlive = 4;
-	GameMatrix.ColorDead = 7;
-	GameMatrix.Columns = 40;
+	GameMatrix.ColorAlive = 6;
+	GameMatrix.ColorDead = 8;
+	GameMatrix.Columns = 55;
 	GameMatrix.Rows = 20;
 	GameMatrix.CellSizeH = 11;
 	GameMatrix.CellSizeV = 11;
@@ -102,7 +102,7 @@ int StartApp()
 
 int MainLoop()
 {
-	DrawCells(GolMainWindow, FALSE);
+	DrawCells(GolMainWindow, TRUE);
 
 	while (AppRunning)
 	{
@@ -217,7 +217,8 @@ void EventLoop(struct Window *theWindow, struct Menu *theMenu)
 
 void CleanUp()
 {
-	FreeMem((APTR)GameMatrix.Playfield, GameMatrix.Columns * GameMatrix.Rows * sizeof(GameOfLifeCell));
+	FreeMem((APTR)GameMatrix.Playfield, GameMatrix.Rows * GameMatrix.Columns * sizeof(GameOfLifeCell));
+
 	if (GolMainWindow)
 		CloseWindow(GolMainWindow);
 	if (GadToolsBase)
@@ -245,9 +246,9 @@ void DrawCells(struct Window *theWindow, BOOL forceFull)
 			GameMatrix.Playfield[x][y].StatusChanged = FALSE;
 
 			if (GameMatrix.Playfield[x][y].Status)
-				SetAPen(theWindow->RPort, 24);
+				SetAPen(theWindow->RPort, GameMatrix.ColorAlive);
 			else
-				SetAPen(theWindow->RPort, 16);
+				SetAPen(theWindow->RPort, GameMatrix.ColorDead);
 
 			RectFill(theWindow->RPort,
 					 x * GameMatrix.CellSizeH + 1,
@@ -349,7 +350,7 @@ void RunSimulation()
 					if (pf[x][y + 1].Status)
 						neighbours++;
 				}
-				else if (x > 0 && x < GameMatrix.Columns - 2) // columns in between 1st and last
+				else if (x > 0 && x < GameMatrix.Columns - 1) // columns in between 1st and last
 				{
 					if (pf[x + 1][y].Status)
 						neighbours++;
@@ -362,7 +363,7 @@ void RunSimulation()
 					if (pf[x - 1][y + 1].Status)
 						neighbours++;
 				}
-				else // last column
+				else if (x==GameMatrix.Columns-1) // last column
 				{
 					if (pf[x - 1][y].Status)
 						neighbours++;
@@ -372,7 +373,7 @@ void RunSimulation()
 						neighbours++;
 				}
 			}
-			else if (y > 0 && y < GameMatrix.Rows - 2) // rows between 1st and last
+			else if (y > 0 && y < GameMatrix.Rows - 1) // rows between 1st and last
 			{
 				if (x == 0)
 				{
@@ -387,7 +388,7 @@ void RunSimulation()
 					if (pf[x + 1][y - 1].Status)
 						neighbours++;
 				}
-				else if (x > 0 && x < GameMatrix.Columns - 2)
+				else if (x > 0 && x < GameMatrix.Columns - 1)
 				{
 					if (pf[x][y + 1].Status)
 						neighbours++;
@@ -406,7 +407,7 @@ void RunSimulation()
 					if (pf[x - 1][y - 1].Status)
 						neighbours++;
 				}
-				else
+				else if (x==GameMatrix.Columns-1)
 				{
 					if (pf[x - 1][y - 1].Status)
 						neighbours++;
@@ -420,7 +421,7 @@ void RunSimulation()
 						neighbours++;
 				}
 			}
-			else // last row
+			else if (y==GameMatrix.Rows-1)// last row
 			{
 				if (x == 0)
 				{
@@ -431,7 +432,7 @@ void RunSimulation()
 					if (pf[x + 1][y].Status)
 						neighbours++;
 				}
-				else if (x > 0 && x < GameMatrix.Columns - 2)
+				else if (x > 0 && x < GameMatrix.Columns - 1)
 				{
 					if (pf[x - 1][y].Status)
 						neighbours++;
@@ -444,7 +445,7 @@ void RunSimulation()
 					if (pf[x + 1][y].Status)
 						neighbours++;
 				}
-				else
+				else if (x==GameMatrix.Columns-1)
 				{
 					if (pf[x - 1][y - 1].Status)
 						neighbours++;
