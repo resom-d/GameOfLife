@@ -23,8 +23,22 @@ struct GfxBase *GfxBase;
 struct Library *GadToolsBase = NULL;
 volatile struct Custom *custom;
 
+
+struct _updateListEntry
+{
+    USHORT X;
+    USHORT Y;
+    USHORT Status;
+};
+typedef struct _updateListEntry UpdateListEntry;
+
 BOOL AppRunning = TRUE;
 BOOL GameRunning = FALSE;
+int OldSelectX =0;
+int OldSelectY =0;
+BOOL DrawActive = FALSE;
+UpdateListEntry *UpdateList;
+USHORT UpdateCnt=0;
 #define ScreenW 640
 #define ScreenH 256
 #define ScreenD 4
@@ -59,8 +73,10 @@ int MainLoop(void);
 void CleanUp(void);
 void RunSimulation(void);
 void DrawCells(struct Window* theWindow, BOOL forceFull);
+void DrawAllCells(struct Window *theWindow);
 void ClearPlayfield(GameOfLifeCell** pf);
 void ToggleCellStatus(WORD coordX, WORD coordY);
+int SavePlayfield(CONST_STRPTR file, int startX, int startY, int width, int height);
 void SetFillPattern(struct RastPort *rport);
 
 #endif // GOL
