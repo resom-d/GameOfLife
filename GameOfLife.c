@@ -5,9 +5,9 @@
 
 int main()
 {
-	GameMatrix.ColorAlive = 9;
-	GameMatrix.ColorDead = 12;
-	GameMatrix.Columns = 40;
+	GameMatrix.ColorAlive = 14;
+	GameMatrix.ColorDead = 15;
+	GameMatrix.Columns = 50;
 	GameMatrix.Rows = 20;
 	GameMatrix.CellSizeH = 11;
 	GameMatrix.CellSizeV = 11;
@@ -20,6 +20,23 @@ int main()
 		return RETURN_FAIL;
 
 	RETURN_OK;
+}
+
+int AllocatePlayfieldMem()
+{
+	//Allocate memory for the cell's data
+	if ((GameMatrix.Playfield = AllocMem(GameMatrix.Columns * sizeof(GameOfLifeCell *), MEMF_ANY | MEMF_CLEAR)) == NULL)
+		return RETURN_FAIL;
+	if ((GameMatrix.Playfield_n1 = AllocMem(GameMatrix.Columns * sizeof(GameOfLifeCell *), MEMF_ANY | MEMF_CLEAR)) == NULL)
+		return RETURN_FAIL;
+	for (int i = 0; i < GameMatrix.Columns; i++)
+	{
+		if ((GameMatrix.Playfield[i] = AllocMem(GameMatrix.Rows * sizeof(GameOfLifeCell), MEMF_ANY | MEMF_CLEAR)) == NULL)
+			return RETURN_FAIL;
+		if ((GameMatrix.Playfield_n1[i] = AllocMem(GameMatrix.Rows * sizeof(GameOfLifeCell), MEMF_ANY | MEMF_CLEAR)) == NULL)
+			return RETURN_FAIL;
+	}
+	return RETURN_OK;
 }
 
 int StartApp()
@@ -53,10 +70,10 @@ int StartApp()
 																			 WA_CustomScreen, (ULONG)GolScreen,
 																			 WA_Left, 0,
 																			 WA_Top, GolScreen->BarHeight + 1,
-																			 WA_Width, GameMatrix.CellSizeH * GameMatrix.Columns + GolScreen->WBorLeft + GolScreen->WBorRight,
-																			 WA_Height, GameMatrix.CellSizeV * GameMatrix.Rows + GolScreen->WBorTop + GolScreen->WBorBottom,
-																			 WA_MaxWidth, GameMatrix.CellSizeH * GameMatrix.Columns + GolScreen->WBorLeft + GolScreen->WBorRight,
-																			 WA_MaxHeight, GameMatrix.CellSizeV * GameMatrix.Rows + GolScreen->WBorTop + GolScreen->WBorBottom,
+																			 WA_Width, GameMatrix.CellSizeH * GameMatrix.Columns + GolScreen->WBorLeft + GolScreen->WBorRight + 16,
+																			 WA_Height, GameMatrix.CellSizeV * GameMatrix.Rows + GolScreen->WBorTop + GolScreen->WBorBottom + 16,
+																			 WA_MaxWidth, 640 - GolScreen->WBorLeft - GolScreen->WBorRight,
+																			 WA_MaxHeight, 256 - GolScreen->WBorTop - GolScreen->WBorBottom,
 																			 WA_Title, (ULONG) "Stopped",
 																			 WA_DepthGadget, TRUE,
 																			 WA_CloseGadget, TRUE,
@@ -73,16 +90,12 @@ int StartApp()
 																			 TAG_END)))
 
 						{
+							if (AllocatePlayfieldMem() != RETURN_OK)
+								return RETURN_FAIL;
 							my_VisualInfo = GetVisualInfo(GolMainWindow->WScreen, TAG_END);
 							MainMenuStrip = CreateMenus(GolMainMenu, TAG_END);
 							LayoutMenus(MainMenuStrip, my_VisualInfo, TAG_END);
 							SetMenuStrip(GolMainWindow, MainMenuStrip);
-							//Allocate memory for the cell's data
-							GameMatrix.Playfield = AllocMem(GameMatrix.Columns * sizeof(GameOfLifeCell *), MEMF_ANY | MEMF_CLEAR);
-							for (int i = 0; i < GameMatrix.Columns; i++)
-							{
-								GameMatrix.Playfield[i] = AllocMem(GameMatrix.Rows * sizeof(GameOfLifeCell), MEMF_ANY | MEMF_CLEAR);
-							}
 
 							return RETURN_OK;
 						}
@@ -156,8 +169,8 @@ void EventLoop(struct Window *theWindow, struct Menu *theMenu)
 				break;
 			}
 		case IDCMP_MOUSEMOVE: /* The position of the mouse has changed. */
-			x = coordX / GameMatrix.CellSizeH;
-			y = coordY / GameMatrix.CellSizeV;
+			x = (coordX / GameMatrix.CellSizeH) +1;
+			y = (coordY / GameMatrix.CellSizeV) +1;
 
 			if (!(x < 0 || x > GameMatrix.Columns - 1 || y < 0 || y > GameMatrix.Rows))
 			{
@@ -184,8 +197,11 @@ void EventLoop(struct Window *theWindow, struct Menu *theMenu)
 				}
 
 				if ((menuNum == 0) && (itemNum == 3) && (subNum == 2))
-					ClearPlayfield();
-
+				{
+					ClearPlayfield(GameMatrix.Playfield);
+					ClearPlayfield(GameMatrix.Playfield_n1);
+					DrawCells(theWindow, TRUE);
+				}
 				if ((menuNum == 0) && (itemNum == 3) && (subNum == 0))
 				{
 					SetWindowTitles(theWindow, (STRPTR) "Running", (STRPTR)-1);
@@ -197,9 +213,6 @@ void EventLoop(struct Window *theWindow, struct Menu *theMenu)
 					SetWindowTitles(theWindow, (STRPTR) "Stopped", (STRPTR)-1);
 					GameRunning = FALSE;
 				}
-
-				if ((menuNum == 0) && (itemNum == 3) && (subNum == 2))
-					ClearPlayfield();
 
 				menuNumber = item->NextSelect;
 			}
@@ -228,12 +241,67 @@ void CleanUp()
 		CloseLibrary((struct Library *)DOSBase);
 }
 
+void RunSimulation()
+{
+	GameOfLifeCell **pf = GameMatrix.Playfield;
+	GameOfLifeCell **pf_n1 = GameMatrix.Playfield_n1;
+
+	for (int x = 1; x < GameMatrix.Columns - 1; x++)
+	{
+		for (int y = 1; y < GameMatrix.Rows - 1; y++)
+		{
+			USHORT neighbours = 0;
+			for (int xi = -1; xi <= 1; xi++)
+			{
+				for (int yj = -1; yj <= 1; yj++)
+				{
+					if (pf[x + xi][y + yj].Status)
+						neighbours++;
+				}
+			}
+			if (pf[x][y].Status) neighbours--; // own status was added above - so -1 for ourselves
+
+			if (pf[x][y].Status)
+			{
+				if (neighbours < 2 || neighbours > 3)
+				{
+					pf_n1[x][y].Status = 0;
+					pf_n1[x][y].StatusChanged = TRUE;
+				}
+				else
+				{
+					pf_n1[x][y].Status = pf[x][y].Status;
+					pf_n1[x][y].StatusChanged = FALSE;
+				}
+			}
+			else if(neighbours == 3)
+			{
+				pf_n1[x][y].Status =1;
+				pf_n1[x][y].StatusChanged = TRUE;
+			}
+			
+		}
+	}
+	for (int col = 0; col < GameMatrix.Columns; col++)
+	{
+		memcpy(pf[col], pf_n1[col], GameMatrix.Rows * sizeof(GameOfLifeCell));
+	}
+}
+
+void ClearPlayfield(GameOfLifeCell **pf)
+{
+	for (int x = 0; x < GameMatrix.Columns; x++)
+	{
+		memset(pf[x], 0, GameMatrix.Rows * sizeof(GameOfLifeCell));
+	}
+}
+
 void DrawCells(struct Window *theWindow, BOOL forceFull)
 {
 	//SetFillPattern(theWindow->RPort);
-	for (int y = 0; y < GameMatrix.Rows; y++)
+	for (int y = 1; y < GameMatrix.Rows-1; y++)
 	{
-		for (int x = 0; x < GameMatrix.Columns; x++)
+		for (int x = 1; x < GameMatrix.Columns-1; x++)
 		{
 			if (!GameMatrix.Playfield[x][y].StatusChanged && !forceFull)
 				continue;
@@ -246,10 +314,10 @@ void DrawCells(struct Window *theWindow, BOOL forceFull)
 				SetAPen(theWindow->RPort, GameMatrix.ColorDead);
 
 			RectFill(theWindow->RPort,
-					 x * GameMatrix.CellSizeH + 1,
-					 y * GameMatrix.CellSizeV + 1,
-					 x * GameMatrix.CellSizeH + GameMatrix.CellSizeH - 1,
-					 y * GameMatrix.CellSizeV + GameMatrix.CellSizeV - 1);
+					 (x-1) * GameMatrix.CellSizeH + 1,
+					 (y-1) * GameMatrix.CellSizeV + 1,
+					 (x-1) * GameMatrix.CellSizeH + GameMatrix.CellSizeH - 1,
+					 (y-1) * GameMatrix.CellSizeV + GameMatrix.CellSizeV - 1);
 		}
 	}
 }
@@ -293,8 +361,8 @@ void SetFillPattern(struct RastPort *rport)
 
 void ToggleCellStatus(WORD coordX, WORD coordY)
 {
-	int x = coordX / GameMatrix.CellSizeH;
-	int y = coordY / GameMatrix.CellSizeV;
+	int x = coordX / GameMatrix.CellSizeH+1;
+	int y = coordY / GameMatrix.CellSizeV+1;
 
 	if (!(x < 0 || x > GameMatrix.Columns - 1 || y < 0 || y > GameMatrix.Rows))
 	{
@@ -308,160 +376,6 @@ void ToggleCellStatus(WORD coordX, WORD coordY)
 		{
 			GameMatrix.Playfield[x][y].Status = 1;
 			GameMatrix.Playfield[x][y].StatusChanged = TRUE;
-		}
-	}
-}
-
-void ClearPlayfield()
-{
-	for (int x = 0; x < GameMatrix.Columns; x++)
-	{
-		for (int y = 0; y < GameMatrix.Rows; y++)
-		{
-			GameMatrix.Playfield[x][y].Neighbours = 0;
-			GameMatrix.Playfield[x][y].Status = 0;
-			GameMatrix.Playfield[x][y].StatusChanged = TRUE;
-		}
-	}
-}
-
-void RunSimulation()
-{
-	GameOfLifeCell **pf = GameMatrix.Playfield;
-
-	for (int y = 0; y < GameMatrix.Rows; y++)
-	{
-		for (int x = 0; x < GameMatrix.Columns; x++)
-		{
-			USHORT neighbours = 0;
-			if (y == 0) // 1st row
-			{
-				if (x == 0) // 1st column
-				{
-					if (pf[x + 1][y].Status)
-						neighbours++;
-					if (pf[x + 1][y + 1].Status)
-						neighbours++;
-					if (pf[x][y + 1].Status)
-						neighbours++;
-				}
-				else if (x > 0 && x < GameMatrix.Columns - 1) // columns in between 1st and last
-				{
-					if (pf[x + 1][y].Status)
-						neighbours++;
-					if (pf[x + 1][y + 1].Status)
-						neighbours++;
-					if (pf[x][y + 1].Status)
-						neighbours++;
-					if (pf[x - 1][y].Status)
-						neighbours++;
-					if (pf[x - 1][y + 1].Status)
-						neighbours++;
-				}
-				else if (x == GameMatrix.Columns - 1) // last column
-				{
-					if (pf[x - 1][y].Status)
-						neighbours++;
-					if (pf[x - 1][y + 1].Status)
-						neighbours++;
-					if (pf[x][y + 1].Status)
-						neighbours++;
-				}
-			}
-			else if (y > 0 && y < GameMatrix.Rows - 1) // rows between 1st and last
-			{
-				if (x == 0)
-				{
-					if (pf[x][y - 1].Status)
-						neighbours++;
-					if (pf[x][y + 1].Status)
-						neighbours++;
-					if (pf[x + 1][y].Status)
-						neighbours++;
-					if (pf[x + 1][y + 1].Status)
-						neighbours++;
-					if (pf[x + 1][y - 1].Status)
-						neighbours++;
-				}
-				else if (x > 0 && x < GameMatrix.Columns - 1)
-				{
-					if (pf[x][y + 1].Status)
-						neighbours++;
-					if (pf[x][y - 1].Status)
-						neighbours++;
-					if (pf[x + 1][y].Status)
-						neighbours++;
-					if (pf[x + 1][y - 1].Status)
-						neighbours++;
-					if (pf[x + 1][y + 1].Status)
-						neighbours++;
-					if (pf[x - 1][y].Status)
-						neighbours++;
-					if (pf[x - 1][y + 1].Status)
-						neighbours++;
-					if (pf[x - 1][y - 1].Status)
-						neighbours++;
-				}
-				else if (x == GameMatrix.Columns - 1)
-				{
-					if (pf[x - 1][y - 1].Status)
-						neighbours++;
-					if (pf[x - 1][y].Status)
-						neighbours++;
-					if (pf[x - 1][y + 1].Status)
-						neighbours++;
-					if (pf[x][y - 1].Status)
-						neighbours++;
-					if (pf[x][y + 1].Status)
-						neighbours++;
-				}
-			}
-			else if (y == GameMatrix.Rows - 1) // last row
-			{
-				if (x == 0)
-				{
-					if (pf[x][y - 1].Status)
-						neighbours++;
-					if (pf[x + 1][y - 1].Status)
-						neighbours++;
-					if (pf[x + 1][y].Status)
-						neighbours++;
-				}
-				else if (x > 0 && x < GameMatrix.Columns - 1)
-				{
-					if (pf[x - 1][y].Status)
-						neighbours++;
-					if (pf[x - 1][y - 1].Status)
-						neighbours++;
-					if (pf[x][y - 1].Status)
-						neighbours++;
-					if (pf[x + 1][y - 1].Status)
-						neighbours++;
-					if (pf[x + 1][y].Status)
-						neighbours++;
-				}
-				else if (x == GameMatrix.Columns - 1)
-				{
-					if (pf[x - 1][y - 1].Status)
-						neighbours++;
-					if (pf[x - 1][y].Status)
-						neighbours++;
-					if (pf[x][y - 1].Status)
-						neighbours++;
-				}
-			}
-
-			if ((pf[x][y].Status==0 && neighbours == 3))
-			{
-				pf[x][y].Status = 1;
-				pf[x][y].StatusChanged = TRUE;
-				continue;
-			}
-			if ((pf[x][y].Status==1 && (neighbours < 2 || neighbours > 3)))
-			{
-				pf[x][y].Status = 0;
-				pf[x][y].StatusChanged = TRUE;
-			}
 		}
 	}
 }

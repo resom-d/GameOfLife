@@ -31,15 +31,15 @@ BOOL GameRunning = FALSE;
 
 struct _gameOfLifeCell
 {
-    USHORT Status;
+    UBYTE Status;
     BOOL StatusChanged;
-    USHORT Neighbours;
 };
 typedef struct _gameOfLifeCell GameOfLifeCell;
 
 struct _golMatrix
 {
     GameOfLifeCell **Playfield;
+    GameOfLifeCell **Playfield_n1;
     USHORT Rows;
     USHORT Columns;
     USHORT ColorAlive;
@@ -53,12 +53,14 @@ GolMatrix GameMatrix;
 
 //protos
 void EventLoop(struct Window *theWindow, struct Menu *theMenu);
+int AllocatePlayfieldMem(void);
 int StartApp(void);
 int MainLoop(void);
 void CleanUp(void);
-void DrawCells(struct Window* theWindow, BOOL forceFull);
-void ToggleCellStatus(WORD coordX, WORD coordY);
-void ClearPlayfield(void);
 void RunSimulation(void);
+void DrawCells(struct Window* theWindow, BOOL forceFull);
+void ClearPlayfield(GameOfLifeCell** pf);
+void ToggleCellStatus(WORD coordX, WORD coordY);
 void SetFillPattern(struct RastPort *rport);
+
 #endif // GOL
