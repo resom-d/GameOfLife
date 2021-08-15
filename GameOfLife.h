@@ -1,28 +1,27 @@
 #include "support/gcc8_c_support.h"
+#include "GameOfLifeUI.h"
 #include <exec/types.h>
+#include <exec/execbase.h>
 #include <proto/exec.h>
 #include <proto/dos.h>
 #include <proto/graphics.h>
 #include <graphics/gfxbase.h>
 #include <graphics/view.h>
 #include <graphics/gfxmacros.h>
-#include <intuition/intuition.h>
 #include <proto/intuition.h>
-#include <libraries/gadtools.h>
+#include <intuition/intuition.h>
+#include <intuition/intuitionbase.h>
 
 
 #if !defined(GOL)
 #define GOL
 
-struct Screen *GolScreen;
-struct Window *GolMainWindow;
 struct ExecBase *SysBase;
 struct DosLibrary *DOSBase;
 struct IntuitionBase *IntuitionBase;
 struct GfxBase *GfxBase;
 struct Library *GadToolsBase = NULL;
 volatile struct Custom *custom;
-
 
 struct _updateListEntry
 {
@@ -39,14 +38,10 @@ int OldSelectY =0;
 BOOL DrawActive = FALSE;
 UpdateListEntry *UpdateList;
 USHORT UpdateCnt=0;
-#define ScreenW 640
-#define ScreenH 256
-#define ScreenD 4
 
 struct _gameOfLifeCell
 {
-    UBYTE Status;
-    BOOL StatusChanged;
+    UBYTE Status;    
 };
 typedef struct _gameOfLifeCell GameOfLifeCell;
 
@@ -65,18 +60,18 @@ typedef struct _golMatrix GolMatrix;
 GolMatrix GameMatrix;
 
 
-//protos
+/*protos*/
 void EventLoop(struct Window *theWindow, struct Menu *theMenu);
 int AllocatePlayfieldMem(void);
 int StartApp(void);
 int MainLoop(void);
 void CleanUp(void);
 void RunSimulation(void);
-void DrawCells(struct Window* theWindow, BOOL forceFull);
-void DrawAllCells(struct Window *theWindow);
+void DrawCells(struct RastPort *rPort, BOOL forceFull);
+void DrawAllCells(struct RastPort *rPort);
 void ClearPlayfield(GameOfLifeCell** pf);
 void ToggleCellStatus(WORD coordX, WORD coordY);
 int SavePlayfield(CONST_STRPTR file, int startX, int startY, int width, int height);
 void SetFillPattern(struct RastPort *rport);
 
-#endif // GOL
+#endif /*GOL*/

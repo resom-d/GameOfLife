@@ -1,0 +1,1 @@
+	idnt	"GameOfLife.c"

@@ -1,11 +1,8 @@
 #include "GameOfLife.h"
-#include "GameOfLifeUI.h"
-#include <exec/execbase.h>
-//backup
 
 int main()
 {
-	GameMatrix.ColorAlive = 14;
+	GameMatrix.ColorAlive = 4;
 	GameMatrix.ColorDead = 15;
 	GameMatrix.Columns = 100;
 	GameMatrix.Rows = 40;
@@ -24,7 +21,7 @@ int main()
 
 int AllocatePlayfieldMem()
 {
-	//Allocate memory for the cell's data
+	/*Allocate memory for the cell's data*/
 	if ((GameMatrix.Playfield = AllocMem(GameMatrix.Columns * sizeof(GameOfLifeCell *), MEMF_ANY | MEMF_CLEAR)) == NULL)
 		return RETURN_FAIL;
 	if ((GameMatrix.Playfield_n1 = AllocMem(GameMatrix.Columns * sizeof(GameOfLifeCell *), MEMF_ANY | MEMF_CLEAR)) == NULL)
@@ -37,7 +34,7 @@ int AllocatePlayfieldMem()
 			return RETURN_FAIL;
 	}
 	UpdateList = AllocMem(GameMatrix.Columns * GameMatrix.Rows * sizeof(UpdateListEntry), MEMF_ANY | MEMF_CLEAR);
-
+	AlterWinBitmap = AllocBitMap(640,256,BMF_CLEAR|BMF_DISPLAYABLE|BMF_INTERLEAVED,0,NULL);
 	return RETURN_OK;
 }
 
@@ -46,9 +43,8 @@ int StartApp()
 	SysBase = *((struct ExecBase **)4UL);
 	custom = (struct Custom *)0xdff000;
 	unsigned int pens[] = {~0};
-
 	APTR *my_VisualInfo;
-
+	
 	if ((DOSBase = (struct DosLibrary *)OpenLibrary((CONST_STRPTR) "dos.library", 0)))
 	{
 		if ((GfxBase = (struct GfxBase *)OpenLibrary((CONST_STRPTR) "graphics.library", 0)))
@@ -59,10 +55,11 @@ int StartApp()
 																 SA_Pens, (ULONG)pens,
 																 SA_DisplayID, HIRES_KEY,
 																 SA_Depth, 4,
+																 SA_FullPalette, TRUE,
 																 SA_Title, (ULONG) "Game Of Life - 2021 HvB",
 																 SA_Type, CUSTOMSCREEN,
-																 SA_DetailPen, 4,
-																 SA_BlockPen, 8,
+																 SA_DetailPen, 1,
+																 SA_BlockPen, 0,
 																 TAG_END)))
 				{
 
@@ -87,8 +84,8 @@ int StartApp()
 																			 WA_Activate, TRUE,
 																			 WA_ScreenTitle, (ULONG) "Watch them suffer, dude!",
 																			 WA_IDCMP, IDCMP_CLOSEWINDOW | IDCMP_MOUSEBUTTONS | IDCMP_MOUSEMOVE | IDCMP_MENUPICK | IDCMP_REFRESHWINDOW,
-																			 WA_DetailPen, 0,
-																			 WA_BlockPen, 0,
+																			 WA_DetailPen, 4,
+																			 WA_BlockPen, 8,
 																			 TAG_END)))
 
 						{
@@ -111,9 +108,17 @@ int StartApp()
 }
 
 int MainLoop()
-{
-	DrawAllCells(GolMainWindow);
-
+{	
+	/* InitRastPort(GOlRastport);
+	   InitTmpRas(RportTmpRas, (PLANEPTR)RportTmpRasBuffer, ScreenW*ScreenH);
+	   GOlRastport->TmpRas = RportTmpRas;
+	   InitArea(RPortAreaInfo, RPortFillAreaBuffer,(RPortFillAreaSize*2/5));
+	   GOlRastport->AreaInfo = RPortAreaInfo;
+	   GOlRastport->BitMap = AlterWinBitmap; 
+	   OrgWinBitmap = GolMainWindow->RPort->BitMap; */
+	
+	DrawAllCells(GolMainWindow->RPort);
+	
 	while (AppRunning)
 	{
 		EventLoop(GolMainWindow, MainMenuStrip);
@@ -124,7 +129,7 @@ int MainLoop()
 			RunSimulation();
 		}
 
-		DrawCells(GolMainWindow, FALSE);
+		DrawCells(GolMainWindow->RPort, FALSE);
 	}
 	CleanUp();
 	return RETURN_OK;
@@ -164,7 +169,7 @@ void EventLoop(struct Window *theWindow, struct Menu *theMenu)
 			AppRunning = FALSE;
 			break;
 		case IDCMP_REFRESHWINDOW: /* User pressed the close window gadget. */
-			DrawAllCells(theWindow);
+			DrawAllCells(theWindow->RPort);
 			break;
 		case IDCMP_MOUSEBUTTONS: /* The status of the mouse buttons has changed. */
 			switch (msg_code)
@@ -223,12 +228,13 @@ void EventLoop(struct Window *theWindow, struct Menu *theMenu)
 				{
 					ClearPlayfield(GameMatrix.Playfield);
 					ClearPlayfield(GameMatrix.Playfield_n1);
-					DrawCells(theWindow, TRUE);
+					DrawAllCells(theWindow->RPort);
 				}
 				if ((menuNum == 0) && (itemNum == 3) && (subNum == 0))
 				{
 					SetWindowTitles(theWindow, (STRPTR) "Running", (STRPTR)-1);
 					GameRunning = TRUE;
+
 				}
 
 				if ((menuNum == 0) && (itemNum == 3) && (subNum == 1))
@@ -324,7 +330,7 @@ void ClearPlayfield(GameOfLifeCell **pf)
 	}
 }
 
-void DrawCells(struct Window *theWindow, BOOL forceFull)
+void DrawCells(struct RastPort *rPort, BOOL forceFull)
 {
 	for (int entry = 0; entry < UpdateCnt; entry++)
 	{
@@ -333,11 +339,11 @@ void DrawCells(struct Window *theWindow, BOOL forceFull)
 		int s = UpdateList[entry].Status;
 
 		if (s)
-			SetAPen(theWindow->RPort, GameMatrix.ColorAlive);
+			SetAPen(rPort, GameMatrix.ColorAlive);
 		else
-			SetAPen(theWindow->RPort, GameMatrix.ColorDead);
+			SetAPen(rPort, GameMatrix.ColorDead);
 
-		RectFill(theWindow->RPort,
+		RectFill(rPort,
 				 (x - 1) * GameMatrix.CellSizeH + 1,
 				 (y - 1) * GameMatrix.CellSizeV + 1,
 				 (x - 1) * GameMatrix.CellSizeH + GameMatrix.CellSizeH - 1,
@@ -387,7 +393,7 @@ void ToggleCellStatus(WORD coordX, WORD coordY)
 	int x = coordX / GameMatrix.CellSizeH + 1;
 	int y = coordY / GameMatrix.CellSizeV + 1;
 
-	if (!(x < 0 || x > GameMatrix.Columns - 1 || y < 0 || y > GameMatrix.Rows))
+	if (!(x < 0 || x > GameMatrix.Columns - 2 || y < 0 || y > GameMatrix.Rows-2))
 	{
 
 		if (GameMatrix.Playfield[x][y].Status)
@@ -411,36 +417,42 @@ void ToggleCellStatus(WORD coordX, WORD coordY)
 
 int SavePlayfield(CONST_STRPTR file, int startX, int startY, int width, int height)
 {
-	for (int x = startX; x < startX + width; x++)
+	BPTR fh;
+	fh=Open(file,MODE_NEWFILE);
+	int args[3];
+	for (int x = startX; x < (startX + width); x++)
 	{
-		for (int y = startY; y < startY + height; y++)
+		for (int y = startY; y < (startY + height); y++)
 		{
-			Printf((CONST_STRPTR) "%d,%d,%d\n", x, y, GameMatrix.Playfield[x][y].Status);
+			args[0]=x;
+			args[1]=y;
+			args[2]=GameMatrix.Playfield[x][y].Status;
+			VFPrintf(fh, (CONST_STRPTR) "%d,%d,%d\n", args);
+						
 		}
 	}
-
+	Close(fh);
+	
 	return RETURN_OK;
 }
 
-void DrawAllCells(struct Window *theWindow)
+void DrawAllCells(struct RastPort *rPort)
 {
 	//SetFillPattern(theWindow->RPort);
 	for (int y = 1; y < GameMatrix.Rows - 1; y++)
 	{
 		for (int x = 1; x < GameMatrix.Columns - 1; x++)
 		{
-			GameMatrix.Playfield[x][y].StatusChanged = FALSE;
-
 			if (GameMatrix.Playfield[x][y].Status)
-				SetAPen(theWindow->RPort, GameMatrix.ColorAlive);
+				SetAPen(rPort, GameMatrix.ColorAlive);
 			else
-				SetAPen(theWindow->RPort, GameMatrix.ColorDead);
+				SetAPen(rPort, GameMatrix.ColorDead);
 
-			RectFill(theWindow->RPort,
+			RectFill(rPort,
 					 (x - 1) * GameMatrix.CellSizeH + 1,
-					 (y - 1) * GameMatrix.CellSizeV + 1,
+					 (y -1) * GameMatrix.CellSizeV +1,
 					 (x - 1) * GameMatrix.CellSizeH + GameMatrix.CellSizeH - 1,
-					 (y - 1) * GameMatrix.CellSizeV + GameMatrix.CellSizeV - 1);
+					 (y-1) * GameMatrix.CellSizeV + GameMatrix.CellSizeV - 1);
 		}
 	}
 }
