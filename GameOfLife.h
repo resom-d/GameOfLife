@@ -67,11 +67,16 @@ int StartApp(void);
 int MainLoop(void);
 void CleanUp(void);
 void RunSimulation(void);
-void DrawCells(struct RastPort *rPort, BOOL forceFull);
-void DrawAllCells(struct RastPort *rPort);
+void DrawCells(RenderData *rd);
+void RepaintWindow(RenderData* rd);
+void DrawAllCells(RenderData *rd);
 void ClearPlayfield(GameOfLifeCell** pf);
 void ToggleCellStatus(WORD coordX, WORD coordY);
 int SavePlayfield(CONST_STRPTR file, int startX, int startY, int width, int height);
 void SetFillPattern(struct RastPort *rport);
+struct BitMap* MyAllocBitMap(ULONG width, ULONG height, ULONG depth, struct BitMap* likeBitMap);
+void MyFreeBitMap(struct BitMap* bitmap);
+void ComputeOutputSize(RenderData* rd);
+int PrepareBackbuffer(RenderData* rd);
 
 #endif /*GOL*/

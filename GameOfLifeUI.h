@@ -7,17 +7,18 @@
 #define ScreenW 640
 #define ScreenH 256
 #define ScreenD 4
-#define RPortFillAreaSize 2
 
-struct Screen *GolScreen;
-struct Window *GolMainWindow;
-struct RastPort *GOlRastport;
-struct TmpRas *RportTmpRas;
-WORD RportTmpRasBuffer[10];
-WORD RPortFillAreaBuffer[RPortFillAreaSize] = {0x0, 0x0};
-struct AreaInfo *RPortAreaInfo;
-struct BitMap *OrgWinBitmap;
-struct BitMap *AlterWinBitmap;
+struct _renderData
+{
+	struct Screen *Screen;
+	struct Window *MainWindow;
+	struct tPoint OutputSize;
+	struct tPoint BackbufferSize;
+	struct RastPort Rastport;
+	struct BitMap *Backbuffer;
+};
+typedef struct _renderData RenderData;
+RenderData GOLRenderData;
 
 /* Menus and gadgets */
 struct Menu *MainMenuStrip;
@@ -66,7 +67,7 @@ struct NewMenu GolMainMenu[] =
 		{
 			NM_SUB,
 			(STRPTR) "Start",
-			0,
+			(STRPTR)"r",
 			0,
 			0,
 			0,
@@ -74,7 +75,7 @@ struct NewMenu GolMainMenu[] =
 		{
 			NM_SUB,
 			(STRPTR) "Stop",
-			0,
+			(STRPTR) "h",
 			0,
 			0,
 			0,
