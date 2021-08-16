@@ -9,7 +9,7 @@ int main()
 	GameMatrix.CellSizeH = 5;
 	GameMatrix.CellSizeV = 5;
 
-	if (StartApp() == RETURN_OK)
+	if (StartApp(&GOLRenderData) == RETURN_OK)
 	{
 		MainLoop();
 	}
@@ -19,25 +19,40 @@ int main()
 	RETURN_OK;
 }
 
-int AllocatePlayfieldMem()
+int MainLoop()
 {
-	/*Allocate memory for the cell's data*/
-	if ((GameMatrix.Playfield = AllocMem(GameMatrix.Columns * sizeof(GameOfLifeCell *), MEMF_ANY | MEMF_CLEAR)) == NULL)
+	if (AllocPlayfieldMem() != RETURN_OK)
 		return RETURN_FAIL;
-	if ((GameMatrix.Playfield_n1 = AllocMem(GameMatrix.Columns * sizeof(GameOfLifeCell *), MEMF_ANY | MEMF_CLEAR)) == NULL)
+
+	if (PrepareBackbuffer(&GOLRenderData) != RETURN_OK)
 		return RETURN_FAIL;
-	for (int i = 0; i < GameMatrix.Columns; i++)
+
+	SetRast(GOLRenderData.MainWindow->RPort, 0);
+	SetRast(&GOLRenderData.Rastport, 0);
+
+	while (AppRunning)
 	{
-		if ((GameMatrix.Playfield[i] = AllocMem(GameMatrix.Rows * sizeof(GameOfLifeCell), MEMF_ANY | MEMF_CLEAR)) == NULL)
-			return RETURN_FAIL;
-		if ((GameMatrix.Playfield_n1[i] = AllocMem(GameMatrix.Rows * sizeof(GameOfLifeCell), MEMF_ANY | MEMF_CLEAR)) == NULL)
-			return RETURN_FAIL;
+		EventLoop(GOLRenderData.MainWindow, MainMenuStrip);
+
+		if (GameRunning)
+		{
+			UpdateCnt = 0;
+			RunSimulation();
+		}
+		if (UpdateCnt > 0)
+		{
+			DrawCells(&GOLRenderData);
+		}
+		WaitTOF();
+		RepaintWindow(&GOLRenderData);
 	}
-	UpdateList = AllocMem(GameMatrix.Columns * GameMatrix.Rows * sizeof(UpdateListEntry), MEMF_ANY | MEMF_CLEAR);
+
+	CleanUp();
+
 	return RETURN_OK;
 }
 
-int StartApp()
+int StartApp(RenderData *rd)
 {
 	SysBase = *((struct ExecBase **)4UL);
 	custom = (struct Custom *)0xdff000;
@@ -61,17 +76,16 @@ int StartApp()
 																			SA_BlockPen, 0,
 																			TAG_END)))
 				{
-
 					if ((GadToolsBase = (struct Library *)OpenLibrary((CONST_STRPTR) "gadtools.library", 0)))
 					{
 						if ((GOLRenderData.MainWindow = (struct Window *)OpenWindowTags(NULL,
 																						WA_CustomScreen, (ULONG)GOLRenderData.Screen,
 																						WA_Left, 0,
 																						WA_Top, GOLRenderData.Screen->BarHeight + 1,
-																						WA_Width, GameMatrix.CellSizeH * (GameMatrix.Columns - 1) + GOLRenderData.Screen->WBorLeft + GOLRenderData.Screen->WBorRight + 16,
-																						WA_Height, GameMatrix.CellSizeV * (GameMatrix.Rows - 1) + GOLRenderData.Screen->WBorTop + GOLRenderData.Screen->WBorBottom + 16,
-																						WA_MaxWidth, 640 - GOLRenderData.Screen->WBorLeft - GOLRenderData.Screen->WBorRight,
-																						WA_MaxHeight, 256 - GOLRenderData.Screen->WBorTop - GOLRenderData.Screen->WBorBottom,
+																						WA_Width, GameMatrix.CellSizeH * (GameMatrix.Columns - 1) + rd->Screen->WBorLeft + rd->Screen->WBorRight,
+																						WA_Height, GameMatrix.CellSizeV * (GameMatrix.Rows - 1) + rd->Screen->WBorTop + rd->Screen->WBorBottom,
+																						WA_MaxWidth, ScreenW - rd->Screen->WBorLeft - rd->Screen->WBorRight,
+																						WA_MaxHeight, ScreenH - rd->Screen->WBorTop - rd->Screen->WBorBottom,
 																						WA_Title, (ULONG) "Stopped",
 																						WA_DepthGadget, TRUE,
 																						WA_CloseGadget, TRUE,
@@ -86,10 +100,7 @@ int StartApp()
 																						WA_DetailPen, 4,
 																						WA_BlockPen, 8,
 																						TAG_END)))
-
 						{
-							if (AllocatePlayfieldMem() != RETURN_OK)
-								return RETURN_FAIL;
 							ComputeOutputSize(&GOLRenderData);
 							my_VisualInfo = GetVisualInfo(GOLRenderData.MainWindow->WScreen, TAG_END);
 							MainMenuStrip = CreateMenus(GolMainMenu, TAG_END);
@@ -107,33 +118,6 @@ int StartApp()
 	return RETURN_ERROR;
 }
 
-int MainLoop()
-{
-	if(PrepareBackbuffer(&GOLRenderData) != RETURN_OK) return RETURN_FAIL;	
-	SetRast(GOLRenderData.MainWindow->RPort, 0);
-
-	while (AppRunning)
-	{
-		EventLoop(GOLRenderData.MainWindow, MainMenuStrip);
-
-		if (GameRunning)
-		{
-			UpdateCnt = 0;
-			WaitTOF();
-			RunSimulation();
-		}
-		if (UpdateCnt > 0)
-		{
-			DrawCells(&GOLRenderData);
-		}
-		RepaintWindow(&GOLRenderData);
-	}
-
-	CleanUp();
-
-	return RETURN_OK;
-}
-
 void EventLoop(struct Window *theWindow, struct Menu *theMenu)
 {
 	struct IntuiMessage *message;
@@ -145,7 +129,7 @@ void EventLoop(struct Window *theWindow, struct Menu *theMenu)
 	USHORT subNum;
 	struct MenuItem *item;
 	WORD coordX, coordY;
-	int x, y, result;
+	int x, y;
 
 	if (!GameRunning)
 		UpdateCnt = 0;
@@ -172,11 +156,17 @@ void EventLoop(struct Window *theWindow, struct Menu *theMenu)
 			break;
 		case IDCMP_REFRESHWINDOW: /* User pressed the close window gadget. */
 			SetWindowTitles(GOLRenderData.MainWindow, "Reconfiguring Memory...", -1);
-			result = PrepareBackbuffer(&GOLRenderData);	
+			PrepareBackbuffer(&GOLRenderData);
+			
+			FreePlayfieldMem();
+			GameMatrix.Columns = GOLRenderData.OutputSize.x / GameMatrix.CellSizeH;
+			GameMatrix.Rows = GOLRenderData.OutputSize.y / GameMatrix.CellSizeV;
+			AllocPlayfieldMem();
+			
 			SetRast(&GOLRenderData.Rastport, 0);
 			DrawAllCells(&GOLRenderData);
 			RepaintWindow(&GOLRenderData);
-			SetWindowTitles(GOLRenderData.MainWindow, "Reconfiguring Memory Done", -1);
+			GameRunning ? SetWindowTitles(GOLRenderData.MainWindow, "Running", -1) : SetWindowTitles(GOLRenderData.MainWindow, "Stopped", -1);
 			break;
 		case IDCMP_MOUSEBUTTONS: /* The status of the mouse buttons has changed. */
 			switch (msg_code)
@@ -262,7 +252,9 @@ void EventLoop(struct Window *theWindow, struct Menu *theMenu)
 
 void CleanUp()
 {
-	FreeMem((APTR)GameMatrix.Playfield, GameMatrix.Rows * GameMatrix.Columns * sizeof(GameOfLifeCell));
+	FreePlayfieldMem();
+
+	FreeBitMap(GOLRenderData.Backbuffer);
 
 	if (GOLRenderData.MainWindow)
 		CloseWindow(GOLRenderData.MainWindow);
@@ -330,151 +322,44 @@ void RunSimulation()
 	}
 }
 
+int AllocPlayfieldMem()
+{
+	/*Allocate memory for the cell's data*/
+	if ((GameMatrix.Playfield = AllocMem(GameMatrix.Columns * sizeof(GameOfLifeCell *), MEMF_ANY | MEMF_CLEAR)) == NULL)
+		return RETURN_FAIL;
+	if ((GameMatrix.Playfield_n1 = AllocMem(GameMatrix.Columns * sizeof(GameOfLifeCell *), MEMF_ANY | MEMF_CLEAR)) == NULL)
+		return RETURN_FAIL;
+	for (int i = 0; i < GameMatrix.Columns; i++)
+	{
+		if ((GameMatrix.Playfield[i] = AllocMem(GameMatrix.Rows * sizeof(GameOfLifeCell), MEMF_ANY | MEMF_CLEAR)) == NULL)
+			return RETURN_FAIL;
+		if ((GameMatrix.Playfield_n1[i] = AllocMem(GameMatrix.Rows * sizeof(GameOfLifeCell), MEMF_ANY | MEMF_CLEAR)) == NULL)
+			return RETURN_FAIL;
+	}
+	UpdateList = AllocMem(GameMatrix.Columns * GameMatrix.Rows * sizeof(UpdateListEntry), MEMF_ANY | MEMF_CLEAR);
+	return RETURN_OK;
+}
+
+int FreePlayfieldMem()
+{
+	for (int i = 0; i < GameMatrix.Columns; i++)
+	{
+		FreeMem(GameMatrix.Playfield[i], GameMatrix.Rows * sizeof(GameOfLifeCell));
+		FreeMem(GameMatrix.Playfield_n1[i], GameMatrix.Rows * sizeof(GameOfLifeCell));
+	}
+	FreeMem(GameMatrix.Playfield, GameMatrix.Columns * sizeof(GameOfLifeCell*));
+	FreeMem(GameMatrix.Playfield_n1, GameMatrix.Columns * sizeof(GameOfLifeCell*));
+	FreeMem(UpdateList, GameMatrix.Columns * GameMatrix.Rows * sizeof(UpdateListEntry));
+
+	return RETURN_OK;
+}
+
 void ClearPlayfield(GameOfLifeCell **pf)
 {
 
 	for (int x = 0; x < GameMatrix.Columns; x++)
 	{
 		memset(pf[x], 0, GameMatrix.Rows * sizeof(GameOfLifeCell));
-	}
-}
-
-void DrawCells(RenderData *rd)
-{
-	for (int entry = 0; entry < UpdateCnt; entry++)
-	{
-		int x = UpdateList[entry].X;
-		int y = UpdateList[entry].Y;
-		int s = UpdateList[entry].Status;
-
-		if (s)
-			SetAPen(&rd->Rastport, GameMatrix.ColorAlive);
-		else
-			SetAPen(&rd->Rastport, GameMatrix.ColorDead);
-
-		RectFill(&rd->Rastport,
-				 (x - 1) * GameMatrix.CellSizeH + 1,
-				 (y - 1) * GameMatrix.CellSizeV + 1,
-				 (x - 1) * GameMatrix.CellSizeH + GameMatrix.CellSizeH - 1,
-				 (y - 1) * GameMatrix.CellSizeV + GameMatrix.CellSizeV - 1);
-	}
-}
-
-void RepaintWindow(RenderData *rd)
-{
-	/* on repaint we simply blit our backbuffer into our window's RastPort */
-	BltBitMapRastPort(rd->Backbuffer,
-					  0,
-					  0,
-					  rd->MainWindow->RPort,
-					  0,
-					  0,
-					  (LONG)rd->OutputSize.x, 
-					  (LONG)rd->OutputSize.y,
-					  (ABNC | ABC));
-}
-
-void SetFillPattern(struct RastPort *rport)
-{
-	int areaPattern[4][8] =
-		{
-			/* plane 0 pattern */
-			{
-				0x0000, 0x0000,
-				0xffff, 0xffff,
-				0x0000, 0x0000,
-				0xffff, 0xffff},
-			/* plane 1 pattern */
-			{
-				0x0000, 0x0000,
-				0x0000, 0x0000,
-				0xffff, 0xffff,
-				0xffff, 0xffff},
-			/* plane 2 pattern */
-			{
-				0xff00, 0xff00,
-				0xff00, 0xff00,
-				0xff00, 0xff00,
-				0xff00, 0xff00},
-			/* plane 3 pattern */
-			{
-				0xff00, 0xff00,
-				0xff00, 0xff00,
-				0xff00, 0xff00,
-				0xff00, 0xff00}};
-
-	SetAfPt(rport, (UWORD *)areaPattern, -4);
-
-	/* when doing this, it is best to set three other parameters as follows: */
-	SetAPen(rport, -1);
-	SetBPen(rport, 0);
-	SetDrMd(rport, JAM2);
-}
-
-void ToggleCellStatus(WORD coordX, WORD coordY)
-{
-	int x = coordX / GameMatrix.CellSizeH + 1;
-	int y = coordY / GameMatrix.CellSizeV + 1;
-
-	if (!(x < 0 || x > GameMatrix.Columns - 2 || y < 0 || y > GameMatrix.Rows - 2))
-	{
-
-		if (GameMatrix.Playfield[x][y].Status)
-		{
-			GameMatrix.Playfield[x][y].Status = 0;
-			UpdateList[UpdateCnt].X = x;
-			UpdateList[UpdateCnt].Y = y;
-			UpdateList[UpdateCnt].Status = 0;
-			UpdateCnt++;
-		}
-		else
-		{
-			GameMatrix.Playfield[x][y].Status = 1;
-			UpdateList[UpdateCnt].X = x;
-			UpdateList[UpdateCnt].Y = y;
-			UpdateList[UpdateCnt].Status = 1;
-			UpdateCnt++;
-		}
-	}
-}
-
-int SavePlayfield(CONST_STRPTR file, int startX, int startY, int width, int height)
-{
-	BPTR fh;
-	fh = Open(file, MODE_NEWFILE);
-	int args[3];
-	for (int x = startX; x < (startX + width); x++)
-	{
-		for (int y = startY; y < (startY + height); y++)
-		{
-			args[0] = x;
-			args[1] = y;
-			args[2] = GameMatrix.Playfield[x][y].Status;
-			VFPrintf(fh, (CONST_STRPTR) "%d,%d,%d\n", args);
-		}
-	}
-	Close(fh);
-
-	return RETURN_OK;
-}
-
-void DrawAllCells(RenderData *rd)
-{
-	for (int y = 1; y < GameMatrix.Rows - 1; y++)
-	{
-		for (int x = 1; x < GameMatrix.Columns - 1; x++)
-		{
-			if (GameMatrix.Playfield[x][y].Status)
-				SetAPen(&rd->Rastport, GameMatrix.ColorAlive);
-			else
-				SetAPen(&rd->Rastport, GameMatrix.ColorDead);
-
-			RectFill(&rd->Rastport,
-					 (x - 1) * GameMatrix.CellSizeH + 1,
-					 (y - 1) * GameMatrix.CellSizeV + 1,
-					 (x - 1) * GameMatrix.CellSizeH + GameMatrix.CellSizeH - 1,
-					 (y - 1) * GameMatrix.CellSizeV + GameMatrix.CellSizeV - 1);
-		}
 	}
 }
 
@@ -589,3 +474,106 @@ int PrepareBackbuffer(RenderData *rd)
 
 	return result;
 }
+
+void DrawCells(RenderData *rd)
+{
+	for (int entry = 0; entry < UpdateCnt; entry++)
+	{
+		int x = UpdateList[entry].X;
+		int y = UpdateList[entry].Y;
+		int s = UpdateList[entry].Status;
+
+		if (s)
+			SetAPen(&rd->Rastport, GameMatrix.ColorAlive);
+		else
+			SetAPen(&rd->Rastport, GameMatrix.ColorDead);
+
+		RectFill(&rd->Rastport,
+				 (x - 1) * GameMatrix.CellSizeH + 1,
+				 (y - 1) * GameMatrix.CellSizeV + 1,
+				 (x - 1) * GameMatrix.CellSizeH + GameMatrix.CellSizeH - 1,
+				 (y - 1) * GameMatrix.CellSizeV + GameMatrix.CellSizeV - 1);
+	}
+}
+
+void DrawAllCells(RenderData *rd)
+{
+	for (int y = 1; y < GameMatrix.Rows - 1; y++)
+	{
+		for (int x = 1; x < GameMatrix.Columns - 1; x++)
+		{
+			if (GameMatrix.Playfield[x][y].Status)
+				SetAPen(&rd->Rastport, GameMatrix.ColorAlive);
+			else
+				SetAPen(&rd->Rastport, GameMatrix.ColorDead);
+
+			RectFill(&rd->Rastport,
+					 (x - 1) * GameMatrix.CellSizeH + 1,
+					 (y - 1) * GameMatrix.CellSizeV + 1,
+					 (x - 1) * GameMatrix.CellSizeH + GameMatrix.CellSizeH - 1,
+					 (y - 1) * GameMatrix.CellSizeV + GameMatrix.CellSizeV - 1);
+		}
+	}
+}
+
+void RepaintWindow(RenderData *rd)
+{
+	/* on repaint we simply blit our backbuffer into our window's RastPort */
+	BltBitMapRastPort(rd->Backbuffer,
+					  0,
+					  0,
+					  rd->MainWindow->RPort,
+					  0,
+					  0,
+					  (LONG)rd->OutputSize.x,
+					  (LONG)rd->OutputSize.y,
+					  (ABNC | ABC));
+}
+
+void ToggleCellStatus(WORD coordX, WORD coordY)
+{
+	int x = coordX / GameMatrix.CellSizeH + 1;
+	int y = coordY / GameMatrix.CellSizeV + 1;
+
+	if (!(x < 0 || x > GameMatrix.Columns - 2 || y < 0 || y > GameMatrix.Rows - 2))
+	{
+
+		if (GameMatrix.Playfield[x][y].Status)
+		{
+			GameMatrix.Playfield[x][y].Status = 0;
+			UpdateList[UpdateCnt].X = x;
+			UpdateList[UpdateCnt].Y = y;
+			UpdateList[UpdateCnt].Status = 0;
+			UpdateCnt++;
+		}
+		else
+		{
+			GameMatrix.Playfield[x][y].Status = 1;
+			UpdateList[UpdateCnt].X = x;
+			UpdateList[UpdateCnt].Y = y;
+			UpdateList[UpdateCnt].Status = 1;
+			UpdateCnt++;
+		}
+	}
+}
+
+int SavePlayfield(CONST_STRPTR file, int startX, int startY, int width, int height)
+{
+	BPTR fh;
+	fh = Open(file, MODE_NEWFILE);
+	int args[3];
+	for (int x = startX; x < (startX + width); x++)
+	{
+		for (int y = startY; y < (startY + height); y++)
+		{
+			args[0] = x;
+			args[1] = y;
+			args[2] = GameMatrix.Playfield[x][y].Status;
+			VFPrintf(fh, (CONST_STRPTR) "%d,%d,%d\n", args);
+		}
+	}
+	Close(fh);
+
+	return RETURN_OK;
+}
+

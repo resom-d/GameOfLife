@@ -62,8 +62,9 @@ GolMatrix GameMatrix;
 
 /*protos*/
 void EventLoop(struct Window *theWindow, struct Menu *theMenu);
-int AllocatePlayfieldMem(void);
-int StartApp(void);
+int AllocPlayfieldMem(void);
+int FreePlayfieldMem(void);
+int StartApp(RenderData *rd);
 int MainLoop(void);
 void CleanUp(void);
 void RunSimulation(void);
