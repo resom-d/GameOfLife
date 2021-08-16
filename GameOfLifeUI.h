@@ -12,10 +12,12 @@ struct _renderData
 {
 	struct Screen *Screen;
 	struct Window *MainWindow;
+	struct Window *PPG_Window;
 	struct tPoint OutputSize;
 	struct tPoint BackbufferSize;
 	struct RastPort Rastport;
 	struct BitMap *Backbuffer;
+	BOOL PPG_WinOpen;
 };
 typedef struct _renderData RenderData;
 RenderData GOLRenderData;
@@ -233,5 +235,33 @@ struct NewMenu GolMainMenu[] =
 			0,
 		},
 };
+
+
+/* Playfield properties gagdget*/
+
+#define PPG_GROUP_ID  1
+#define PPG_PROPWIDTH_ID  2
+#define PPG_STRGWIDTH_ID  3
+#define PPG_PROPHEIGHT_ID  4
+#define PPG_STRGHEIGHT_ID  5
+#define PPG_PROPCELLWIDTH_ID  6
+#define PPG_PROPCELLHEIGHT_ID  7
+#define PPG_STRGCELLWIDTH_ID  8
+#define PPG_STRGCELLHEIGHT_ID  9
+#define PPG_BUTTONOK_ID  10
+#define PPG_BUTTONCANCEL_ID 11
+
+struct Gadget *PPG_Group;
+struct Gadget *PPG_Frame;
+struct Gadget *PPG_PropWidth;
+struct Gadget *PPG_PropHeight;
+struct Gadget *PPG_StrgWidth;
+struct Gadget *PPG_StrgHeight;
+struct Gadget *PPG_PropCellWidth;
+struct Gadget *PPG_PropCellHeight;
+struct Gadget *PPG_StrgCellWidth;
+struct Gadget *PPG_StrgCellHeight;
+struct Gadget *PPG_ButtonOk;
+struct Gadget *PPG_ButtonCancel;
 
 #endif

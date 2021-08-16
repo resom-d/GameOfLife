@@ -62,6 +62,7 @@ GolMatrix GameMatrix;
 
 /*protos*/
 void EventLoop(struct Window *theWindow, struct Menu *theMenu);
+void PPG_EventLoop(struct Window *theWindow, struct Menu *theMenu);
 int AllocPlayfieldMem(void);
 int FreePlayfieldMem(void);
 int StartApp(RenderData *rd);
@@ -79,5 +80,6 @@ struct BitMap* MyAllocBitMap(ULONG width, ULONG height, ULONG depth, struct BitM
 void MyFreeBitMap(struct BitMap* bitmap);
 void ComputeOutputSize(RenderData* rd);
 int PrepareBackbuffer(RenderData* rd);
+void RunPPG_Window(RenderData *rd);
 
 #endif /*GOL*/

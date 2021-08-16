@@ -33,6 +33,10 @@ int MainLoop()
 	while (AppRunning)
 	{
 		EventLoop(GOLRenderData.MainWindow, MainMenuStrip);
+		if (GOLRenderData.PPG_Window)
+		{
+			PPG_EventLoop(GOLRenderData.PPG_Window, NULL);
+		}
 
 		if (GameRunning)
 		{
@@ -82,8 +86,8 @@ int StartApp(RenderData *rd)
 																						WA_CustomScreen, (ULONG)GOLRenderData.Screen,
 																						WA_Left, 0,
 																						WA_Top, GOLRenderData.Screen->BarHeight + 1,
-																						WA_Width, GameMatrix.CellSizeH * (GameMatrix.Columns - 1) + rd->Screen->WBorLeft + rd->Screen->WBorRight,
-																						WA_Height, GameMatrix.CellSizeV * (GameMatrix.Rows - 1) + rd->Screen->WBorTop + rd->Screen->WBorBottom,
+																						WA_Width, GameMatrix.CellSizeH * (GameMatrix.Columns - 0) + rd->Screen->WBorLeft + rd->Screen->WBorRight,
+																						WA_Height, GameMatrix.CellSizeV * (GameMatrix.Rows - 0)  + rd->Screen->WBorBottom + rd->Screen->WBorTop,
 																						WA_MaxWidth, ScreenW - rd->Screen->WBorLeft - rd->Screen->WBorRight,
 																						WA_MaxHeight, ScreenH - rd->Screen->WBorTop - rd->Screen->WBorBottom,
 																						WA_Title, (ULONG) "Stopped",
@@ -155,18 +159,19 @@ void EventLoop(struct Window *theWindow, struct Menu *theMenu)
 			ComputeOutputSize(&GOLRenderData);
 			break;
 		case IDCMP_REFRESHWINDOW: /* User pressed the close window gadget. */
-			SetWindowTitles(GOLRenderData.MainWindow, "Reconfiguring Memory...", -1);
+			SetWindowTitles(GOLRenderData.MainWindow, (STRPTR) "Reconfiguring Memory...", (STRPTR)-1);
 			PrepareBackbuffer(&GOLRenderData);
-			
+
 			FreePlayfieldMem();
-			GameMatrix.Columns = GOLRenderData.OutputSize.x / GameMatrix.CellSizeH;
-			GameMatrix.Rows = GOLRenderData.OutputSize.y / GameMatrix.CellSizeV;
+			GameMatrix.Columns = GOLRenderData.OutputSize.x / GameMatrix.CellSizeH +2;
+			GameMatrix.Rows = GOLRenderData.OutputSize.y / GameMatrix.CellSizeV +2;
 			AllocPlayfieldMem();
-			
+
 			SetRast(&GOLRenderData.Rastport, 0);
 			DrawAllCells(&GOLRenderData);
 			RepaintWindow(&GOLRenderData);
-			GameRunning ? SetWindowTitles(GOLRenderData.MainWindow, "Running", -1) : SetWindowTitles(GOLRenderData.MainWindow, "Stopped", -1);
+
+			GameRunning ? SetWindowTitles(GOLRenderData.MainWindow, (STRPTR) "Running", (STRPTR)-1) : SetWindowTitles(GOLRenderData.MainWindow, (STRPTR) "Stopped", (STRPTR)-1);
 			break;
 		case IDCMP_MOUSEBUTTONS: /* The status of the mouse buttons has changed. */
 			switch (msg_code)
@@ -220,6 +225,12 @@ void EventLoop(struct Window *theWindow, struct Menu *theMenu)
 				{
 					SavePlayfield((CONST_STRPTR) "test.gold", 1, 1, GameMatrix.Columns - 1, GameMatrix.Rows - 1);
 				}
+				/* Open grid settings window*/
+				if ((menuNum == 2) && (itemNum == 0))
+				{
+					RunPPG_Window(&GOLRenderData);
+					GOLRenderData.PPG_WinOpen = TRUE;
+				}
 
 				if ((menuNum == 0) && (itemNum == 3) && (subNum == 2))
 				{
@@ -250,12 +261,87 @@ void EventLoop(struct Window *theWindow, struct Menu *theMenu)
 	}
 }
 
+void PPG_EventLoop(struct Window *theWindow, struct Menu *theMenu)
+{
+	struct IntuiMessage *message;
+	UWORD msg_code;
+	ULONG msg_class;
+	USHORT menuNumber;
+	USHORT menuNum;
+	USHORT itemNum;
+	USHORT subNum;
+	struct MenuItem *item;
+	WORD coordX, coordY;
+	int x, y;
+
+	/* There may be more than one message, so keep processing messages until there are no more. */
+	while ((message = (struct IntuiMessage *)GetMsg(theWindow->UserPort)) && GOLRenderData.PPG_WinOpen)
+	{
+		/* Copy the necessary information from the message. */
+		msg_class = message->Class;
+		msg_code = message->Code;
+		coordX = message->MouseX - theWindow->BorderLeft;
+		coordY = message->MouseY - theWindow->BorderTop;
+
+		/* Reply as soon as possible. */
+		ReplyMsg((struct Message *)message);
+
+		/* Take the proper action in response to the message. */
+		switch (msg_class)
+		{
+		case IDCMP_CLOSEWINDOW: /* User pressed the close window gadget. */
+			CloseWindow(theWindow);
+			theWindow = 0;
+			GOLRenderData.PPG_WinOpen = FALSE;
+			break;
+		case IDCMP_NEWSIZE:
+			break;
+		case IDCMP_REFRESHWINDOW: /* User pressed the close window gadget. */
+			break;
+		case IDCMP_MOUSEBUTTONS: /* The status of the mouse buttons has changed. */
+			switch (msg_code)
+			{
+			case SELECTDOWN: /* The left mouse button has been pressed. */
+				break;
+			case SELECTUP: /* The left mouse button has been released. */
+				break;
+			}
+		case IDCMP_MOUSEMOVE: /* The position of the mouse has changed. */
+			x = (coordX / GameMatrix.CellSizeH) + 1;
+			y = (coordY / GameMatrix.CellSizeV) + 1;
+			break;
+
+		case IDCMP_MENUPICK:
+			menuNumber = message->Code;
+			while ((menuNumber != MENUNULL) && (AppRunning))
+			{
+				item = ItemAddress(theMenu, menuNumber);
+
+				/* process the item here! */
+				menuNum = MENUNUM(menuNumber);
+				itemNum = ITEMNUM(menuNumber);
+				subNum = SUBNUM(menuNumber);
+
+				/* stop if quit is selected. */
+				//if ((menuNum == 0) && (itemNum == 5))
+
+				menuNumber = item->NextSelect;
+			}
+			break;
+		default:
+			break;
+		}
+	}
+}
+
 void CleanUp()
 {
 	FreePlayfieldMem();
 
 	FreeBitMap(GOLRenderData.Backbuffer);
 
+	if (GOLRenderData.PPG_Window)
+		CloseWindow(GOLRenderData.PPG_Window);
 	if (GOLRenderData.MainWindow)
 		CloseWindow(GOLRenderData.MainWindow);
 	if (GadToolsBase)
@@ -347,8 +433,8 @@ int FreePlayfieldMem()
 		FreeMem(GameMatrix.Playfield[i], GameMatrix.Rows * sizeof(GameOfLifeCell));
 		FreeMem(GameMatrix.Playfield_n1[i], GameMatrix.Rows * sizeof(GameOfLifeCell));
 	}
-	FreeMem(GameMatrix.Playfield, GameMatrix.Columns * sizeof(GameOfLifeCell*));
-	FreeMem(GameMatrix.Playfield_n1, GameMatrix.Columns * sizeof(GameOfLifeCell*));
+	FreeMem(GameMatrix.Playfield, GameMatrix.Columns * sizeof(GameOfLifeCell *));
+	FreeMem(GameMatrix.Playfield_n1, GameMatrix.Columns * sizeof(GameOfLifeCell *));
 	FreeMem(UpdateList, GameMatrix.Columns * GameMatrix.Rows * sizeof(UpdateListEntry));
 
 	return RETURN_OK;
@@ -577,3 +663,129 @@ int SavePlayfield(CONST_STRPTR file, int startX, int startY, int width, int heig
 	return RETURN_OK;
 }
 
+void RunPPG_Window(RenderData *rd)
+{
+	GOLRenderData.PPG_Window = (struct Window *)OpenWindowTags(NULL,
+															   WA_CustomScreen, (ULONG)GOLRenderData.Screen,
+															   WA_Left, 0,
+															   WA_Top, GOLRenderData.Screen->BarHeight + 1,
+															   WA_Width, 120,
+															   WA_Height, 250,
+															   WA_MaxWidth, ScreenW - rd->Screen->WBorLeft - rd->Screen->WBorRight,
+															   WA_MaxHeight, ScreenH - rd->Screen->WBorTop - rd->Screen->WBorBottom,
+															   WA_Title, (ULONG) "Playfield Settings",
+															   WA_DepthGadget, TRUE,
+															   WA_CloseGadget, TRUE,
+															   WA_SizeGadget, TRUE,
+															   WA_DragBar, TRUE,
+															   WA_GimmeZeroZero, TRUE,
+															   WA_ReportMouse, TRUE,
+															   WA_NewLookMenus, TRUE,
+															   WA_Activate, TRUE,
+															   WA_ScreenTitle, (ULONG) "Game of Life - Playfield Settings",
+															   WA_IDCMP, IDCMP_CLOSEWINDOW | IDCMP_MOUSEBUTTONS | IDCMP_MOUSEMOVE | IDCMP_MENUPICK | IDCMP_REFRESHWINDOW | IDCMP_NEWSIZE,
+															   WA_DetailPen, 1,
+															   WA_BlockPen, 2,
+															   TAG_END);
+
+	/*PPG_Group = (struct Gadget*) NewObject(NULL, (STRPTR)"groupclass",
+						  GA_ID, PPG_GROUP_ID,
+						  GA_Left, 0,
+						  GA_Top, 0,
+						  TAG_END);
+
+	PPG_StrgWidth = (struct Gadget*)NewObject(NULL, (STRPTR)"strgclass",
+							  GA_ID, PPG_STRGWIDTH_ID,
+							  GA_Left, 0,
+							  GA_Top, 30,
+							  GA_WIDTH, 50,
+							  GA_HEIGHT, 12,
+							  TAG_END);
+
+	PPG_PropWidth = (struct Gadget*)NewObject(NULL, (STRPTR)"propclass",
+							  GA_ID, PPG_PROPWIDTH_ID,
+							  GA_Left, 0,
+							  GA_Top, 84,
+							  GA_WIDTH, 100,
+							  GA_HEIGHT, 8,
+							  TAG_END);
+
+	PPG_StrgHeight = (struct Gadget*)NewObject(NULL, (STRPTR)"strgclass",
+							   GA_ID, PPG_STRGWIDTH_ID,
+							   GA_Left, 0,
+							   GA_Top, 96,
+							   GA_WIDTH, 50,
+							   GA_HEIGHT, 12,
+							   TAG_END);
+
+	PPG_PropHeight = (struct Gadget*)NewObject(NULL, (STRPTR)"propclass",
+							   GA_ID, PPG_PROPHEIGHT_ID,
+							   GA_Left, 150,
+							   GA_Top, 66,
+							   GA_WIDTH, 100,
+							   GA_HEIGHT, 8,
+							   TAG_END);
+
+	PPG_StrgCellWidth = (struct Gadget*)NewObject(NULL, (STRPTR)"strgclass",
+								  GA_ID, PPG_PROPWIDTH_ID,
+								  GA_Left, 0,
+								  GA_Top, 162,
+								  GA_WIDTH, 50,
+								  GA_HEIGHT, 12,
+								  TAG_END);
+
+	PPG_PropCellWidth = (struct Gadget*)NewObject(NULL, (STRPTR)"propclass",
+								  GA_ID, PPG_PROPHEIGHT_ID,
+								  GA_Left, 0,
+								  GA_Top, 116,
+								  GA_WIDTH, 100,
+								  GA_HEIGHT, 8,
+								  TAG_END);
+
+	PPG_StrgCellHeight = (struct Gadget*)NewObject(NULL, (STRPTR)"strgclass",
+								   GA_ID, PPG_PROPWIDTH_ID,
+								   GA_Left, 0,
+								   GA_Top, 128,
+								   GA_WIDTH, 50,
+								   GA_HEIGHT, 12,
+								   TAG_END);
+
+	PPG_PropCellHeight = (struct Gadget*)NewObject(NULL, (STRPTR)"propclass",
+								   GA_ID, PPG_PROPHEIGHT_ID,
+								   GA_Left, 0,
+								   GA_Top, 182,
+								   GA_WIDTH, 100,
+								   GA_HEIGHT, 8,
+								   TAG_END);
+
+	PPG_ButtonOk = (struct Gadget*)NewObject(NULL, (STRPTR)"buttongclass",
+							 GA_ID, PPG_PROPWIDTH_ID,
+							 GA_Left, 0,
+							 GA_Top, 194,
+							 GA_WIDTH, 50,
+							 GA_HEIGHT, 16,
+							 TAG_END);
+
+	PPG_ButtonCancel = (struct Gadget*)NewObject(NULL, (STRPTR)"buttongclass",
+								 GA_ID, PPG_PROPWIDTH_ID,
+								 GA_Left, 60,
+								 GA_Top, 194,
+								 GA_WIDTH, 50,
+								 GA_HEIGHT, 16,
+								 TAG_END);
+
+
+	DoGadgetMethod(PPG_Group, GOLRenderData.MainWindow, NULL, OM_ADDMEMBER, (ULONG)PPG_PropWidth);
+	DoGadgetMethod(PPG_Group, GOLRenderData.MainWindow, NULL, OM_ADDMEMBER, (ULONG)PPG_StrgCellWidth);
+	DoGadgetMethod(PPG_Group, GOLRenderData.MainWindow, NULL, OM_ADDMEMBER, (ULONG)PPG_PropHeight);
+	DoGadgetMethod(PPG_Group, GOLRenderData.MainWindow, NULL, OM_ADDMEMBER, (ULONG)PPG_StrgHeight);
+	DoGadgetMethod(PPG_Group, GOLRenderData.MainWindow, NULL, OM_ADDMEMBER, (ULONG)PPG_PropCellWidth);
+	DoGadgetMethod(PPG_Group, GOLRenderData.MainWindow, NULL, OM_ADDMEMBER, (ULONG)PPG_StrgCellWidth);
+	DoGadgetMethod(PPG_Group, GOLRenderData.MainWindow, NULL, OM_ADDMEMBER, (ULONG)PPG_PropCellHeight);
+	DoGadgetMethod(PPG_Group, GOLRenderData.MainWindow, NULL, OM_ADDMEMBER, (ULONG)PPG_StrgCellHeight);
+	DoGadgetMethod(PPG_Group, GOLRenderData.MainWindow, NULL, OM_ADDMEMBER, (ULONG)PPG_ButtonOk);
+	DoGadgetMethod(PPG_Group, GOLRenderData.MainWindow, NULL, OM_ADDMEMBER, (ULONG)PPG_ButtonCancel);
+	
+	//AddGList(rd->PPG_Window, PPG_Group,0,1,NULL);
+	*/
+}
