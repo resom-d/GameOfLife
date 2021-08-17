@@ -7,9 +7,9 @@ Name             Origin             Length             Attributes
 Linker script and memory map
 
 Address of section .text set to 0x0
-LOAD C:\Users\dirkm\AppData\Local\Temp\GameOfLife.elf.HpUIkk.ltrans0.ltrans.o
-LOAD C:\Users\dirkm\AppData\Local\Temp\ccx9XO6L.debug.temp.o
-LOAD C:\Users\dirkm\AppData\Local\Temp\ccQFsHG2.debug.temp.o
+LOAD C:\Users\dirkm\AppData\Local\Temp\GameOfLife.elf.rM7FwI.ltrans0.ltrans.o
+LOAD C:\Users\dirkm\AppData\Local\Temp\cchuRIZV.debug.temp.o
+LOAD C:\Users\dirkm\AppData\Local\Temp\ccmOAY3z.debug.temp.o
 LOAD obj/gcc8_a_support.o
                 [!provide]                        PROVIDE (__executable_start = SEGMENT_START ("text-segment", 0x80000000))
                 0x0000000080000074                . = (SEGMENT_START ("text-segment", 0x80000000) + SIZEOF_HEADERS)
@@ -69,33 +69,32 @@ LOAD obj/gcc8_a_support.o
 .iplt
  *(.iplt)
 
-.text           0x0000000000000000     0x1a6c
+.text           0x0000000000000000     0x2338
  *(.text.unlikely .text.*_unlikely .text.unlikely.*)
  .text.unlikely
-                0x0000000000000000       0x74 C:\Users\dirkm\AppData\Local\Temp\GameOfLife.elf.HpUIkk.ltrans0.ltrans.o
+                0x0000000000000000       0x74 C:\Users\dirkm\AppData\Local\Temp\GameOfLife.elf.rM7FwI.ltrans0.ltrans.o
                 0x0000000000000000                _start
  *(.text.exit .text.exit.*)
  *(.text.startup .text.startup.*)
- .text.startup  0x0000000000000074     0x106e C:\Users\dirkm\AppData\Local\Temp\GameOfLife.elf.HpUIkk.ltrans0.ltrans.o
+ .text.startup  0x0000000000000074      0xf22 C:\Users\dirkm\AppData\Local\Temp\GameOfLife.elf.rM7FwI.ltrans0.ltrans.o
                 0x0000000000000074                main
  *(.text.hot .text.hot.*)
  *(SORT_BY_NAME(.text.sorted.*))
  *(.text .stub .text.* .gnu.linkonce.t.*)
- *fill*         0x00000000000010e2        0x2 4e714e71
- .text          0x00000000000010e4      0x87a C:\Users\dirkm\AppData\Local\Temp\GameOfLife.elf.HpUIkk.ltrans0.ltrans.o
-                0x0000000000001738                strlen
-                0x000000000000174c                memset
-                0x000000000000181a                memcpy
-                0x00000000000018a6                memmove
- *fill*         0x000000000000195e        0x2 4e714e71
- .text          0x0000000000001960      0x10c obj/gcc8_a_support.o
-                0x0000000000001960                __mulsi3
-                0x0000000000001982                __udivsi3
-                0x00000000000019de                __divsi3
-                0x0000000000001a08                __modsi3
-                0x0000000000001a30                __umodsi3
-                0x0000000000001a5a                KPutCharX
-                0x0000000000001a68                PutChar
+ *fill*         0x0000000000000f96        0x2 4e714e71
+ .text          0x0000000000000f98     0x1294 C:\Users\dirkm\AppData\Local\Temp\GameOfLife.elf.rM7FwI.ltrans0.ltrans.o
+                0x0000000000002006                strlen
+                0x000000000000201a                memset
+                0x00000000000020e8                memcpy
+                0x0000000000002174                memmove
+ .text          0x000000000000222c      0x10c obj/gcc8_a_support.o
+                0x000000000000222c                __mulsi3
+                0x000000000000224e                __udivsi3
+                0x00000000000022aa                __divsi3
+                0x00000000000022d4                __modsi3
+                0x00000000000022fc                __umodsi3
+                0x0000000000002326                KPutCharX
+                0x0000000000002334                PutChar
  *(.gnu.warning)
 
 .fini
@@ -104,9 +103,9 @@ LOAD obj/gcc8_a_support.o
                 [!provide]                        PROVIDE (_etext = .)
                 [!provide]                        PROVIDE (etext = .)
 
-.rodata         0x0000000000001a6c      0x183
+.rodata         0x0000000000002338      0x1b8
  *(.rodata .rodata.* .gnu.linkonce.r.*)
- .rodata        0x0000000000001a6c      0x183 C:\Users\dirkm\AppData\Local\Temp\GameOfLife.elf.HpUIkk.ltrans0.ltrans.o
+ .rodata        0x0000000000002338      0x1b8 C:\Users\dirkm\AppData\Local\Temp\GameOfLife.elf.rM7FwI.ltrans0.ltrans.o
 
 .rodata1
  *(.rodata1)
@@ -127,7 +126,7 @@ LOAD obj/gcc8_a_support.o
 
 .exception_ranges
  *(.exception_ranges*)
-                0x0000000000003bef                . = DATA_SEGMENT_ALIGN (CONSTANT (MAXPAGESIZE), CONSTANT (COMMONPAGESIZE))
+                0x00000000000044f0                . = DATA_SEGMENT_ALIGN (CONSTANT (MAXPAGESIZE), CONSTANT (COMMONPAGESIZE))
 
 .eh_frame
  *(.eh_frame)
@@ -142,7 +141,7 @@ LOAD obj/gcc8_a_support.o
 .exception_ranges
  *(.exception_ranges*)
 
-.tdata          0x0000000000003bef        0x0
+.tdata          0x00000000000044f0        0x0
                 [!provide]                        PROVIDE (__tdata_start = .)
  *(.tdata .tdata.* .gnu.linkonce.td.*)
 
@@ -150,22 +149,22 @@ LOAD obj/gcc8_a_support.o
  *(.tbss .tbss.* .gnu.linkonce.tb.*)
  *(.tcommon)
 
-.preinit_array  0x0000000000003bef        0x0
-                0x0000000000003bef                PROVIDE (__preinit_array_start = .)
+.preinit_array  0x00000000000044f0        0x0
+                0x00000000000044f0                PROVIDE (__preinit_array_start = .)
  *(.preinit_array)
-                0x0000000000003bef                PROVIDE (__preinit_array_end = .)
+                0x00000000000044f0                PROVIDE (__preinit_array_end = .)
 
-.init_array     0x0000000000003bef        0x0
-                0x0000000000003bef                PROVIDE (__init_array_start = .)
+.init_array     0x00000000000044f0        0x0
+                0x00000000000044f0                PROVIDE (__init_array_start = .)
  *(SORT_BY_INIT_PRIORITY(.init_array.*) SORT_BY_INIT_PRIORITY(.ctors.*))
  *(.init_array EXCLUDE_FILE(*crtend?.o *crtend.o *crtbegin?.o *crtbegin.o) .ctors)
-                0x0000000000003bef                PROVIDE (__init_array_end = .)
+                0x00000000000044f0                PROVIDE (__init_array_end = .)
 
-.fini_array     0x0000000000003bef        0x0
-                0x0000000000003bef                PROVIDE (__fini_array_start = .)
+.fini_array     0x00000000000044f0        0x0
+                0x00000000000044f0                PROVIDE (__fini_array_start = .)
  *(SORT_BY_INIT_PRIORITY(.fini_array.*) SORT_BY_INIT_PRIORITY(.dtors.*))
  *(.fini_array EXCLUDE_FILE(*crtend?.o *crtend.o *crtbegin?.o *crtbegin.o) .dtors)
-                0x0000000000003bef                PROVIDE (__fini_array_end = .)
+                0x00000000000044f0                PROVIDE (__fini_array_end = .)
 
 .ctors
  *crtbegin.o(.ctors)
@@ -190,7 +189,7 @@ LOAD obj/gcc8_a_support.o
 
 .dynamic
  *(.dynamic)
-                0x0000000000003bef                . = DATA_SEGMENT_RELRO_END (., 0x0)
+                0x00000000000044f0                . = DATA_SEGMENT_RELRO_END (., 0x0)
 
 .got
  *(.got.plt)
@@ -198,32 +197,32 @@ LOAD obj/gcc8_a_support.o
  *(.got)
  *(.igot)
 
-.data           0x0000000000003bf0      0x20c
+.data           0x00000000000044f0      0x22c
  *(.data .data.* .gnu.linkonce.d.*)
- .data          0x0000000000003bf0      0x20a C:\Users\dirkm\AppData\Local\Temp\GameOfLife.elf.HpUIkk.ltrans0.ltrans.o
- *fill*         0x0000000000003dfa        0x2 
- .data          0x0000000000003dfc        0x0 obj/gcc8_a_support.o
+ .data          0x00000000000044f0      0x22a C:\Users\dirkm\AppData\Local\Temp\GameOfLife.elf.rM7FwI.ltrans0.ltrans.o
+ *fill*         0x000000000000471a        0x2 
+ .data          0x000000000000471c        0x0 obj/gcc8_a_support.o
 
 .data1
  *(.data1)
-                0x0000000000003dfc                _edata = .
+                0x000000000000471c                _edata = .
                 [!provide]                        PROVIDE (edata = .)
-                0x0000000000003dfc                . = .
-                0x0000000000003dfc                __bss_start = .
+                0x000000000000471c                . = .
+                0x000000000000471c                __bss_start = .
 
-.bss            0x0000000000003dfc       0xbc
+.bss            0x000000000000471c       0xec
  *(.dynbss)
  *(.bss .bss.* .gnu.linkonce.b.*)
- .bss           0x0000000000003dfc       0xbc C:\Users\dirkm\AppData\Local\Temp\GameOfLife.elf.HpUIkk.ltrans0.ltrans.o
- .bss           0x0000000000003eb8        0x0 obj/gcc8_a_support.o
+ .bss           0x000000000000471c       0xec C:\Users\dirkm\AppData\Local\Temp\GameOfLife.elf.rM7FwI.ltrans0.ltrans.o
+ .bss           0x0000000000004808        0x0 obj/gcc8_a_support.o
  *(COMMON)
-                0x0000000000003eb8                . = ALIGN ((. != 0x0)?0x4:0x1)
-                0x0000000000003eb8                . = ALIGN (0x4)
-                0x0000000000003eb8                . = SEGMENT_START ("ldata-segment", .)
-                0x0000000000003eb8                . = ALIGN (0x4)
-                0x0000000000003eb8                _end = .
+                0x0000000000004808                . = ALIGN ((. != 0x0)?0x4:0x1)
+                0x0000000000004808                . = ALIGN (0x4)
+                0x0000000000004808                . = SEGMENT_START ("ldata-segment", .)
+                0x0000000000004808                . = ALIGN (0x4)
+                0x0000000000004808                _end = .
                 [!provide]                        PROVIDE (end = .)
-                0x0000000000003eb8                . = DATA_SEGMENT_END (.)
+                0x0000000000004808                . = DATA_SEGMENT_END (.)
 
 .stab
  *(.stab)
@@ -245,10 +244,10 @@ LOAD obj/gcc8_a_support.o
 
 .comment        0x0000000000000000       0x12
  *(.comment)
- .comment       0x0000000000000000       0x12 C:\Users\dirkm\AppData\Local\Temp\GameOfLife.elf.HpUIkk.ltrans0.ltrans.o
+ .comment       0x0000000000000000       0x12 C:\Users\dirkm\AppData\Local\Temp\GameOfLife.elf.rM7FwI.ltrans0.ltrans.o
                                          0x13 (size before relaxing)
- .comment       0x0000000000000012       0x13 C:\Users\dirkm\AppData\Local\Temp\ccx9XO6L.debug.temp.o
- .comment       0x0000000000000012       0x13 C:\Users\dirkm\AppData\Local\Temp\ccQFsHG2.debug.temp.o
+ .comment       0x0000000000000012       0x13 C:\Users\dirkm\AppData\Local\Temp\cchuRIZV.debug.temp.o
+ .comment       0x0000000000000012       0x13 C:\Users\dirkm\AppData\Local\Temp\ccmOAY3z.debug.temp.o
 
 .gnu.build.attributes
  *(.gnu.build.attributes .gnu.build.attributes.*)
@@ -268,51 +267,51 @@ LOAD obj/gcc8_a_support.o
 .debug_aranges  0x0000000000000000       0x50
  *(.debug_aranges)
  .debug_aranges
-                0x0000000000000000       0x30 C:\Users\dirkm\AppData\Local\Temp\GameOfLife.elf.HpUIkk.ltrans0.ltrans.o
+                0x0000000000000000       0x30 C:\Users\dirkm\AppData\Local\Temp\GameOfLife.elf.rM7FwI.ltrans0.ltrans.o
  .debug_aranges
                 0x0000000000000030       0x20 obj/gcc8_a_support.o
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x0000000000000000     0xb374
+.debug_info     0x0000000000000000     0xccce
  *(.debug_info .gnu.linkonce.wi.*)
- .debug_info    0x0000000000000000     0x27f0 C:\Users\dirkm\AppData\Local\Temp\GameOfLife.elf.HpUIkk.ltrans0.ltrans.o
- .debug_info    0x00000000000027f0     0x82ba C:\Users\dirkm\AppData\Local\Temp\ccx9XO6L.debug.temp.o
-                0x00000000000027f0                GameOfLife.c.dba487d7
- .debug_info    0x000000000000aaaa      0x8a4 C:\Users\dirkm\AppData\Local\Temp\ccQFsHG2.debug.temp.o
-                0x000000000000aaaa                gcc8_c_support.c.f2f34916
- .debug_info    0x000000000000b34e       0x26 obj/gcc8_a_support.o
+ .debug_info    0x0000000000000000     0x31f7 C:\Users\dirkm\AppData\Local\Temp\GameOfLife.elf.rM7FwI.ltrans0.ltrans.o
+ .debug_info    0x00000000000031f7     0x920d C:\Users\dirkm\AppData\Local\Temp\cchuRIZV.debug.temp.o
+                0x00000000000031f7                GameOfLife.c.f4383be0
+ .debug_info    0x000000000000c404      0x8a4 C:\Users\dirkm\AppData\Local\Temp\ccmOAY3z.debug.temp.o
+                0x000000000000c404                gcc8_c_support.c.f2f34916
+ .debug_info    0x000000000000cca8       0x26 obj/gcc8_a_support.o
 
-.debug_abbrev   0x0000000000000000      0x5b2
+.debug_abbrev   0x0000000000000000      0x5bb
  *(.debug_abbrev)
- .debug_abbrev  0x0000000000000000      0x196 C:\Users\dirkm\AppData\Local\Temp\GameOfLife.elf.HpUIkk.ltrans0.ltrans.o
- .debug_abbrev  0x0000000000000196      0x2a2 C:\Users\dirkm\AppData\Local\Temp\ccx9XO6L.debug.temp.o
- .debug_abbrev  0x0000000000000438      0x166 C:\Users\dirkm\AppData\Local\Temp\ccQFsHG2.debug.temp.o
- .debug_abbrev  0x000000000000059e       0x14 obj/gcc8_a_support.o
+ .debug_abbrev  0x0000000000000000      0x19f C:\Users\dirkm\AppData\Local\Temp\GameOfLife.elf.rM7FwI.ltrans0.ltrans.o
+ .debug_abbrev  0x000000000000019f      0x2a2 C:\Users\dirkm\AppData\Local\Temp\cchuRIZV.debug.temp.o
+ .debug_abbrev  0x0000000000000441      0x166 C:\Users\dirkm\AppData\Local\Temp\ccmOAY3z.debug.temp.o
+ .debug_abbrev  0x00000000000005a7       0x14 obj/gcc8_a_support.o
 
-.debug_line     0x0000000000000000     0x3bbd
+.debug_line     0x0000000000000000     0x3d84
  *(.debug_line .debug_line.* .debug_line_end)
- .debug_line    0x0000000000000000     0x32d5 C:\Users\dirkm\AppData\Local\Temp\GameOfLife.elf.HpUIkk.ltrans0.ltrans.o
- .debug_line    0x00000000000032d5      0x6ae C:\Users\dirkm\AppData\Local\Temp\ccx9XO6L.debug.temp.o
- .debug_line    0x0000000000003983      0x151 C:\Users\dirkm\AppData\Local\Temp\ccQFsHG2.debug.temp.o
- .debug_line    0x0000000000003ad4       0xe9 obj/gcc8_a_support.o
+ .debug_line    0x0000000000000000     0x3480 C:\Users\dirkm\AppData\Local\Temp\GameOfLife.elf.rM7FwI.ltrans0.ltrans.o
+ .debug_line    0x0000000000003480      0x6ca C:\Users\dirkm\AppData\Local\Temp\cchuRIZV.debug.temp.o
+ .debug_line    0x0000000000003b4a      0x151 C:\Users\dirkm\AppData\Local\Temp\ccmOAY3z.debug.temp.o
+ .debug_line    0x0000000000003c9b       0xe9 obj/gcc8_a_support.o
 
-.debug_frame    0x0000000000000000      0x4b0
+.debug_frame    0x0000000000000000      0x4dc
  *(.debug_frame)
- .debug_frame   0x0000000000000000      0x3ec C:\Users\dirkm\AppData\Local\Temp\GameOfLife.elf.HpUIkk.ltrans0.ltrans.o
- .debug_frame   0x00000000000003ec       0xc4 obj/gcc8_a_support.o
+ .debug_frame   0x0000000000000000      0x418 C:\Users\dirkm\AppData\Local\Temp\GameOfLife.elf.rM7FwI.ltrans0.ltrans.o
+ .debug_frame   0x0000000000000418       0xc4 obj/gcc8_a_support.o
 
-.debug_str      0x0000000000000000      0x5fd
+.debug_str      0x0000000000000000      0x6e5
  *(.debug_str)
- .debug_str     0x0000000000000000        0x9 C:\Users\dirkm\AppData\Local\Temp\GameOfLife.elf.HpUIkk.ltrans0.ltrans.o
- .debug_str     0x0000000000000009      0x512 C:\Users\dirkm\AppData\Local\Temp\ccx9XO6L.debug.temp.o
- .debug_str     0x000000000000051b       0x5c C:\Users\dirkm\AppData\Local\Temp\ccQFsHG2.debug.temp.o
- .debug_str     0x0000000000000577       0x86 obj/gcc8_a_support.o
+ .debug_str     0x0000000000000000        0x9 C:\Users\dirkm\AppData\Local\Temp\GameOfLife.elf.rM7FwI.ltrans0.ltrans.o
+ .debug_str     0x0000000000000009      0x5fa C:\Users\dirkm\AppData\Local\Temp\cchuRIZV.debug.temp.o
+ .debug_str     0x0000000000000603       0x5c C:\Users\dirkm\AppData\Local\Temp\ccmOAY3z.debug.temp.o
+ .debug_str     0x000000000000065f       0x86 obj/gcc8_a_support.o
 
-.debug_loc      0x0000000000000000     0x3032
+.debug_loc      0x0000000000000000     0x31b6
  *(.debug_loc)
- .debug_loc     0x0000000000000000     0x3032 C:\Users\dirkm\AppData\Local\Temp\GameOfLife.elf.HpUIkk.ltrans0.ltrans.o
+ .debug_loc     0x0000000000000000     0x31b6 C:\Users\dirkm\AppData\Local\Temp\GameOfLife.elf.rM7FwI.ltrans0.ltrans.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -332,9 +331,9 @@ LOAD obj/gcc8_a_support.o
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges   0x0000000000000000      0x690
+.debug_ranges   0x0000000000000000      0x6d8
  *(.debug_ranges)
- .debug_ranges  0x0000000000000000      0x690 C:\Users\dirkm\AppData\Local\Temp\GameOfLife.elf.HpUIkk.ltrans0.ltrans.o
+ .debug_ranges  0x0000000000000000      0x6d8 C:\Users\dirkm\AppData\Local\Temp\GameOfLife.elf.rM7FwI.ltrans0.ltrans.o
 
 .debug_macro
  *(.debug_macro)

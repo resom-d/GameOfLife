@@ -1,5 +1,11 @@
+#include <intuition/intuition.h>
+#include <proto/intuition.h>
+#include <intuition/intuitionbase.h>
 #include <libraries/gadtools.h>
 #include <proto/gadtools.h>
+#include <intuition/gadgetclass.h> /* contains IDs for gadget attributes */
+#include <intuition/icclass.h>     /* contains ICA_MAP, ICA_TARGET       */
+#include <utility/tagitem.h>
 
 #ifndef GOLUI
 #define GOLUI 1
@@ -239,7 +245,7 @@ struct NewMenu GolMainMenu[] =
 
 /* Playfield properties gagdget*/
 
-#define PPG_GROUP_ID  1
+#define PPG_FRAME_ID  1
 #define PPG_PROPWIDTH_ID  2
 #define PPG_STRGWIDTH_ID  3
 #define PPG_PROPHEIGHT_ID  4
@@ -251,7 +257,7 @@ struct NewMenu GolMainMenu[] =
 #define PPG_BUTTONOK_ID  10
 #define PPG_BUTTONCANCEL_ID 11
 
-struct Gadget *PPG_Group;
+struct Gadget *PPG_Frame;
 struct Gadget *PPG_Frame;
 struct Gadget *PPG_PropWidth;
 struct Gadget *PPG_PropHeight;
@@ -263,5 +269,32 @@ struct Gadget *PPG_StrgCellWidth;
 struct Gadget *PPG_StrgCellHeight;
 struct Gadget *PPG_ButtonOk;
 struct Gadget *PPG_ButtonCancel;
+
+struct NewGadget PP_Gadgets[11] = {
+	{63, 26, 172, 13, (UBYTE *)"", NULL, 1, PLACETEXT_IN, NULL, NULL},
+	{63, 26, 172, 13, (UBYTE *)"Ok", NULL, 2, PLACETEXT_IN, NULL, NULL},
+	{63, 26, 172, 13, (UBYTE *)"Ok", NULL, 3, PLACETEXT_IN, NULL, NULL},
+	{63, 26, 172, 13, (UBYTE *)"Ok", NULL, 4, PLACETEXT_IN, NULL, NULL},
+	{63, 26, 172, 13, (UBYTE *)"Ok", NULL, 5, PLACETEXT_IN, NULL, NULL},
+	{63, 26, 172, 13, (UBYTE *)"Ok", NULL, 6, PLACETEXT_IN, NULL, NULL},
+	{63, 26, 172, 13, (UBYTE *)"Ok", NULL, 7, PLACETEXT_IN, NULL, NULL},
+	{63, 26, 172, 13, (UBYTE *)"Ok", NULL, 8, PLACETEXT_IN, NULL, NULL},
+	{63, 26, 172, 13, (UBYTE *)"Ok", NULL, 9, PLACETEXT_IN, NULL, NULL},
+	{5, 80, 50, 16, (UBYTE *)"Ok", NULL, 10, PLACETEXT_IN, NULL, NULL},
+	{63, 26, 172, 13, (UBYTE *)"Cancel", NULL, 10, PLACETEXT_IN, NULL, NULL},
+};
+
+struct TagItem StringToSlider[] = {
+    {PGA_Top, STRINGA_LongVal},
+    {TAG_END, 0}
+};
+
+struct TagItem SliderToString[] = {
+    {STRINGA_LongVal, PGA_Top},
+    {TAG_END, 0}
+};
+
+
+struct Border PPG_Border;
 
 #endif

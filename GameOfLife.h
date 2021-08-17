@@ -8,9 +8,6 @@
 #include <graphics/gfxbase.h>
 #include <graphics/view.h>
 #include <graphics/gfxmacros.h>
-#include <proto/intuition.h>
-#include <intuition/intuition.h>
-#include <intuition/intuitionbase.h>
 
 
 #if !defined(GOL)

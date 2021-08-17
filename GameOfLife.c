@@ -87,7 +87,7 @@ int StartApp(RenderData *rd)
 																						WA_Left, 0,
 																						WA_Top, GOLRenderData.Screen->BarHeight + 1,
 																						WA_Width, GameMatrix.CellSizeH * (GameMatrix.Columns - 0) + rd->Screen->WBorLeft + rd->Screen->WBorRight,
-																						WA_Height, GameMatrix.CellSizeV * (GameMatrix.Rows - 0)  + rd->Screen->WBorBottom + rd->Screen->WBorTop,
+																						WA_Height, GameMatrix.CellSizeV * (GameMatrix.Rows - 0) + rd->Screen->WBorBottom + rd->Screen->WBorTop,
 																						WA_MaxWidth, ScreenW - rd->Screen->WBorLeft - rd->Screen->WBorRight,
 																						WA_MaxHeight, ScreenH - rd->Screen->WBorTop - rd->Screen->WBorBottom,
 																						WA_Title, (ULONG) "Stopped",
@@ -138,7 +138,7 @@ void EventLoop(struct Window *theWindow, struct Menu *theMenu)
 	if (!GameRunning)
 		UpdateCnt = 0;
 	/* There may be more than one message, so keep processing messages until there are no more. */
-	while ((message = (struct IntuiMessage *)GetMsg(theWindow->UserPort)))
+	while ((message = (struct IntuiMessage *)GetMsg(theWindow->UserPort)) && (AppRunning))
 	{
 		/* Copy the necessary information from the message. */
 		msg_class = message->Class;
@@ -163,8 +163,8 @@ void EventLoop(struct Window *theWindow, struct Menu *theMenu)
 			PrepareBackbuffer(&GOLRenderData);
 
 			FreePlayfieldMem();
-			GameMatrix.Columns = GOLRenderData.OutputSize.x / GameMatrix.CellSizeH +2;
-			GameMatrix.Rows = GOLRenderData.OutputSize.y / GameMatrix.CellSizeV +2;
+			GameMatrix.Columns = GOLRenderData.OutputSize.x / GameMatrix.CellSizeH + 2;
+			GameMatrix.Rows = GOLRenderData.OutputSize.y / GameMatrix.CellSizeV + 2;
 			AllocPlayfieldMem();
 
 			SetRast(&GOLRenderData.Rastport, 0);
@@ -205,7 +205,7 @@ void EventLoop(struct Window *theWindow, struct Menu *theMenu)
 
 		case IDCMP_MENUPICK:
 			menuNumber = message->Code;
-			while ((menuNumber != MENUNULL) && (AppRunning))
+			while ((menuNumber != MENUNULL))
 			{
 				item = ItemAddress(theMenu, menuNumber);
 
@@ -218,7 +218,6 @@ void EventLoop(struct Window *theWindow, struct Menu *theMenu)
 				if ((menuNum == 0) && (itemNum == 5))
 				{
 					AppRunning = FALSE;
-					SetWindowTitles(theWindow, (STRPTR) "Running", (STRPTR)-1);
 				}
 
 				if ((menuNum == 0) && (itemNum == 1))
@@ -669,8 +668,8 @@ void RunPPG_Window(RenderData *rd)
 															   WA_CustomScreen, (ULONG)GOLRenderData.Screen,
 															   WA_Left, 0,
 															   WA_Top, GOLRenderData.Screen->BarHeight + 1,
-															   WA_Width, 120,
-															   WA_Height, 250,
+															   WA_Width, 150,
+															   WA_Height, 120,
 															   WA_MaxWidth, ScreenW - rd->Screen->WBorLeft - rd->Screen->WBorRight,
 															   WA_MaxHeight, ScreenH - rd->Screen->WBorTop - rd->Screen->WBorBottom,
 															   WA_Title, (ULONG) "Playfield Settings",
@@ -688,104 +687,177 @@ void RunPPG_Window(RenderData *rd)
 															   WA_BlockPen, 2,
 															   TAG_END);
 
-	/*PPG_Group = (struct Gadget*) NewObject(NULL, (STRPTR)"groupclass",
-						  GA_ID, PPG_GROUP_ID,
-						  GA_Left, 0,
-						  GA_Top, 0,
-						  TAG_END);
+	PPG_Frame = (struct Gadget *)NewObject(NULL, (STRPTR) "frameiclass",
+										   GA_ID, PPG_FRAME_ID,
+										   GA_PREVIOUS, NULL,
+										   GA_Left, GOLRenderData.PPG_Window->BorderLeft,
+										   GA_Top, GOLRenderData.PPG_Window->BorderTop,
+										   GA_WIDTH, 100,
+										   GA_HEIGHT, 120,
+										   TAG_END);
 
-	PPG_StrgWidth = (struct Gadget*)NewObject(NULL, (STRPTR)"strgclass",
-							  GA_ID, PPG_STRGWIDTH_ID,
-							  GA_Left, 0,
-							  GA_Top, 30,
-							  GA_WIDTH, 50,
-							  GA_HEIGHT, 12,
-							  TAG_END);
+	WORD points[] = {0, 0, 51, 0, 51, 13, 0, 13, 0, 0};
+	PPG_Border.DrawMode = JAM1;
+	PPG_Border.FrontPen = 1;
+	PPG_Border.LeftEdge = -1;
+	PPG_Border.TopEdge = -1;
+	PPG_Border.Count = 5;
+	PPG_Border.XY = points;
 
-	PPG_PropWidth = (struct Gadget*)NewObject(NULL, (STRPTR)"propclass",
-							  GA_ID, PPG_PROPWIDTH_ID,
-							  GA_Left, 0,
-							  GA_Top, 84,
-							  GA_WIDTH, 100,
-							  GA_HEIGHT, 8,
-							  TAG_END);
+	PPG_StrgWidth = (struct Gadget *)NewObject(NULL, (STRPTR) "strgclass",
+											   GA_ID, PPG_STRGWIDTH_ID,
+											   GA_PREVIOUS, (ULONG)PPG_Frame,
+											   GA_Left, 5,
+											   GA_Border, (ULONG)&PPG_Border,
+											   GA_Top, 5,
+											   GA_WIDTH, 50,
+											   GA_HEIGHT, 12,
+											   STRINGA_Justification, GTJ_CENTER,
+											   STRINGA_LongVal, GOLRenderData.MainWindow->Width,
+											   STRINGA_MaxChars, 4,
+											   TAG_END);
 
-	PPG_StrgHeight = (struct Gadget*)NewObject(NULL, (STRPTR)"strgclass",
-							   GA_ID, PPG_STRGWIDTH_ID,
-							   GA_Left, 0,
-							   GA_Top, 96,
-							   GA_WIDTH, 50,
-							   GA_HEIGHT, 12,
-							   TAG_END);
+	PPG_PropWidth = (struct Gadget *)NewObject(NULL, (STRPTR) "propgclass",
+											   GA_ID, PPG_PROPWIDTH_ID,
+											   GA_PREVIOUS, (ULONG)PPG_StrgWidth,
+											   ICA_TARGET, (ULONG)PPG_StrgWidth,
+											   ICA_MAP, (ULONG)StringToSlider,
+											   GA_Left, 5,
+											   GA_Top, 21,
+											   GA_WIDTH, 50,
+											   GA_HEIGHT, 12,
+											   PGA_NewLook, TRUE,
+											   PGA_FREEDOM, FREEHORIZ,
+											   PGA_Top, GOLRenderData.MainWindow->Width,
+											   PGA_Total, ScreenW + 1,
+											   PGA_VISIBLE, 1,
+											   TAG_END);
 
-	PPG_PropHeight = (struct Gadget*)NewObject(NULL, (STRPTR)"propclass",
-							   GA_ID, PPG_PROPHEIGHT_ID,
-							   GA_Left, 150,
-							   GA_Top, 66,
-							   GA_WIDTH, 100,
-							   GA_HEIGHT, 8,
-							   TAG_END);
+	SetGadgetAttrs(PPG_StrgWidth, GOLRenderData.PPG_Window, NULL,
+				   ICA_TARGET, (ULONG)PPG_PropWidth,
+				   ICA_MAP, (ULONG)SliderToString,
+				   TAG_END);
 
-	PPG_StrgCellWidth = (struct Gadget*)NewObject(NULL, (STRPTR)"strgclass",
-								  GA_ID, PPG_PROPWIDTH_ID,
-								  GA_Left, 0,
-								  GA_Top, 162,
-								  GA_WIDTH, 50,
-								  GA_HEIGHT, 12,
-								  TAG_END);
+	PPG_StrgHeight = (struct Gadget *)NewObject(NULL, (STRPTR) "strgclass",
+												GA_ID, PPG_STRGHEIGHT_ID,
+												GA_PREVIOUS, (ULONG)PPG_PropWidth,
+												GA_Left, 60,
+												GA_Top, 5,
+												GA_WIDTH, 50,
+												GA_HEIGHT, 12,
+												GA_BORDER, (ULONG)&PPG_Border,
+												STRINGA_LongVal, GOLRenderData.MainWindow->Height,
+												STRINGA_MaxChars, 4,
+												TAG_END);
 
-	PPG_PropCellWidth = (struct Gadget*)NewObject(NULL, (STRPTR)"propclass",
-								  GA_ID, PPG_PROPHEIGHT_ID,
-								  GA_Left, 0,
-								  GA_Top, 116,
-								  GA_WIDTH, 100,
-								  GA_HEIGHT, 8,
-								  TAG_END);
+	PPG_PropHeight = (struct Gadget *)NewObject(NULL, (STRPTR) "propgclass",
+												GA_ID, PPG_PROPHEIGHT_ID,
+												GA_PREVIOUS, (ULONG)PPG_StrgHeight,
+												GA_Left, 60,
+												GA_Top, 21,
+												GA_WIDTH, 50,
+												GA_HEIGHT, 12,
+												PGA_VISIBLE,1,
+												PGA_TOTAL, ScreenH + 1,
+												PGA_TOP, GOLRenderData.MainWindow->Height,
+												PGA_NewLook, TRUE,
+												PGA_FREEDOM, FREEHORIZ,
+												ICA_TARGET, (ULONG)PPG_StrgHeight,
+												ICA_MAP, (ULONG)StringToSlider,
+												TAG_END);
 
-	PPG_StrgCellHeight = (struct Gadget*)NewObject(NULL, (STRPTR)"strgclass",
-								   GA_ID, PPG_PROPWIDTH_ID,
-								   GA_Left, 0,
-								   GA_Top, 128,
-								   GA_WIDTH, 50,
-								   GA_HEIGHT, 12,
-								   TAG_END);
+	SetGadgetAttrs(PPG_StrgHeight, GOLRenderData.PPG_Window, NULL,
+				   ICA_TARGET, (ULONG)PPG_PropHeight,
+				   ICA_MAP, (ULONG)SliderToString,
+				   TAG_END);
 
-	PPG_PropCellHeight = (struct Gadget*)NewObject(NULL, (STRPTR)"propclass",
-								   GA_ID, PPG_PROPHEIGHT_ID,
-								   GA_Left, 0,
-								   GA_Top, 182,
-								   GA_WIDTH, 100,
-								   GA_HEIGHT, 8,
-								   TAG_END);
+	PPG_StrgCellWidth = (struct Gadget *)NewObject(NULL, (STRPTR) "strgclass",
+												   GA_ID, PPG_STRGCELLWIDTH_ID,
+												   GA_PREVIOUS, (ULONG)PPG_PropHeight,
+												   GA_Left, 5,
+												   GA_Top, 37,
+												   GA_WIDTH, 50,
+												   GA_HEIGHT, 12,
+												   GA_BORDER, (ULONG)&PPG_Border,
+												   STRINGA_LongVal, GameMatrix.CellSizeH,
+												   STRINGA_MaxChars, 4,
+												   TAG_END);
 
-	PPG_ButtonOk = (struct Gadget*)NewObject(NULL, (STRPTR)"buttongclass",
-							 GA_ID, PPG_PROPWIDTH_ID,
-							 GA_Left, 0,
-							 GA_Top, 194,
-							 GA_WIDTH, 50,
-							 GA_HEIGHT, 16,
-							 TAG_END);
+	PPG_PropCellWidth = (struct Gadget *)NewObject(NULL, (STRPTR) "propgclass",
+												   GA_ID, PPG_PROPCELLWIDTH_ID,
+												   GA_PREVIOUS, (ULONG)PPG_StrgCellWidth,
+												   GA_Left, 5,
+												   GA_Top, 53,
+												   GA_WIDTH, 50,
+												   GA_HEIGHT, 12,
+												   PGA_NewLook, TRUE,
+												   PGA_FREEDOM, FREEHORIZ,
+												   PGA_VISIBLE, 1,
+												   PGA_TOTAL, 21,
+												   PGA_TOP, GameMatrix.CellSizeH,
+												   ICA_TARGET, (ULONG)PPG_StrgCellWidth,
+												   ICA_MAP, (ULONG)StringToSlider,
+												   TAG_END);
 
-	PPG_ButtonCancel = (struct Gadget*)NewObject(NULL, (STRPTR)"buttongclass",
-								 GA_ID, PPG_PROPWIDTH_ID,
-								 GA_Left, 60,
-								 GA_Top, 194,
-								 GA_WIDTH, 50,
-								 GA_HEIGHT, 16,
-								 TAG_END);
+	SetGadgetAttrs(PPG_StrgCellWidth, GOLRenderData.PPG_Window, NULL,
+				   ICA_TARGET, (ULONG)PPG_PropCellWidth,
+				   ICA_MAP, (ULONG)SliderToString,
+				   TAG_END);
 
+	PPG_StrgCellHeight = (struct Gadget *)NewObject(NULL, (STRPTR) "strgclass",
+													GA_ID, PPG_STRGCELLHEIGHT_ID,
+													GA_PREVIOUS, (ULONG)PPG_PropCellWidth,
+													GA_Left, 60,
+													GA_Top, 37,
+													GA_WIDTH, 50,
+													GA_HEIGHT, 12,
+													GA_BORDER, (ULONG)&PPG_Border,
+													STRINGA_LongVal, GameMatrix.CellSizeV,
+													STRINGA_MaxChars, 4,
+													TAG_END);
 
-	DoGadgetMethod(PPG_Group, GOLRenderData.MainWindow, NULL, OM_ADDMEMBER, (ULONG)PPG_PropWidth);
-	DoGadgetMethod(PPG_Group, GOLRenderData.MainWindow, NULL, OM_ADDMEMBER, (ULONG)PPG_StrgCellWidth);
-	DoGadgetMethod(PPG_Group, GOLRenderData.MainWindow, NULL, OM_ADDMEMBER, (ULONG)PPG_PropHeight);
-	DoGadgetMethod(PPG_Group, GOLRenderData.MainWindow, NULL, OM_ADDMEMBER, (ULONG)PPG_StrgHeight);
-	DoGadgetMethod(PPG_Group, GOLRenderData.MainWindow, NULL, OM_ADDMEMBER, (ULONG)PPG_PropCellWidth);
-	DoGadgetMethod(PPG_Group, GOLRenderData.MainWindow, NULL, OM_ADDMEMBER, (ULONG)PPG_StrgCellWidth);
-	DoGadgetMethod(PPG_Group, GOLRenderData.MainWindow, NULL, OM_ADDMEMBER, (ULONG)PPG_PropCellHeight);
-	DoGadgetMethod(PPG_Group, GOLRenderData.MainWindow, NULL, OM_ADDMEMBER, (ULONG)PPG_StrgCellHeight);
-	DoGadgetMethod(PPG_Group, GOLRenderData.MainWindow, NULL, OM_ADDMEMBER, (ULONG)PPG_ButtonOk);
-	DoGadgetMethod(PPG_Group, GOLRenderData.MainWindow, NULL, OM_ADDMEMBER, (ULONG)PPG_ButtonCancel);
-	
-	//AddGList(rd->PPG_Window, PPG_Group,0,1,NULL);
-	*/
+	PPG_PropCellHeight = (struct Gadget *)NewObject(NULL, (STRPTR) "propgclass",
+													GA_ID, PPG_PROPCELLHEIGHT_ID,
+													GA_PREVIOUS, (ULONG)PPG_StrgCellHeight,
+													GA_Left, 60,
+													GA_Top, 53,
+													GA_WIDTH, 50,
+													GA_HEIGHT, 12,
+													PGA_NewLook, TRUE,
+													PGA_FREEDOM, FREEHORIZ,
+													PGA_VISIBLE, 1,
+													PGA_TOTAL, 21,
+													PGA_TOP, GameMatrix.CellSizeV,
+													ICA_TARGET, (ULONG)PPG_StrgCellHeight,
+													ICA_MAP, (ULONG)StringToSlider,
+													TAG_END);
+
+	SetGadgetAttrs(PPG_StrgCellHeight, GOLRenderData.PPG_Window, NULL,
+				   ICA_TARGET, (ULONG)PPG_PropCellHeight,
+				   ICA_MAP, (ULONG)SliderToString,
+				   TAG_END);
+
+	PPG_ButtonOk = (struct Gadget *)NewObject(NULL, (STRPTR) "buttongclass",
+											  GA_ID, PPG_BUTTONOK_ID,
+											  GA_PREVIOUS, (ULONG)PPG_PropCellHeight,
+											  GA_BORDER, (ULONG)&PPG_Border,
+											  GA_Left, 5,
+											  GA_Top, 80,
+											  GA_WIDTH, 50,
+											  GA_HEIGHT, 16,
+											  TAG_END);
+
+	PPG_ButtonCancel = (struct Gadget *)NewObject(NULL, (STRPTR) "buttongclass",
+												  GA_ID, PPG_BUTTONCANCEL_ID,
+												  GA_PREVIOUS, (ULONG)PPG_ButtonOk,
+												  GA_Left, 60,
+												  GA_Top, 80,
+												  GA_WIDTH, 50,
+												  GA_HEIGHT, 16,
+												  GA_TEXT, (ULONG) "Cancel",
+												  TAG_END);
+
+	AddGList(GOLRenderData.PPG_Window, PPG_StrgWidth, -1, -1, NULL);
+	RefreshGList(PPG_StrgWidth, GOLRenderData.PPG_Window, NULL, -1);
 }
+									
